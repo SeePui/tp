@@ -133,20 +133,6 @@ a {
   }
 }
 
-/* Highlight CampusBridge nav item */
-.nav-item:nth-child(3) a {
-  color: #ff6600;           // vibrant color
-  font-weight: bold;         // make it stand out
-  border-radius: 4px;        // rounded edges
-  padding: 4px 8px;          // space around text
-  transition: all 0.3s ease; // smooth hover
-}
-
-.nav-item:nth-child(3) a:hover {
-  background-color: #ffe6cc; // subtle hover background
-  color: #cc3300;             // darker text on hover
-  text-decoration: none;       // remove underline
-}
 
 /**
  * Blockquotes

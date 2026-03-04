@@ -275,16 +275,20 @@ It does so by providing a centralized, easy-to-use system to save, search, and m
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                     | So that I can…​                                                        |
-| -------- | ------------------------------------------ | ------------------------------ | ---------------------------------------------------------------------- |
-| `* * *`  | new user                                   | see usage instructions         | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person               |                                                                        |
-| `* * *`  | user                                       | delete a person                | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name          | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details   | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name           | locate a person easily                                                 |
+| Priority | As a …​                     | I can …​                                                                | So that I can…​                                                        |
+|----------|-----------------------------|-------------------------------------------------------------------------|------------------------------------------------------------------------|
+| `* * *`  | user                        | add a contact                                                           | store and organize important academic contact information in one place |
+| `* * *`  | user                        | view all my contacts                                                    | quickly see everyone in one place                                      |
+| `* * *`  | user                        | delete a contact                                                        | keep my contact list accurate and organized                            |
+| `* * *`  | user                        | exit the application                                                    | safely close CampusBridge when I am done using it                      |
+| `* * *`  | user                        | have my contacts saved automatically                                    | prevent losing my data when the application closes                     |
+| `* *`    | user                        | add new tags to an existing contact                                     | keep their information updated as the semester evolves                 |
+| `* *`    | user                        | delete specific tags from a contact without deleting the entire contact | keep my contact information accurate                                   |
+| `* *`    | regular user                | mark a preferred contact method                                         | know the fastest way to reach someone                                  |
+| `*`      | frequent user               | set custom reminders for prof/TA office hours                           | stay on top of opportunities for academic help                         |
+| `*`      | user desiring full control  | customize the GUI theme                                                 | personalize my experience                                              |
 
-*{More to be added}*
+See the full list on [GitHub](https://github.com/AY2526S2-CS2103-F11-2/tp/issues)
 
 ### Use cases
 

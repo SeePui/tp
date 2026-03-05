@@ -1,6 +1,6 @@
 ---
 layout: page
-title: CampusBridge Level-3
+title: CampusBridge
 ---
 
 [![CI Status](https://github.com/se-edu/addressbook-level3/workflows/Java%20CI/badge.svg)](https://github.com/AY2526S2-CS2103-F11-2/tp/actions)

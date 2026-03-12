@@ -1,12 +1,13 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ORDER;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_REVERSE;
 
 import java.util.Comparator;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.commands.exceptions.CommandException;
-import seedu.address.logic.parser.Prefix;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
@@ -15,9 +16,6 @@ import seedu.address.model.person.Person;
  */
 public class SortCommand extends Command {
     public static final String COMMAND_WORD = "sort";
-
-    public static final Prefix PREFIX_ORDER = new Prefix("o/");
-    public static final Prefix PREFIX_REVERSE = new Prefix("r/");
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Sorts the persons by their names\n"
             + "Parameters: "

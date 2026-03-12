@@ -1,8 +1,10 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.commands.SortCommand.PREFIX_ORDER;
-import static seedu.address.logic.commands.SortCommand.PREFIX_REVERSE;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_SORT_ORDER;
+import static seedu.address.logic.commands.SortCommand.SORT_COMPARATORS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ORDER;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_REVERSE;
 
 import seedu.address.logic.commands.SortCommand;
 import seedu.address.logic.parser.exceptions.ParseException;

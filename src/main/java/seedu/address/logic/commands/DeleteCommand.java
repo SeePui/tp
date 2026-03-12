@@ -2,6 +2,8 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,8 +25,9 @@ public class DeleteCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Deletes the person identified by the index number or email used in the displayed person list.\n"
-            + "Parameters: i/INDEX (must be a positive integer) or e/EMAIL (must be a NUS email)\n"
-            + "Example: " + COMMAND_WORD + " i/1, " + COMMAND_WORD + " e/e1234567@u.nus.edu";
+            + "Parameters: " + PREFIX_INDEX + "INDEX (must be a positive integer) or " + PREFIX_EMAIL + "EMAIL\n"
+            + "Example: " + COMMAND_WORD + " " + PREFIX_INDEX + "1, "
+            + COMMAND_WORD + " " + PREFIX_EMAIL + "e1234567@u.nus.edu";
 
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
 

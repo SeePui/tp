@@ -1,0 +1,45 @@
+package seedu.address.logic.parser;
+
+import seedu.address.logic.commands.SortCommand;
+import seedu.address.logic.parser.exceptions.ParseException;
+
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.commands.SortCommand.PREFIX_ORDER;
+import static seedu.address.logic.commands.SortCommand.PREFIX_REVERSE;
+
+/**
+ * Parses input arguments and creates a new SortCommand object.
+ */
+public class SortCommandParser implements Parser<SortCommand> {
+
+    public static final String MESSAGE_INVALID_ORDER = "Invalid order value. Only 'name' is supported.";
+
+    /**
+     * Parses the given {@code String} of arguments in the context of the SortCommand
+     * and returns a SortCommand object for execution.
+     * @throws ParseException if the user input does not conform the expected format
+     */
+    public SortCommand parse(String args) throws ParseException {
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_ORDER, PREFIX_REVERSE);
+
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_ORDER, PREFIX_REVERSE);
+
+        if (argMultimap.getValue(PREFIX_ORDER).isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
+        }
+
+        String order = argMultimap.getValue(PREFIX_ORDER).get().trim();
+
+        if (order.isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
+        }
+
+        if (!order.equalsIgnoreCase("name")) {
+            throw new ParseException(MESSAGE_INVALID_ORDER);
+        }
+
+        boolean reverse = argMultimap.getValue(PREFIX_REVERSE).isPresent();
+
+        return new SortCommand(order.toLowerCase(), reverse);
+    }
+}

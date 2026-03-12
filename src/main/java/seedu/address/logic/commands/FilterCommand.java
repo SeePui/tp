@@ -15,7 +15,11 @@ import seedu.address.model.person.PersonContainsTagsPredicate;
 public class FilterCommand extends Command {
 
     public static final String COMMAND_WORD = "filter";
-    public static final String MESSAGE_USAGE = "filter t/friends t/colleagues";
+
+    public static final String MESSAGE_USAGE = COMMAND_WORD
+            + ": Filters contacts by one or more tags.\n"
+            + "Parameters: t/TAG [t/MORE_TAGS]\n"
+            + "Example: " + COMMAND_WORD + " t/friends t/colleagues";
 
     private final PersonContainsTagsPredicate predicate;
 

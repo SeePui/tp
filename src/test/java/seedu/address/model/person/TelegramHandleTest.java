@@ -1,5 +1,6 @@
 package seedu.address.model.person;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -38,5 +39,31 @@ public class TelegramHandleTest {
         assertTrue(TelegramHandle.isValidTelegramHandle("rachel_walker"));
         assertTrue(TelegramHandle.isValidTelegramHandle("user123"));
         assertTrue(TelegramHandle.isValidTelegramHandle("User_Name_123"));
+    }
+
+    @Test
+    public void toString_validTelegramHandle_returnsValue() {
+        TelegramHandle telegramHandle = new TelegramHandle("alice123");
+        assertEquals("alice123", telegramHandle.toString());
+    }
+
+    @Test
+    public void equals() {
+        TelegramHandle first = new TelegramHandle("alice123");
+        TelegramHandle second = new TelegramHandle("alice123");
+        TelegramHandle third = new TelegramHandle("bob123");
+
+        assertTrue(first.equals(first));
+        assertTrue(first.equals(second));
+        assertFalse(first.equals(null));
+        assertFalse(first.equals(1));
+        assertFalse(first.equals(third));
+    }
+
+    @Test
+    public void hashCode_sameValue_sameHashCode() {
+        TelegramHandle first = new TelegramHandle("alice123");
+        TelegramHandle second = new TelegramHandle("alice123");
+        assertEquals(first.hashCode(), second.hashCode());
     }
 }

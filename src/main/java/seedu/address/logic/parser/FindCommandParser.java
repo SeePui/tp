@@ -9,7 +9,7 @@ import java.util.List;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.NameOrEmailContainsKeywordsPredicate;
 
 /**
  * Parses input arguments and creates a new FindCommand object
@@ -46,12 +46,20 @@ public class FindCommandParser implements Parser<FindCommand> {
                 .filter(keyword -> !keyword.isBlank())
                 .toList();
 
-        if (nameKeywords.isEmpty()) {
+        List<String> emailKeywords = argumentMultimap.getAllValues(PREFIX_EMAIL)
+                .stream()
+                .flatMap(keyword -> Arrays.stream(keyword.split("\\s+")))
+                .filter(keyword -> !keyword.isBlank())
+                .toList();
+
+        // If no name or email keywords specified
+        if (nameKeywords.isEmpty() && emailKeywords.isEmpty()) {
+            System.out.println("Name and email are both empty");
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }
 
-        return new FindCommand(new NameContainsKeywordsPredicate(nameKeywords));
+        return new FindCommand(new NameOrEmailContainsKeywordsPredicate(nameKeywords, emailKeywords));
     }
 
 }

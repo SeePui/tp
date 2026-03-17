@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 
 import java.util.function.Predicate;
@@ -20,8 +21,8 @@ public class FindCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all persons whose names contain any of "
             + "the specified keywords (case-insensitive) and displays them as a list with index numbers.\n"
-            + "Parameters: " + PREFIX_NAME + "KEYWORD [MORE_KEYWORDS]...\n"
-            + "Example: " + COMMAND_WORD + " " + PREFIX_NAME + "Alice bob charlie";
+            + "Parameters: " + PREFIX_NAME + "NAME [MORE_NAMES] " + PREFIX_EMAIL + "EMAIL [MORE_EMAILS] \n"
+            + "Example: " + COMMAND_WORD + " " + PREFIX_NAME + "Alice Bob Charlie " + PREFIX_EMAIL + "gmail";
 
     private final Predicate<Person> predicate;
 

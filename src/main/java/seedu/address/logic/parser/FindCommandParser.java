@@ -6,6 +6,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -22,20 +23,12 @@ public class FindCommandParser implements Parser<FindCommand> {
      * @throws ParseException if the user input does not conform the expected format
      */
     public FindCommand parse(String args) throws ParseException {
-        String trimmedArgs = args.trim();
-
-        if (trimmedArgs.isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
-        }
-
-        // ArgumentTokenizer requires a space before the first prefix to recognize it.
-        // Add a leading space if input starts with a prefix (e.g., "n/alice" -> " n/alice").
-        // The preamble check below will validate no unprefixed content exists.
-        ArgumentMultimap argumentMultimap = ArgumentTokenizer.tokenize(" " + trimmedArgs,
+        ArgumentMultimap argumentMultimap = ArgumentTokenizer.tokenize(args,
                 PREFIX_NAME, PREFIX_EMAIL);
 
-        if (!argumentMultimap.getPreamble().trim().isEmpty()) {
+        // Throw exception if preamble is not empty or both name and email fields not specified
+        if (!argumentMultimap.getPreamble().isEmpty()
+            || !isNameOrEmailPrefixPresent(argumentMultimap)) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }
@@ -54,7 +47,6 @@ public class FindCommandParser implements Parser<FindCommand> {
 
         // If no name or email keywords specified
         if (nameKeywords.isEmpty() && emailKeywords.isEmpty()) {
-            System.out.println("Name and email are both empty");
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }
@@ -62,4 +54,12 @@ public class FindCommandParser implements Parser<FindCommand> {
         return new FindCommand(new NameOrEmailContainsKeywordsPredicate(nameKeywords, emailKeywords));
     }
 
+    /**
+     * Returns true if at least one of {@code PREFIX_NAME} or {@code PREFIX_EMAIL}
+     * contains non-empty {@code Optional} values in the given {@code ArgumentMultimap}.
+     */
+    private static boolean isNameOrEmailPrefixPresent(ArgumentMultimap argumentMultimap) {
+        return Stream.of(PREFIX_NAME, PREFIX_EMAIL)
+                .anyMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
+    }
 }

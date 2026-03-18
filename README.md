@@ -17,10 +17,11 @@ Type the command in the command box and press Enter to execute it. e.g. typing h
 
 * Some example commands you can try:
 1. list : Lists all contacts.
-2. add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01 : Adds a contact named John Doe to the Address Book.
-3. delete 3 : Deletes the 3rd contact shown in the current list.
-4. clear : Deletes all contacts.
-5. exit : Exits the app.
+2. add n/John Doe p/98765432 e/johnd@example.com h/johndoe: Adds a contact named John Doe to the Address Book.
+3. edit 1 n/Alice Doe p/98765431 e/aliced@example.com h/alicedoe: Edits and updates the first contact in the Address Book.
+4. delete 3 : Deletes the 3rd contact shown in the current list.
+5. clear : Deletes all contacts.
+6. exit : Exits the app.
 
 Known issues
 1. When using multiple screens, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the preferences.json file created by the application before running the application again.

@@ -85,7 +85,6 @@ public class AddressBookParserTest {
         List<String> emails = List.of("gmail", "yahoo");
 
         List<String> tags = List.of("tag1", "tag2");
-        Set<Tag> tagSet = ParserUtil.parseTags(tags, TagType.GENERAL);
 
         String input = FindCommand.COMMAND_WORD + " "
                 + PREFIX_NAME + " " + String.join(" ", names) + " " // name keywords
@@ -93,7 +92,7 @@ public class AddressBookParserTest {
                 + PREFIX_TAG + " " + String.join(" ", tags); // tags
 
         FindCommand command = (FindCommand) parser.parseCommand(input);
-        assertEquals(new FindCommand(new NameEmailTagPredicate(names, emails, tagSet)),
+        assertEquals(new FindCommand(new NameEmailTagPredicate(names, emails, tags)),
                 command);
     }
 

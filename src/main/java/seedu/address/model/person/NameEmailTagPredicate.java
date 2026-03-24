@@ -21,17 +21,16 @@ import seedu.address.model.tag.Tag;
 public class NameEmailTagPredicate implements Predicate<Person> {
     private final List<String> nameKeywords;
     private final List<String> emailKeywords;
-    private final Set<Tag> tags;
+    private final List<String> tags;
 
     /**
      * Constructs a {@code NameEmailTagPredicate}.
      *
      * @param nameKeywords List of name keywords to match against.
      * @param emailKeywords List of email keywords to match against.
-     * @param tags Set of tags to match against.
+     * @param tags List of tags names to match against.
      */
-    public NameEmailTagPredicate(List<String> nameKeywords, List<String> emailKeywords,
-            Set<Tag> tags) {
+    public NameEmailTagPredicate(List<String> nameKeywords, List<String> emailKeywords, List<String> tags) {
         this.nameKeywords = nameKeywords;
         this.emailKeywords = emailKeywords;
         this.tags = tags;

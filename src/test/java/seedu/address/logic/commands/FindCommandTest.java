@@ -14,7 +14,6 @@ import static seedu.address.testutil.TypicalPersons.FIONA;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.List;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -37,10 +36,10 @@ public class FindCommandTest {
         NameEmailTagPredicate firstPredicate = new NameEmailTagPredicate(
                 List.of("Alice"),
                 List.of(),
-                Set.of(new Tag("friends", TagType.GENERAL)));
+                List.of("friends"));
         NameEmailTagPredicate secondPredicate = new NameEmailTagPredicate(List.of(),
                 List.of("yahoo"),
-                Set.of(new Tag("friends", TagType.GENERAL)));
+                List.of("friends"));
 
         FindCommand findFirstCommand = new FindCommand(firstPredicate);
         FindCommand findSecondCommand = new FindCommand(secondPredicate);
@@ -59,7 +58,7 @@ public class FindCommandTest {
     public void execute_nameKeywords_onePersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
         NameEmailTagPredicate predicate =
-                new NameEmailTagPredicate(List.of("Elle"), List.of(), Set.of());
+                new NameEmailTagPredicate(List.of("Elle"), List.of(), List.of());
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
@@ -70,7 +69,7 @@ public class FindCommandTest {
     public void execute_emailKeywords_onePersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
         NameEmailTagPredicate predicate =
-                new NameEmailTagPredicate(List.of(), List.of("heinz"), Set.of());
+                new NameEmailTagPredicate(List.of(), List.of("heinz"), List.of());
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
@@ -80,8 +79,7 @@ public class FindCommandTest {
     @Test
     public void execute_tagKeywords_multiplePersonsFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 3);
-        NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of(), List.of(),
-                Set.of(new Tag("friends", TagType.GENERAL)));
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of(), List.of(), List.of("friends"));
 
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
@@ -93,7 +91,7 @@ public class FindCommandTest {
     public void execute_nameAndEmailKeywords_onePersonsFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
         NameEmailTagPredicate predicate =
-                new NameEmailTagPredicate(List.of("Fiona"), List.of("example.com"), Set.of());
+                new NameEmailTagPredicate(List.of("Fiona"), List.of("example.com"), List.of());
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
@@ -104,7 +102,7 @@ public class FindCommandTest {
     public void execute_nameMatchesEmailFails_noPersonsFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
         NameEmailTagPredicate predicate =
-                new NameEmailTagPredicate(List.of("Alice"), List.of("allycia@example.com"), Set.of());
+                new NameEmailTagPredicate(List.of("Alice"), List.of("allycia@example.com"), List.of());
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
@@ -115,7 +113,7 @@ public class FindCommandTest {
     public void execute_nameAndTagMatch_onePersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
         NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of("Alice"),
-                List.of(), Set.of(new Tag("friends", TagType.GENERAL)));
+                List.of(), List.of("friends"));
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
@@ -126,7 +124,7 @@ public class FindCommandTest {
     public void execute_nameMatchesTagFails_returnsEmptyList() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
         NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of("Alice"), List.of(),
-                Set.of(new Tag("nonexistent", TagType.GENERAL)));
+                List.of("nonexistent"));
 
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
@@ -138,7 +136,7 @@ public class FindCommandTest {
     public void execute_allFieldsMatch_onePersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
         NameEmailTagPredicate predicate = new NameEmailTagPredicate(
-                List.of("Alice"), List.of("example.com"), Set.of(new Tag("friends", TagType.GENERAL)));
+                List.of("Alice"), List.of("example.com"), List.of("friends"));
 
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
@@ -150,7 +148,7 @@ public class FindCommandTest {
     public void execute_oneFieldFails_noPersonsFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
         NameEmailTagPredicate predicate = new NameEmailTagPredicate(
-                List.of("Alice"), List.of("wrongemail"), Set.of(new Tag("friends", TagType.GENERAL)));
+                List.of("Alice"), List.of("wrongemail"), List.of("friends"));
 
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
@@ -162,7 +160,7 @@ public class FindCommandTest {
     public void execute_multipleNameKeywords_multiplePersonsFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 2);
         NameEmailTagPredicate predicate = new NameEmailTagPredicate(
-                List.of("Alice", "Benson"), List.of(), Set.of());
+                List.of("Alice", "Benson"), List.of(), List.of());
 
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
@@ -174,7 +172,7 @@ public class FindCommandTest {
     public void execute_partialNameMatch_onePersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
         NameEmailTagPredicate predicate = new NameEmailTagPredicate(
-                List.of("Ali"), List.of(), Set.of());
+                List.of("Ali"), List.of(), List.of());
 
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
@@ -186,7 +184,7 @@ public class FindCommandTest {
     public void execute_partialEmailMatch_onePersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
         NameEmailTagPredicate predicate = new NameEmailTagPredicate(
-                List.of(), List.of("ce@example.com"), Set.of());
+                List.of(), List.of("ce@example.com"), List.of());
 
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
@@ -198,7 +196,7 @@ public class FindCommandTest {
     public void toStringMethod() {
         NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of("Alice"),
                 List.of("yahoo"),
-                Set.of(new Tag("friends", TagType.GENERAL)));
+                List.of("friends"));
 
         FindCommand findCommand = new FindCommand(predicate);
         String expected = FindCommand.class.getCanonicalName() + "{predicate=" + predicate + "}";

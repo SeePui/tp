@@ -35,7 +35,7 @@ public class FindCommandParser implements Parser<FindCommand> {
 
         List<String> emailKeywords = parseKeywords(argumentMultimap, PREFIX_EMAIL);
 
-        Set<Tag> tags = ParserUtil.parseTags(parseKeywords(argumentMultimap, PREFIX_TAG), TagType.GENERAL);
+        List<String> tags = parseKeywords(argumentMultimap, PREFIX_TAG);
 
         // Throw exception if preamble is not empty, eg "find alice n/bob"
         // If no name or email or tag keywords are specified

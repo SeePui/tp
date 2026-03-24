@@ -135,6 +135,66 @@ public class FindCommandTest {
     }
 
     @Test
+    public void execute_allFieldsMatch_onePersonFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(
+                List.of("Alice"), List.of("example.com"), Set.of(new Tag("friends", TagType.GENERAL)));
+
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(ALICE), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_oneFieldFails_noPersonsFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(
+                List.of("Alice"), List.of("wrongemail"), Set.of(new Tag("friends", TagType.GENERAL)));
+
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_multipleNameKeywords_multiplePersonsFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 2);
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(
+                List.of("Alice", "Benson"), List.of(), Set.of());
+
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(ALICE, BENSON), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_partialNameMatch_onePersonFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(
+                List.of("Ali"), List.of(), Set.of());
+
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(ALICE), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_partialEmailMatch_onePersonFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+        NameEmailTagPredicate predicate = new NameEmailTagPredicate(
+                List.of(), List.of("ce@example.com"), Set.of());
+
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(List.of(ALICE), model.getFilteredPersonList());
+    }
+
+    @Test
     public void toStringMethod() {
         NameEmailTagPredicate predicate = new NameEmailTagPredicate(List.of("Alice"),
                 List.of("yahoo"),

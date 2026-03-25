@@ -55,6 +55,8 @@ public class EditCommand extends Command {
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
     public static final String MESSAGE_NON_NUS_EMAIL = "Warning: Email is not an NUS domain.";
+    public static final String NUS_STUDENT_EMAIL_DOMAIN = "@u.nus.edu";
+    public static final String NUS_STAFF_EMAIL_DOMAIN = "@nus.edu.sg";
 
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
@@ -90,7 +92,13 @@ public class EditCommand extends Command {
         }
 
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-        return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
+
+        String resultMessage = String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
+        if (!editedPerson.getEmail().toString().endsWith(NUS_STUDENT_EMAIL_DOMAIN)
+                && !editedPerson.getEmail().toString().endsWith(NUS_STAFF_EMAIL_DOMAIN)) {
+            resultMessage += "\n" + MESSAGE_NON_NUS_EMAIL;
+        }
+        return new CommandResult(resultMessage);
     }
 
     /**

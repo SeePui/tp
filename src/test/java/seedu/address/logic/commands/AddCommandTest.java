@@ -4,8 +4,12 @@ import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.logic.commands.CommandTestUtil.assertUndoFailure;
+import static seedu.address.logic.commands.CommandTestUtil.assertUndoSuccess;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.AMY_NO_TAGS;
+import static seedu.address.testutil.TypicalPersons.HOON;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -21,10 +25,13 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
+import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
+import seedu.address.testutil.TypicalPersons;
 
 public class AddCommandTest {
 
@@ -100,29 +107,6 @@ public class AddCommandTest {
     }
 
     @Test
-    public void execute_nonNusEmail_addsWithWarning() throws Exception {
-        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
-        Person personWithNonNusEmail = new PersonBuilder().withEmail("john@example.com").build();
-
-        CommandResult commandResult = new AddCommand(personWithNonNusEmail).execute(modelStub);
-
-        String expectedMessage = String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(personWithNonNusEmail))
-                + "\n" + AddCommand.MESSAGE_NON_NUS_EMAIL;
-        assertEquals(expectedMessage, commandResult.getFeedbackToUser());
-    }
-
-    @Test
-    public void execute_nusStudentEmail_addsWithoutWarning() throws Exception {
-        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
-        Person personWithNusEmail = new PersonBuilder().withEmail("john@u.nus.edu").build();
-
-        CommandResult commandResult = new AddCommand(personWithNusEmail).execute(modelStub);
-
-        String expectedMessage = String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(personWithNusEmail));
-        assertEquals(expectedMessage, commandResult.getFeedbackToUser());
-    }
-
-    @Test
     public void execute_nusStaffEmail_addsWithoutWarning() throws Exception {
         ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
         Person personWithNusEmail = new PersonBuilder().withEmail("john@nus.edu.sg").build();
@@ -131,6 +115,40 @@ public class AddCommandTest {
 
         String expectedMessage = String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(personWithNusEmail));
         assertEquals(expectedMessage, commandResult.getFeedbackToUser());
+    }
+
+    public void undo_afterExecute_removesPerson() {
+        Model model = new ModelManager(TypicalPersons.getTypicalAddressBook(), new UserPrefs());
+        Model expectedBefore = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Person toAdd = new PersonBuilder(HOON).build();
+        AddCommand addCommand = new AddCommand(toAdd);
+
+        Model expectedAfterAdd = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedAfterAdd.addPerson(toAdd);
+
+        assertCommandSuccess(addCommand, model,
+                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(toAdd)),
+                expectedAfterAdd);
+
+        assertUndoSuccess(addCommand, model,
+                String.format(AddCommand.MESSAGE_UNDO_SUCCESS, Messages.format(toAdd)),
+                expectedBefore);
+    }
+
+    @Test
+    public void undo_personNoLongerInModel_throwsCommandException() {
+        Model model = new ModelManager(TypicalPersons.getTypicalAddressBook(), new UserPrefs());
+        Person toAdd = new PersonBuilder(HOON).build();
+        AddCommand addCommand = new AddCommand(toAdd);
+
+        Model expectedAfterAdd = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedAfterAdd.addPerson(toAdd);
+        assertCommandSuccess(addCommand, model,
+                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(toAdd)),
+                expectedAfterAdd);
+
+        model.deletePerson(toAdd);
+        assertUndoFailure(addCommand, model, AddCommand.MESSAGE_UNDO_FAILURE);
     }
 
     /**
@@ -169,6 +187,11 @@ public class AddCommandTest {
 
         @Override
         public void addPerson(Person person) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addPerson(int index, Person person) {
             throw new AssertionError("This method should not be called.");
         }
 

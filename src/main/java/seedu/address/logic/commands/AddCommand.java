@@ -38,7 +38,8 @@ public class AddCommand extends Command {
     public static final String MESSAGE_NON_NUS_EMAIL = "Warning: Email is not an NUS domain.";
     public static final String NUS_STUDENT_EMAIL_DOMAIN = "@u.nus.edu";
     public static final String NUS_STAFF_EMAIL_DOMAIN = "@nus.edu.sg";
-
+    public static final String MESSAGE_UNDO_SUCCESS = "Undo add person: %1$s";
+    public static final String MESSAGE_UNDO_FAILURE = "Cannot undo add because the person no longer exists.";
     private final Person toAdd;
 
     /**
@@ -65,6 +66,21 @@ public class AddCommand extends Command {
             resultMessage += "\n" + MESSAGE_NON_NUS_EMAIL;
         }
         return new CommandResult(resultMessage);
+    }
+
+    @Override
+    public boolean isUndoable() {
+        return true;
+    }
+
+    @Override
+    public CommandResult undo(Model model) throws CommandException {
+        requireNonNull(model);
+        if (!model.hasPerson(toAdd)) {
+            throw new CommandException(MESSAGE_UNDO_FAILURE);
+        }
+        model.deletePerson(toAdd);
+        return new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, Messages.format(toAdd)));
     }
 
     @Override

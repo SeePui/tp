@@ -57,9 +57,13 @@ public class EditCommand extends Command {
     public static final String MESSAGE_NON_NUS_EMAIL = "Warning: Email is not an NUS domain.";
     public static final String NUS_STUDENT_EMAIL_DOMAIN = "@u.nus.edu";
     public static final String NUS_STAFF_EMAIL_DOMAIN = "@nus.edu.sg";
+    public static final String MESSAGE_UNDO_SUCCESS = "Undo edit person: %1$s";
+    public static final String MESSAGE_UNDO_FAILURE = "Cannot undo edit before command execution.";
 
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
+    private Person originalPerson;
+    private Person updatedPerson;
 
     /**
      * @param index of the person in the filtered person list to edit
@@ -90,6 +94,8 @@ public class EditCommand extends Command {
         } catch (DuplicatePersonException e) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
+        originalPerson = personToEdit;
+        updatedPerson = editedPerson;
 
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
 
@@ -99,6 +105,28 @@ public class EditCommand extends Command {
             resultMessage += "\n" + MESSAGE_NON_NUS_EMAIL;
         }
         return new CommandResult(resultMessage);
+    }
+
+    @Override
+    public boolean isUndoable() {
+        return true;
+    }
+
+    @Override
+    public CommandResult undo(Model model) throws CommandException {
+        requireNonNull(model);
+        if (originalPerson == null || updatedPerson == null) {
+            throw new CommandException(MESSAGE_UNDO_FAILURE);
+        }
+
+        try {
+            model.setPerson(updatedPerson, originalPerson);
+        } catch (DuplicatePersonException e) {
+            throw new CommandException(MESSAGE_DUPLICATE_PERSON);
+        }
+
+        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        return new CommandResult(String.format(MESSAGE_UNDO_SUCCESS, Messages.format(originalPerson)));
     }
 
     /**

@@ -109,6 +109,40 @@ Examples:
 * `add n/Alex Lim e/alexlim@example.com h/alex_lim123`
 * `add e/berniceyu@example.com n/Bernice Yu p/98765432 h/bernice_yu`
 
+### Tagging a person: `tag`
+
+Adds one or more tags to an existing person in the address book.
+
+Format: `tag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…​`
+
+* Adds tags to the person at the specified `INDEX`.
+* The index refers to the index number shown in the displayed person list.
+* Multiple tags (of different or same types) can be added in a single command.
+* Existing tags will be preserved. New tags are appended.
+* Tag matching is **case-insensitive**. e.g. `friends` and `FRIENDS` are considered the same.
+* Duplicate tags will not be added again.
+
+Constraints:
+* The index **must be a positive integer** 1, 2, 3, …​
+* Tag names must be **alphanumeric** (no space or symbols).
+* **At least one tag** must be provided.
+
+<div markdown="span" class="alert alert-primary">:bulb: **Tip:**
+Obtain the index by using:
+* the `list` command to display all persons, or 
+* the `find` command to filter the persons.
+</div>
+
+Examples:
+* `tag 1 tg/friends`   
+Adds the `friends` general tag to the 1st person in the displayed list.
+
+* `tag 2 tr/tutor tc/cs2103 tg/helpful`  
+Adds the `tutor` role tag, `cs2103` course tag and `helpful` general tag to the 2nd person in the displayed list.
+
+* `tag 3 tg/friends tg/groupmates`  
+Adds both `friends` and `groupmates` general tags to the 3rd person in the displayed list.
+
 ### Listing all persons : `list`
 
 Shows a list of all persons in the address book.

@@ -125,7 +125,7 @@ Format: `tag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…
 Constraints:
 * The index **must be a positive integer** 1, 2, 3, …​
 * Tag names must be **alphanumeric** (no space or symbols).
-* **At least one tag** must be provided.
+* At least one of the optional fields must be provided.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 Obtain the index by using:
@@ -164,7 +164,7 @@ Partial Removal Behavior:
 Constraints:
 * The index **must be a positive integer** 1, 2, 3, …​
 * Tag names must be **alphanumeric** (no space or symbols).
-* **At least one tag** must be provided.
+* At least one of the optional fields must be provided.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 Obtain the index by using:

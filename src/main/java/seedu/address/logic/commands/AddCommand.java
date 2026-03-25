@@ -36,6 +36,9 @@ public class AddCommand extends Command {
     public static final String MESSAGE_DUPLICATE_PERSON =
             "A person with this email or Telegram handle already exists in the address book";
     private final Person toAdd;
+    public static final String MESSAGE_NON_NUS_EMAIL = "Warning: Email is not an NUS domain.";
+    public static final String NUS_STUDENT_EMAIL_DOMAIN = "@u.nus.edu";
+    public static final String NUS_STAFF_EMAIL_DOMAIN = "@nus.edu.sg";
 
     /**
      * Creates an AddCommand to add the specified {@code Person}
@@ -54,7 +57,13 @@ public class AddCommand extends Command {
         }
 
         model.addPerson(toAdd);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
+
+        String resultMessage = String.format(MESSAGE_SUCCESS, Messages.format(toAdd));
+        if (!toAdd.getEmail().toString().endsWith(NUS_STUDENT_EMAIL_DOMAIN)
+                && !toAdd.getEmail().toString().endsWith(NUS_STAFF_EMAIL_DOMAIN)) {
+            resultMessage += "\n" + MESSAGE_NON_NUS_EMAIL;
+        }
+        return new CommandResult(resultMessage);
     }
 
     @Override

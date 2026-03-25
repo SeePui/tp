@@ -439,3 +439,12 @@ Action | Format, Examples
 **Tag** | `tag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…​`<br> e.g., `tag 1 tg/friends tc/cs2103`
 **Untag** | `untag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…​`<br> e.g., `untag 3 tr/tutor tc/cs2103`
 **Undo** | `undo`
+
+## Keyboard shortcuts summary
+
+Action | Shortcut
+--------|----------
+**Help** | `F1`
+**List all contacts** | `F2`
+**Exit application** | `F3`
+**Clear input box** | `Delete`

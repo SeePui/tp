@@ -4,7 +4,9 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_COURSE_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_GENERAL_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TELEGRAM_HANDLE;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
@@ -44,12 +46,16 @@ public class EditCommand extends Command {
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_PHONE + "PHONE] "
             + "[" + PREFIX_TELEGRAM_HANDLE + "TELEGRAM HANDLE] "
-            + "[" + PREFIX_TAG + "TAG]...\n"
-            + "Example: " + COMMAND_WORD + " 1 "
+            + "[" + PREFIX_ROLE_TAG + "ROLE_TAG]... "
+            + "[" + PREFIX_COURSE_TAG + "COURSE_TAG]... "
+            + "[" + PREFIX_GENERAL_TAG + "GENERAL_TAG]...\n"
+            + "(Use t/ alone to clear all tags)\n"            + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_EMAIL + "johndoe@example.com "
             + PREFIX_PHONE + "91234567 "
             + PREFIX_TELEGRAM_HANDLE + "johndoe123 "
-            + PREFIX_TAG + "friend";;
+            + PREFIX_ROLE_TAG + "Teammate"
+            + PREFIX_COURSE_TAG + "CS2103"
+            + PREFIX_GENERAL_TAG + "Friendly";;
 
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
@@ -90,6 +96,10 @@ public class EditCommand extends Command {
 
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
+    }
+
+    private static Set<Tag> filterByType(Set<Tag> tags, TagType type) {
+        return tags.stream().filter(t -> t.type == type).collect(Collectors.toSet());
     }
 
     /**
@@ -245,5 +255,6 @@ public class EditCommand extends Command {
                     .add("tags", tags)
                     .toString();
         }
+
     }
 }

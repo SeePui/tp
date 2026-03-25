@@ -375,19 +375,19 @@ undo
   Reverts the addition of John Doe.
 
 ```
-*delete i/2
+delete i/2
 undo
 ```
   Restores the previously deleted person.
 
 ```
-*edit 1 n/Alex Tan
+edit 1 n/Alex Tan
 undo
 ```
   Restores the original details of the 1st person.
 
 ```
-*clear
+clear
 undo
 ```
   Restores all previously deleted contacts.

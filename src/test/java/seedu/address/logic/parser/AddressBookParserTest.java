@@ -10,6 +10,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_GENERAL_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
@@ -31,7 +32,7 @@ import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.SortCommand;
 import seedu.address.logic.commands.TagCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.NameOrEmailContainsKeywordsPredicate;
+import seedu.address.model.person.NameEmailTagPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.tag.TagType;
@@ -83,12 +84,16 @@ public class AddressBookParserTest {
         List<String> names = List.of("foo", "bar", "baz");
         List<String> emails = List.of("gmail", "yahoo");
 
+        List<String> tags = List.of("tag1", "tag2");
+
         String input = FindCommand.COMMAND_WORD + " "
                 + PREFIX_NAME + " " + String.join(" ", names) + " " // name keywords
-                + PREFIX_EMAIL + " " + String.join(" ", emails); // email keywords
+                + PREFIX_EMAIL + " " + String.join(" ", emails) + " " // email keywords
+                + PREFIX_TAG + " " + String.join(" ", tags); // tags
 
         FindCommand command = (FindCommand) parser.parseCommand(input);
-        assertEquals(new FindCommand(new NameOrEmailContainsKeywordsPredicate(names, emails)), command);
+        assertEquals(new FindCommand(new NameEmailTagPredicate(names, emails, tags)),
+                command);
     }
 
     @Test

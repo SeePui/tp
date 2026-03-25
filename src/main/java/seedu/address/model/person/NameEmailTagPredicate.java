@@ -1,5 +1,7 @@
 package seedu.address.model.person;
 
+import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
+
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -29,6 +31,8 @@ public class NameEmailTagPredicate implements Predicate<Person> {
      * @param tags List of tags names to match against.
      */
     public NameEmailTagPredicate(List<String> nameKeywords, List<String> emailKeywords, List<String> tags) {
+        requireAllNonNull(nameKeywords, emailKeywords, tags);
+
         this.nameKeywords = nameKeywords;
         this.emailKeywords = emailKeywords;
         this.tags = tags;

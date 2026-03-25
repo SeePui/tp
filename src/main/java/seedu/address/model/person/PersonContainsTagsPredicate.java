@@ -1,5 +1,7 @@
 package seedu.address.model.person;
 
+import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Predicate;
@@ -17,6 +19,7 @@ public class PersonContainsTagsPredicate implements Predicate<Person> {
      * @param tagNames The input tags by user
      */
     public PersonContainsTagsPredicate(List<String> tagNames) {
+        requireAllNonNull(tagNames);
         this.tagNames = tagNames.stream()
                 .map(String::toLowerCase)
                 .toList();

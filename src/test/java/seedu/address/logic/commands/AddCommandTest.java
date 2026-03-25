@@ -145,8 +145,7 @@ public class AddCommandTest {
         Model expectedAfterAdd = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedAfterAdd.addPerson(toAdd);
         assertCommandSuccess(addCommand, model,
-                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(toAdd))
-                        + "\n" + AddCommand.MESSAGE_NON_NUS_EMAIL,
+                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(toAdd)),
                 expectedAfterAdd);
 
         model.deletePerson(toAdd);

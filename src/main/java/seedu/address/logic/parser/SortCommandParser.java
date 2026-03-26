@@ -3,6 +3,7 @@ package seedu.address.logic.parser;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_REVERSE_FLAG;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_SORT_ORDER;
+import static seedu.address.logic.Messages.MESSAGE_REVERSE_FLAG_WITH_NONE;
 import static seedu.address.logic.commands.SortCommand.SORT_COMPARATORS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ORDER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_REVERSE;
@@ -40,7 +41,7 @@ public class SortCommandParser implements Parser<SortCommand> {
 
         if ("none".equals(normalizedOrder)) {
             if (argMultimap.getValue(PREFIX_REVERSE).isPresent()) {
-                throw new ParseException(MESSAGE_INVALID_REVERSE_FLAG);
+                throw new ParseException(MESSAGE_REVERSE_FLAG_WITH_NONE);
             }
             return new SortCommand("none", false);
         }

@@ -24,6 +24,8 @@ public class Messages {
     public static final String MESSAGE_SORT_RESET = "Sort order reset to default.";
     public static final String MESSAGE_INVALID_REVERSE_FLAG =
                 "The r/ flag does not accept a value. Use r/ alone to reverse sort order.";
+    public static final String MESSAGE_REVERSE_FLAG_WITH_NONE =
+                "The r/ flag cannot be used with o/none. To reset sort order, use: sort o/none";
     public static final String MESSAGE_INVALID_PERSON_DISPLAYED_EMAIL = "The person email provided is invalid";
     public static final String MESSAGE_INVALID_PREFIX_WITH_EXTRA_INPUT =
                 "Invalid command format! \nThe prefix should not be followed by any values. \n%1$s";

@@ -433,7 +433,7 @@ _Details coming soon ..._
 **A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous CampusBridge home folder.
 
 **Q**: What happens to my data when I upgrade from v1.3 to v1.4?<br>
-**A**: CampusBridge v1.4 uses an updated storage format. Data from older versions may no longer be compatible with v1.4. If v1.4 cannot read your existing data file, it may start with an empty data file instead. If you may need to return to an older version later, make a backup of your `data/addressbook.json` file before opening it with v1.4.
+**A**: CampusBridge v1.4 uses an updated storage format that may not be compatible with older versions. If your existing data cannot be read, the app will start with an empty data file. Back up your `data/addressbook.json` before upgrading.
 
 --------------------------------------------------------------------------------------------------------------------
 

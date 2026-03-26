@@ -2,12 +2,12 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_COURSE_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_GENERAL_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE_TAG;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_COURSE_TAG;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_GENERAL_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TELEGRAM_HANDLE;
 import static seedu.address.testutil.Assert.assertThrows;
 
@@ -91,17 +91,17 @@ public class CommandTestUtil {
                 .withPhone(VALID_PHONE_BOB)
                 .withEmail(VALID_EMAIL_BOB)
                 .withTelegramHandle(VALID_TELEGRAM_HANDLE_BOB)
-                .withRoleTags(VALID_ROLE_TAG_TEAMMATE)  // add this constant
-                .withCourseTags(VALID_COURSE_TAG_CS2103)  // add this constant
+                .withRoleTags(VALID_ROLE_TAG_TEAMMATE)
+                .withCourseTags(VALID_COURSE_TAG_CS2103)
                 .withGeneralTags(VALID_GENERAL_TAG_HUSBAND, VALID_GENERAL_TAG_FRIEND)
                 .build();
     }
 
-        /**
-         * Executes the given {@code command}, confirms that <br>
-         * - the returned {@link CommandResult} matches {@code expectedCommandResult} <br>
-         * - the {@code actualModel} matches {@code expectedModel}
-         */
+    /**
+     * Executes the given {@code command}, confirms that <br>
+     * - the returned {@link CommandResult} matches {@code expectedCommandResult} <br>
+     * - the {@code actualModel} matches {@code expectedModel}
+     */
     public static void assertCommandSuccess(Command command, Model actualModel, CommandResult expectedCommandResult,
             Model expectedModel) {
         try {

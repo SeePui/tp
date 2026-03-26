@@ -1,11 +1,11 @@
 package seedu.address.testutil;
 
+import static seedu.address.logic.parser.CliSyntax.PREFIX_COURSE_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_GENERAL_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE_TAG;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_COURSE_TAG;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_GENERAL_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TELEGRAM_HANDLE;
 
 import java.util.Set;
@@ -40,17 +40,17 @@ public class PersonUtil {
         }
         person.getTags().stream().forEach(tag -> {
             switch (tag.getType()) {
-                case ROLE:
-                    sb.append(PREFIX_ROLE_TAG).append(tag.tagName).append(" ");
-                    break;
-                case COURSE:
-                    sb.append(PREFIX_COURSE_TAG).append(tag.tagName).append(" ");
-                    break;
-                case GENERAL:
-                    sb.append(PREFIX_GENERAL_TAG).append(tag.tagName).append(" ");
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unknown tag type: " + tag.getType());
+            case ROLE:
+                sb.append(PREFIX_ROLE_TAG).append(tag.tagName).append(" ");
+                break;
+            case COURSE:
+                sb.append(PREFIX_COURSE_TAG).append(tag.tagName).append(" ");
+                break;
+            case GENERAL:
+                sb.append(PREFIX_GENERAL_TAG).append(tag.tagName).append(" ");
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown tag type: " + tag.getType());
             }
         });
         return sb.toString();

@@ -207,7 +207,6 @@ public class EditCommandTest {
 
     @Test
     public void undo_afterExecute_restoresOriginalPerson() {
-        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
         Model expectedOriginal = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
 
         Person alice = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
@@ -228,7 +227,6 @@ public class EditCommandTest {
 
     @Test
     public void undo_beforeExecute_throwsCommandException() {
-        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON,
                 new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB).build());
         assertUndoFailure(editCommand, model, EditCommand.MESSAGE_UNDO_FAILURE);
@@ -236,7 +234,6 @@ public class EditCommandTest {
 
     @Test
     public void undo_duplicatePerson_throwsCommandException() {
-        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
         Person alice = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON,
                 new EditPersonDescriptorBuilder().withEmail("tempalice@example.com").build());

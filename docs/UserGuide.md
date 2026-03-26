@@ -28,7 +28,9 @@ CampusBridge is a **desktop app for managing contacts, optimized for use via a C
 
    * `list` : Lists all contacts.
 
-   * `add n/John Doe e/johnd@example.com p/98765432 h/johndoe123 t/friend` : Adds a contact named `John Doe` to CampusBridge.
+   * `add n/John Doe e/johnd@example.com p/98765432 h/johndoe123` : Adds a contact named `John Doe` to the address book.
+
+   * `tag 1 tg/friend` : Adds the general tag `friend` to the 1st contact shown in the current list.
 
    * `find n/John` : Finds all contacts whose names contain `John`.
 

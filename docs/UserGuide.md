@@ -89,19 +89,52 @@ When adding or editing tags, prefix the tag name with the type:
 Tag name rules:
 * Tags are **case-insensitive**. `tr/Friends`, `tr/FRIENDS` and `tr/friends` all refer to the same tag.
 
+### Email validation
+
+Emails should be of the format `local-part@domain` and adhere to the following constraints:
+
+**Local-part:**
+* Should only contain alphanumeric characters and these special characters: `+`, `_`, `.`, `-`
+* May not start or end with any special characters
+
+**Domain:**
+* Made up of one or more domain labels. If there is more than one domain label, they are separated by periods
+* Must end with a domain label at least 2 characters long
+* Each domain label must start and end with alphanumeric characters
+* Each domain label must consist of alphanumeric characters, separated only by hyphens, if any
+
+**Examples:**
+| Email | Valid? |
+|-------|--------|
+| `john.doe@example.com` | (correct domain)
+| `john+test@u.nus.edu` | (correct domain)
+| `.john@example.com` | (starts with special character) |
+| `john@example.c` | (domain label less than 2 characters) |
+
+**NUS domain check:**
+
+CampusBridge is designed for NUS students and staff. When adding or editing a contact:
+
+| Email domain | Behavior                                   |
+|--------------|--------------------------------------------|
+| `@u.nus.edu` (student) | No warning                                 |
+| `@nus.edu.sg` (staff) | No warning                                 |
+| Other domains | Warning shown (but contact is still added) |
+
+<div markdown="span" class="alert alert-warning">:exclamation: **Note:**
+Non-NUS emails are still accepted, but a warning will be displayed to alert you that the email does not belong to an NUS domain.
+</div>
+
 ### Viewing help : `help`
 
-Opens the help window with a link to this user guide, or opens the user guide directly to the section for a specific command.
-
-![help message](images/helpMessage.png)
+Opens the user guide in the browser, and optionally directly to the section for a specific command.
 
 Format: `help [COMMAND]`
 
-Alternatively, press `F1` to open the help window.
+Alternatively, press `F1` to open the user guide.
 
 * `COMMAND` is optional. When provided, it must be a valid command name (e.g. `add`, `edit`).
-* If `COMMAND` is omitted, the help window is shown.
-* If `COMMAND` is provided, your browser opens the user guide at the section for that command.
+* If `COMMAND` is provided, the user guide is opened at the section for that command.
 
 Examples:
 * `help` — opens the help window.
@@ -261,6 +294,10 @@ Format: `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [h/TELEGRAM_HANDLE]`
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
 * The updated email and Telegram handle, if provided, must remain unique.
+
+<div markdown="span" class="alert alert-info">:information_source: **Note:**
+If the updated email is not an NUS domain (`@u.nus.edu` or `@nus.edu.sg`), a warning message will be shown. The contact will still be updated.
+</div>
 
 Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.

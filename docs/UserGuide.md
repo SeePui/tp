@@ -131,11 +131,10 @@ Opens the user guide in the browser, and optionally directly to the section for 
 
 Format: `help [COMMAND]`
 
-Alternatively, press `F1` to open the help window.
+Alternatively, press `F1` to open the user guide.
 
 * `COMMAND` is optional. When provided, it must be a valid command name (e.g. `add`, `edit`).
-* If `COMMAND` is omitted, the help window is shown.
-* If `COMMAND` is provided, your browser opens the user guide at the section for that command.
+* If `COMMAND` is provided, the user guide is opened at the section for that command.
 
 Examples:
 * `help` — opens the help window.

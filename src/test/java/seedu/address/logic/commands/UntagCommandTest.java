@@ -13,6 +13,7 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -286,6 +287,50 @@ public class UntagCommandTest {
     @Test
     public void undo_beforeExecute_throwsCommandException() {
         UntagCommand untagCommand = new UntagCommand(INDEX_FIRST_PERSON, Set.of(new Tag("friends", TagType.GENERAL)));
+        assertUndoFailure(untagCommand, model, UntagCommand.MESSAGE_UNDO_FAILURE);
+    }
+
+    @Test
+    public void undo_afterExecuteOriginalPersonNull_throwsCommandException() throws Exception {
+        Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Tag tagToRemove = personToEdit.getTags().iterator().next();
+        Set<Tag> tagsToRemove = Set.of(tagToRemove);
+        UntagCommand untagCommand = new UntagCommand(INDEX_FIRST_PERSON, tagsToRemove);
+
+        Model expectedAfterExecute = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Set<Tag> expectedTags = new HashSet<>(personToEdit.getTags());
+        expectedTags.remove(tagToRemove);
+        Person editedPerson = personToEdit.withTags(expectedTags);
+        expectedAfterExecute.setPerson(personToEdit, editedPerson);
+        assertCommandSuccess(untagCommand, model,
+                String.format(UntagCommand.MESSAGE_SUCCESS, tagsToRemove), expectedAfterExecute);
+
+        Field originalPersonField = UntagCommand.class.getDeclaredField("originalPerson");
+        originalPersonField.setAccessible(true);
+        originalPersonField.set(untagCommand, null);
+
+        assertUndoFailure(untagCommand, model, UntagCommand.MESSAGE_UNDO_FAILURE);
+    }
+
+    @Test
+    public void undo_afterExecuteUpdatedPersonNull_throwsCommandException() throws Exception {
+        Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Tag tagToRemove = personToEdit.getTags().iterator().next();
+        Set<Tag> tagsToRemove = Set.of(tagToRemove);
+        UntagCommand untagCommand = new UntagCommand(INDEX_FIRST_PERSON, tagsToRemove);
+
+        Model expectedAfterExecute = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Set<Tag> expectedTags = new HashSet<>(personToEdit.getTags());
+        expectedTags.remove(tagToRemove);
+        Person editedPerson = personToEdit.withTags(expectedTags);
+        expectedAfterExecute.setPerson(personToEdit, editedPerson);
+        assertCommandSuccess(untagCommand, model,
+                String.format(UntagCommand.MESSAGE_SUCCESS, tagsToRemove), expectedAfterExecute);
+
+        Field updatedPersonField = UntagCommand.class.getDeclaredField("updatedPerson");
+        updatedPersonField.setAccessible(true);
+        updatedPersonField.set(untagCommand, null);
+
         assertUndoFailure(untagCommand, model, UntagCommand.MESSAGE_UNDO_FAILURE);
     }
 

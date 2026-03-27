@@ -13,6 +13,7 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -282,6 +283,48 @@ public class TagCommandTest {
     @Test
     public void undo_beforeExecute_throwsCommandException() {
         TagCommand tagCommand = new TagCommand(INDEX_FIRST_PERSON, Set.of(new Tag("mentor", TagType.ROLE)));
+        assertUndoFailure(tagCommand, model, TagCommand.MESSAGE_UNDO_FAILURE);
+    }
+
+    @Test
+    public void undo_afterExecuteOriginalPersonNull_throwsCommandException() throws Exception {
+        Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Set<Tag> tagsToAdd = Set.of(new Tag("mentor", TagType.ROLE));
+        TagCommand tagCommand = new TagCommand(INDEX_FIRST_PERSON, tagsToAdd);
+
+        Model expectedAfterExecute = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Set<Tag> expectedTags = new HashSet<>(personToEdit.getTags());
+        expectedTags.addAll(tagsToAdd);
+        Person editedPerson = personToEdit.withTags(expectedTags);
+        expectedAfterExecute.setPerson(personToEdit, editedPerson);
+        assertCommandSuccess(tagCommand, model, String.format(TagCommand.MESSAGE_SUCCESS, tagsToAdd),
+                expectedAfterExecute);
+
+        Field originalPersonField = TagCommand.class.getDeclaredField("originalPerson");
+        originalPersonField.setAccessible(true);
+        originalPersonField.set(tagCommand, null);
+
+        assertUndoFailure(tagCommand, model, TagCommand.MESSAGE_UNDO_FAILURE);
+    }
+
+    @Test
+    public void undo_afterExecuteUpdatedPersonNull_throwsCommandException() throws Exception {
+        Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Set<Tag> tagsToAdd = Set.of(new Tag("mentor", TagType.ROLE));
+        TagCommand tagCommand = new TagCommand(INDEX_FIRST_PERSON, tagsToAdd);
+
+        Model expectedAfterExecute = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Set<Tag> expectedTags = new HashSet<>(personToEdit.getTags());
+        expectedTags.addAll(tagsToAdd);
+        Person editedPerson = personToEdit.withTags(expectedTags);
+        expectedAfterExecute.setPerson(personToEdit, editedPerson);
+        assertCommandSuccess(tagCommand, model, String.format(TagCommand.MESSAGE_SUCCESS, tagsToAdd),
+                expectedAfterExecute);
+
+        Field updatedPersonField = TagCommand.class.getDeclaredField("updatedPerson");
+        updatedPersonField.setAccessible(true);
+        updatedPersonField.set(tagCommand, null);
+
         assertUndoFailure(tagCommand, model, TagCommand.MESSAGE_UNDO_FAILURE);
     }
 

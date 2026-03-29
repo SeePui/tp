@@ -38,7 +38,8 @@ public class HelpCommand extends Command {
             Map.entry("exit", "#exiting-the-program--exit"),
             Map.entry("tag", "#tagging-a-person--tag"),
             Map.entry("untag", "#untagging-a-person--untag"),
-            Map.entry("cleartag", "#clearing-tags-from-a-person--cleartag")
+            Map.entry("cleartag", "#clearing-tags-from-a-person--cleartag"),
+            Map.entry("undo", "#undoing-the-last-action--undo")
             );
 
     /**

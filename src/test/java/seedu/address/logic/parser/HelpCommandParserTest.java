@@ -31,6 +31,7 @@ public class HelpCommandParserTest {
         assertParseSuccess(parser, "tag", new HelpCommand("tag"));
         assertParseSuccess(parser, "untag", new HelpCommand("untag"));
         assertParseSuccess(parser, "cleartag", new HelpCommand("cleartag"));
+        assertParseSuccess(parser, "undo", new HelpCommand("undo"));
     }
 
 

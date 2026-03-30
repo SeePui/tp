@@ -38,16 +38,16 @@ public class DeleteCommandParserTest {
     @Test
     public void parse_invalidIndex_throwsParseException() {
         assertParseFailure(parser, " i/a",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+                String.format(ParserUtil.MESSAGE_INVALID_INDEX));
 
         assertParseFailure(parser, " i/testtttt",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+                String.format(ParserUtil.MESSAGE_INVALID_INDEX));
     }
 
     @Test
     public void parse_invalidEmail_throwsParseException() {
         assertParseFailure(parser, " e/" + INVALID_EMAIL_DESC,
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+                String.format(Email.MESSAGE_CONSTRAINTS));
     }
 
     @Test

@@ -53,7 +53,9 @@ public class DeleteCommandTest {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
         DeleteCommand deleteCommand = new DeleteCommand(outOfBoundIndex);
 
-        assertCommandFailure(deleteCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        String expected = String.format(Messages.MESSAGE_PERSON_NOT_FOUND_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased());
+        assertCommandFailure(deleteCommand, model, expected);
     }
 
     @Test
@@ -122,16 +124,18 @@ public class DeleteCommandTest {
 
         DeleteCommand deleteCommand = new DeleteCommand(outOfBoundIndex);
 
-        assertCommandFailure(deleteCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        String expected = String.format(Messages.MESSAGE_PERSON_NOT_FOUND_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased());
+        assertCommandFailure(deleteCommand, model, expected);
     }
 
     @Test
     public void execute_invalidEmailFilteredList_throwsCommandException() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
-
         DeleteCommand deleteCommand = new DeleteCommand(new Email(VALID_EMAIL_BOB));
 
-        assertCommandFailure(deleteCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_EMAIL);
+        String expected = String.format(Messages.MESSAGE_PERSON_NOT_FOUND_DISPLAYED_EMAIL, VALID_EMAIL_BOB);
+        assertCommandFailure(deleteCommand, model, expected);
     }
 
     @Test

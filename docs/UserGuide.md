@@ -103,7 +103,7 @@ Emails should be of the format `local-part@domain` and adhere to the following c
 * Each domain label must start and end with alphanumeric characters
 * Each domain label must consist of alphanumeric characters, separated only by hyphens, if any
 
-**Examples:**  
+**Examples:**<br/>
 | Email | Valid? |
 |-------|--------|
 | `john.doe@example.com` | (correct domain)
@@ -185,9 +185,9 @@ If the updated email is not an NUS domain (`@u.nus.edu` or `@nus.edu.sg`), a war
 </div>
 
 **Examples:**
-*  `edit 1 p/91234567 e/johndoe@example.com`  
+*  `edit 1 p/91234567 e/johndoe@example.com`<br/>
 Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
-*  `edit 2 n/Betsy Crower h/betsyy`  
+*  `edit 2 n/Betsy Crower h/betsyy`<br/>
 Edits the name of the 2nd person to be `Betsy Crower` and the telegram handle to be `betsyy`.
 
 ### Deleting a person : `delete`
@@ -222,7 +222,6 @@ Only one of `i/INDEX` or `e/EMAIL` can be provided at a time.
     delete i/1
     ```
     Deletes the 1st person in the results of the `find` command.
-
 * Delete by email:
   * ```
     list
@@ -258,13 +257,13 @@ Obtain the index by using: `list` command to display all persons or `find` comma
 </div>
 
 **Examples:**
-* `tag 1 tg/friends`  
+* `tag 1 tg/friends`<br/>
 Adds the `friends` general tag to the 1st person in the displayed list.
 
-* `tag 2 tr/tutor tc/cs2103 tg/helpful`  
+* `tag 2 tr/tutor tc/cs2103 tg/helpful`<br/>
 Adds the `tutor` role tag, `cs2103` course tag and `helpful` general tag to the 2nd person in the displayed list.
 
-* `tag 3 tg/friends tg/groupmates`  
+* `tag 3 tg/friends tg/groupmates`<br/>
 Adds both `friends` and `groupmates` general tags to the 3rd person in the displayed list.
 
 ### Untagging a person : `untag`
@@ -295,13 +294,13 @@ Obtain the index by using: `list` command to display all persons or `find` comma
 </div>
 
 **Examples:**
-* `untag 1 tg/friends`  
+* `untag 1 tg/friends`<br/>
 Removes the `friends` general tag from the 1st person in the list.
 
-* `untag 2 tr/tutor tc/cs2103 tg/classmates`  
+* `untag 2 tr/tutor tc/cs2103 tg/classmates`<br/>
 Removes the `tutor` role tag, `cs2103` course tag and `classmates` general tag from the 2nd person in the list.
 
-* `untag 3 tc/cs2103 tc/cs2109`  
+* `untag 3 tc/cs2103 tc/cs2109`<br/>
 Removes both `cs2103` and `cs2109` course tags from the 3rd person in the list.
 
 ### Clearing tags from a person : `cleartag`
@@ -324,10 +323,10 @@ Obtain the index by using: `list` command to display all persons or `find` comma
 </div>
 
 **Examples:**
-* `cleartag 1 tg/`  
+* `cleartag 1 tg/`<br/>
 Clears all general tags from the 1st person in the displayed list.
 
-* `cleartag 2 tr/`  
+* `cleartag 2 tr/`<br/>
 Clears all role tags from the 2nd person in the displayed list.
 
 ### Listing all persons : `list`
@@ -358,19 +357,19 @@ Sorts the list of persons by the specified field.
 * **`none`** — resets the list to its default (insertion) order.
 
 **Examples:**
-* `sort o/name`  
+* `sort o/name`<br/>
 Sorts all persons alphabetically by name (A–Z).
 
-* `sort o/name r/`  
+* `sort o/name r/`<br/>
 Sorts all persons in reverse alphabetical order by name (Z–A).
 
-* `sort o/email`  
+* `sort o/email`<br/>
 Sorts all persons alphabetically by email address.
 
-* `sort o/phone r/`  
+* `sort o/phone r/`<br/>
 Sorts all persons in reverse lexicographic order by phone number.
 
-* `sort o/none`  
+* `sort o/none`<br/>
 Resets the list to its default order.
 
 ### Locating persons by name/email/tag : `find`
@@ -394,25 +393,25 @@ Finds persons whose names, emails, or tags match the given keywords.
   e.g. `n/Alex e/gmail` will match persons whose name contains `Alex` **and** email contains `gmail`
 
 **Examples:**
-* `find n/John`  
+* `find n/John`<br/>
 Returns all persons whose names contain `John`
 
-* `find e/gmail`  
+* `find e/gmail`<br/>
 Returns all persons whose emails contain `gmail`
 
-* `find t/friends`  
+* `find t/friends`<br/>
 Returns all persons tagged with `friends`
 
-* `find n/alex e/u.nus.edu`  
+* `find n/alex e/u.nus.edu`<br/>
 Returns persons whose name contains `alex` **and** email contains `u.nus.edu`
 
-* `find n/alex t/friends`  
+* `find n/alex t/friends`<br/>
 Returns persons whose name contains `alex` **and** are tagged with `friends`
 
-* `find n/alex e/nus t/friends`  
+* `find n/alex e/nus t/friends`<br/>
 Returns persons whose name contains `alex` **and** email contains `nus` **and** are tagged with `friends`
 
-* `find n/alex david`  
+* `find n/alex david`<br/>
 Returns persons whose name contains `alex` **or** `david`
 ![result for 'find alex david'](images/findAlexDavidResult.png)
 

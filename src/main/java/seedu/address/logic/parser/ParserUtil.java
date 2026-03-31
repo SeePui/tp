@@ -165,4 +165,35 @@ public class ParserUtil {
         }
         return args.substring(startPosition, endPosition);
     }
+
+    /**
+     * Returns a prefix from the given arguments that has an empty string as one of its values, if any.
+     *
+     * <p>This method checks the provided {@code prefixes} in order. For each prefix,
+     * it looks up all values in the given {@link ArgumentMultimap}. If any value for that prefix
+     * is empty (after trimming whitespace), that prefix is returned wrapped in an {@link Optional}.
+     * If none of the provided prefixes have empty values, an empty {@code Optional} is returned.
+     *
+     * @param argMultimap the {@link ArgumentMultimap} containing the mapping of prefixes to values
+     * @param prefixes the prefixes to check for empty values
+     * @return an {@link Optional} containing the first prefix from {@code prefixes} that has
+     *         an empty value, or {@code Optional.empty()} if none of them do
+     */
+    public static Optional<String> findEmptyPrefixValues(
+            ArgumentMultimap argMultimap,
+            Prefix... prefixes) {
+
+        for (Prefix prefix : prefixes) {
+            // Only validate if the prefix is actually present
+            if (!argMultimap.getAllValues(prefix).isEmpty()) {
+                for (String value : argMultimap.getAllValues(prefix)) {
+                    if (value.trim().isEmpty()) {
+                        return Optional.of(prefix.getPrefix());
+                    }
+                }
+            }
+        }
+
+        return Optional.empty();
+    }
 }

@@ -379,18 +379,18 @@ Finds persons whose names, emails, or tags match the given keywords.
 **Format:** `find [n/NAME [MORE_NAMES]] [e/EMAIL [MORE_EMAILS]] [t/TAG [MORE_TAGS]]`
 
 * At least one of `n/`, `e/`, or `t/` must be present.
-* The search is case-insensitive for all fields. e.g. `alex` will match `Alex`
-* The order of keywords does not matter. e.g. `Yeoh Alex` will match `Alex Yeoh`
+* The search is case-insensitive for all fields. e.g. `alex` will match `Alex`.
+* The order of keywords does not matter. e.g. `Yeoh Alex` will match `Alex Yeoh.
 
 **Matching behavior:**
 * **Name** and **email** use substring matching.
-  e.g. `Jo` will match `John` and `Alice Johnson`
+  e.g. `Jo` will match `John` and `Alice Johnson`.
 * **Tags** use exact matching.
-  e.g. `cs2103` will match tag `cs2103` but not `cs210`
+  e.g. `cs2103` will match tag `cs2103` but not `cs210`.
 * Multiple keywords within the same field are combined using **OR**.
-  e.g. `n/Alex David` will match `Alex Yeoh` or `David Li`
+  e.g. `n/Alex David` will match `Alex Yeoh` or `David Li`.
 * Different fields are combined using **AND**.
-  e.g. `n/Alex e/gmail` will match persons whose name contains `Alex` **and** email contains `gmail`
+  e.g. `n/Alex e/gmail` will match persons whose name contains `Alex` **and** email contains `gmail`.
 * Repeated same-field prefixes are allowed.
   e.g. `find n/Alex n/David` behaves the same as `find n/Alex David`.
 * Empty prefixes are not allowed.
@@ -398,25 +398,25 @@ Finds persons whose names, emails, or tags match the given keywords.
 
 **Examples:**
 * `find n/John`<br/>
-Returns all persons whose names contain `John`
+Returns all persons whose names contain `John`.
 
 * `find e/gmail`<br/>
-Returns all persons whose emails contain `gmail`
+Returns all persons whose emails contain `gmail`.
 
 * `find t/friends`<br/>
-Returns all persons tagged with `friends`
+Returns all persons tagged with `friends`.
 
 * `find n/alex e/u.nus.edu`<br/>
-Returns persons whose name contains `alex` **and** email contains `u.nus.edu`
+Returns persons whose name contains `alex` **and** email contains `u.nus.edu`.
 
 * `find n/alex t/friends`<br/>
-Returns persons whose name contains `alex` **and** are tagged with `friends`
+Returns persons whose name contains `alex` **and** are tagged with `friends`.
 
 * `find n/alex e/nus t/friends`<br/>
-Returns persons whose name contains `alex` **and** email contains `nus` **and** are tagged with `friends`
+Returns persons whose name contains `alex` **and** email contains `nus` **and** are tagged with `friends`.
 
 * `find n/alex david`<br/>
-Returns persons whose name contains `alex` **or** `david`
+Returns persons whose name contains `alex` **or** `david`.
 ![result for 'find alex david'](images/findAlexDavidResult.png)
 
 ### Undoing the last action : `undo`

@@ -381,6 +381,7 @@ Finds persons whose names, emails, or tags match the given keywords.
 * At least one of `n/`, `e/`, or `t/` must be present.
 * The search is case-insensitive for all fields. e.g. `alex` will match `Alex`.
 * The order of keywords does not matter. e.g. `Yeoh Alex` will match `Alex Yeoh.
+* Keyword matching ignores tokens that are only punctuation (e.g., `.` or `#`), but tokens containing letters with minor punctuation (e.g., `"C."` or `"Robert#"`) are still considered valid.
 
 **Matching behavior:**
 * **Name** and **email** use substring matching.

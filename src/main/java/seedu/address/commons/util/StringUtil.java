@@ -91,14 +91,14 @@ public class StringUtil {
 
         int[][] dpMatrix = new int[n + 1][m + 1];
 
-        // first row (steps to transform "" → b[0..j])
-        for (int j = 0; j <= m; j++) {
-            dpMatrix[0][j] = j;
+        // first row (steps to transform "" → b[0..col])
+        for (int col = 0; col <= m; col++) {
+            dpMatrix[0][col] = col;
         }
 
-        // first column (steps to transform "" → a[0..i])
-        for (int i = 0; i <= n; i++) {
-            dpMatrix[i][0] = i;
+        // first column (steps to transform "" → a[0..row])
+        for (int row = 0; row <= n; row++) {
+            dpMatrix[row][0] = row;
         }
 
         // Fill up the matrix using dynamic programming

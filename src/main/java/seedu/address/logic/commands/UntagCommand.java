@@ -36,7 +36,7 @@ public class UntagCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "Tags removed: %1$s";
     public static final String MESSAGE_PARTIAL_SUCCESS = "Tags removed: %1$s\nTags not found: %2$s";
-    public static final String MESSAGE_NO_TAGS_FOUND = "None of the specified tags were found";
+    public static final String MESSAGE_NO_TAGS_FOUND = "None of the specified tags were found.";
     public static final String MESSAGE_UNDO_SUCCESS = "Undo untag operation for: %1$s";
     public static final String MESSAGE_UNDO_FAILURE = "Cannot undo untag before command execution.";
 

@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.ADD_COMMAND_PREFIXES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
 
@@ -31,6 +32,7 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         }
 
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_INDEX, PREFIX_EMAIL);
         try {
             if (argMultimap.getValue(PREFIX_INDEX).isPresent()) {
                 Index index = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_INDEX).get());

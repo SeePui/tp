@@ -44,7 +44,7 @@ public class FindCommandParser implements Parser<FindCommand> {
                 PREFIX_NAME, PREFIX_EMAIL, PREFIX_TAG);
 
         // Check for any prefixes with no value eg. find n/john e/ t/
-        Optional<String> emptyPrefix = findEmptyPrefixValues(argumentMultimap,
+        Optional<String> emptyPrefix = ParserUtil.findEmptyPrefixValues(argumentMultimap,
                 PREFIX_NAME, PREFIX_EMAIL, PREFIX_TAG);
         if (emptyPrefix.isPresent()) {
             throw new ParseException(String.format(MESSAGE_INVALID_PREFIX_WITH_NO_INPUT, emptyPrefix.get()));
@@ -86,23 +86,5 @@ public class FindCommandParser implements Parser<FindCommand> {
                 .flatMap(keyword -> Arrays.stream(keyword.split("\\s+")))
                 .filter(keyword -> !keyword.isBlank())
                 .toList();
-    }
-
-    private static Optional<String> findEmptyPrefixValues(
-            ArgumentMultimap argMultimap,
-            Prefix... prefixes) {
-
-        for (Prefix prefix : prefixes) {
-            // Only validate if the prefix is actually present
-            if (!argMultimap.getAllValues(prefix).isEmpty()) {
-                for (String value : argMultimap.getAllValues(prefix)) {
-                    if (value.trim().isEmpty()) {
-                        return Optional.of(prefix.getPrefix());
-                    }
-                }
-            }
-        }
-
-        return Optional.empty();
     }
 }

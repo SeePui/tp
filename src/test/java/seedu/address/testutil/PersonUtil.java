@@ -8,12 +8,9 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ROLE_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TELEGRAM_HANDLE;
 
-import java.util.Set;
-
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.model.person.Person;
-import seedu.address.model.tag.Tag;
 
 /**
  * A utility class for Person.

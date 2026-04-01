@@ -6,7 +6,7 @@ box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
 participant "u:UndoCommand" as UndoCommand LOGIC_COLOR
-participant ":UndoHistory" as UndoHistory LOGIC_COLOR
+collections "undoHistory : Deque<Command>" as UndoHistory
 participant "c:Command" as PrevCommand LOGIC_COLOR
 end box
 
@@ -30,15 +30,11 @@ deactivate UndoCommand
 AddressBookParser --> LogicManager : u
 deactivate AddressBookParser
 
-LogicManager -> UndoCommand : instanceof check
-
 LogicManager -> LogicManager : executeUndo()
 activate LogicManager
 
 LogicManager -> UndoHistory : peek()
-activate UndoHistory
 UndoHistory --> LogicManager : c
-deactivate UndoHistory
 
 LogicManager -> PrevCommand : undo(Model)
 activate PrevCommand
@@ -52,9 +48,7 @@ PrevCommand --> LogicManager : CommandResult
 deactivate PrevCommand
 
 LogicManager -> UndoHistory : pop()
-activate UndoHistory
 UndoHistory --> LogicManager
-deactivate UndoHistory
 
 LogicManager --> LogicManager : result
 deactivate LogicManager

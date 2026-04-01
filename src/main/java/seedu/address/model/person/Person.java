@@ -115,10 +115,6 @@ public class Person {
      * Returns true if both persons have the same non-null telegram handle.
      */
     public boolean hasSameTelegramHandle(Person otherPerson) {
-        if (otherPerson == this) {
-            return true;
-        }
-
         if (otherPerson == null) {
             return false;
         }

@@ -33,8 +33,12 @@ public class AddCommand extends Command {
             + PREFIX_TELEGRAM_HANDLE + "johndoe123";
 
     public static final String MESSAGE_SUCCESS = "New person added: %1$s";
-    public static final String MESSAGE_DUPLICATE_PERSON =
-            "A person with this email or Telegram handle already exists in the address book";
+    public static final String MESSAGE_DUPLICATE_EMAIL =
+            "A person with this email already exists in the address book";
+    public static final String MESSAGE_DUPLICATE_TELEGRAM_HANDLE =
+            "A person with this Telegram handle already exists in the address book";
+    public static final String MESSAGE_DUPLICATE_EMAIL_AND_TELEGRAM_HANDLE =
+            "A person with this email and Telegram handle already exists in the address book";
     public static final String MESSAGE_UNDO_SUCCESS = "Undo add person: %1$s";
     public static final String MESSAGE_UNDO_FAILURE = "Cannot undo add because the person no longer exists.";
     private final Person toAdd;
@@ -51,8 +55,17 @@ public class AddCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        if (model.hasPerson(toAdd)) {
-            throw new CommandException(MESSAGE_DUPLICATE_PERSON);
+        boolean hasDuplicateEmail = model.hasEmailConflict(toAdd);
+        boolean hasDuplicateTelegramHandle = model.hasTelegramHandleConflict(toAdd);
+
+        if (hasDuplicateEmail && hasDuplicateTelegramHandle) {
+            throw new CommandException(MESSAGE_DUPLICATE_EMAIL_AND_TELEGRAM_HANDLE);
+        }
+        if (hasDuplicateEmail) {
+            throw new CommandException(MESSAGE_DUPLICATE_EMAIL);
+        }
+        if (hasDuplicateTelegramHandle) {
+            throw new CommandException(MESSAGE_DUPLICATE_TELEGRAM_HANDLE);
         }
 
         model.addPerson(toAdd);

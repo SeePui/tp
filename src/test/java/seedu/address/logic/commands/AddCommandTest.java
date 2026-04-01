@@ -59,7 +59,8 @@ public class AddCommandTest {
         AddCommand addCommand = new AddCommand(validPerson);
         ModelStub modelStub = new ModelStubWithPerson(validPerson);
 
-        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_EMAIL,
+                () -> addCommand.execute(modelStub));
     }
 
     @Test
@@ -72,7 +73,8 @@ public class AddCommandTest {
         AddCommand addCommand = new AddCommand(personWithSameTelegramHandle);
         ModelStub modelStub = new ModelStubWithPerson(existingPerson);
 
-        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_TELEGRAM_HANDLE,
+                () -> addCommand.execute(modelStub));
     }
 
     @Test
@@ -86,7 +88,20 @@ public class AddCommandTest {
         AddCommand addCommand = new AddCommand(personWithSameTelegramHandle);
         ModelStub modelStub = new ModelStubWithPerson(existingPerson);
 
-        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_TELEGRAM_HANDLE,
+                () -> addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_duplicateEmailAndTelegramHandle_throwsCommandException() {
+        Person existingPerson = new PersonBuilder().withTelegramHandle("alice123").build();
+        Person duplicatePerson = new PersonBuilder(existingPerson).build();
+
+        AddCommand addCommand = new AddCommand(duplicatePerson);
+        ModelStub modelStub = new ModelStubWithPerson(existingPerson);
+
+        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_EMAIL_AND_TELEGRAM_HANDLE,
+                () -> addCommand.execute(modelStub));
     }
 
     @Test
@@ -226,6 +241,16 @@ public class AddCommandTest {
         }
 
         @Override
+        public boolean hasEmailConflict(Person person) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean hasTelegramHandleConflict(Person person) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void deletePerson(Person target) {
             throw new AssertionError("This method should not be called.");
         }
@@ -268,6 +293,18 @@ public class AddCommandTest {
             requireNonNull(person);
             return this.person.isSamePerson(person);
         }
+
+        @Override
+        public boolean hasEmailConflict(Person person) {
+            requireNonNull(person);
+            return this.person.hasSameEmail(person);
+        }
+
+        @Override
+        public boolean hasTelegramHandleConflict(Person person) {
+            requireNonNull(person);
+            return this.person.hasSameTelegramHandle(person);
+        }
     }
 
     /**
@@ -280,6 +317,18 @@ public class AddCommandTest {
         public boolean hasPerson(Person person) {
             requireNonNull(person);
             return personsAdded.stream().anyMatch(person::isSamePerson);
+        }
+
+        @Override
+        public boolean hasEmailConflict(Person person) {
+            requireNonNull(person);
+            return personsAdded.stream().anyMatch(existingPerson -> existingPerson.hasSameEmail(person));
+        }
+
+        @Override
+        public boolean hasTelegramHandleConflict(Person person) {
+            requireNonNull(person);
+            return personsAdded.stream().anyMatch(existingPerson -> existingPerson.hasSameTelegramHandle(person));
         }
 
         @Override

@@ -98,6 +98,18 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public boolean hasEmailConflict(Person person) {
+        requireNonNull(person);
+        return addressBook.hasEmailConflict(person);
+    }
+
+    @Override
+    public boolean hasTelegramHandleConflict(Person person) {
+        requireNonNull(person);
+        return addressBook.hasTelegramHandleConflict(person);
+    }
+
+    @Override
     public void deletePerson(Person target) {
         addressBook.removePerson(target);
     }

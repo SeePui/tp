@@ -341,6 +341,8 @@ Shows a list of all persons in the address book.
 
 **Format:** `list`
 
+* Does not accept any additional arguments. Extra text after `list` will result in an error.
+
 Alternatively, press `F2` to list all contacts.
 
 ### Sorting persons : `sort`
@@ -508,11 +510,15 @@ Clears all entries from the address book.
 
 **Format:** `clear`
 
+* Does not accept any additional arguments. Extra text after `clear` will result in an error.
+
 ### Exiting the program : `exit`
 
 Exits the program.
 
 **Format:** `exit`
+
+* Does not accept any additional arguments. Extra text after `exit` will result in an error.
 
 Alternatively, press `F3` to exit the application.
 

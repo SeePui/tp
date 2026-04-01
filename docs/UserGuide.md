@@ -86,8 +86,12 @@ CampusBridge supports three tag types, each displayed in a distinct colour:
 * `tc/COURSE_TAG` — creates a Course tag
 * `tg/GENERAL_TAG` — creates a General tag
 
-**Tag name rules:**
-* Tags are **case-insensitive**. `tr/Friends`, `tr/FRIENDS` and `tr/friends` all refer to the same tag.
+**Tag constraints:**
+* Tags are **case-insensitive** — `tr/Friends`, `tr/FRIENDS` and `tr/friends` all refer to the same tag.
+* Tag names must be **alphanumeric**.
+  * Only letters A-Z, a-z, and number 0-9 are allowed.
+  * Spaces and special characters (e.g `@`, `#`, `-`, `!`, `_`) are not allowed.
+* Each tag name must be unique within its type — you cannot create two Role tags with the same name, but a Role tag and a General tag can share the same name.
 
 ### Email validation
 

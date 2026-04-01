@@ -671,56 +671,6 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `add n/John Doe e/johndoe@example.com tg/friend`<br>
        Expected: No person is added. Error details shown in the status message indicating unexpected extra input.
 
-### Sorting contacts
-
-1. Sorting by a single field
-
-   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
-
-   1. Test case: `sort o/name`<br>
-      Expected: Contacts sorted alphabetically by name (ascending). Success message shown.
-
-   1. Test case: `sort o/email`<br>
-      Expected: Contacts sorted by email address (ascending). Success message shown.
-
-   1. Test case: `sort o/phone`<br>
-      Expected: Contacts sorted by phone number (ascending). Contacts without a phone number appear last. Success message shown.
-
-1. Sorting in descending order
-
-   1. Test case: `sort o/name r/`<br>
-      Expected: Contacts sorted alphabetically by name (descending). Success message shown.
-
-   1. Test case: `sort o/phone r/`<br>
-      Expected: Contacts sorted by phone number (descending). Contacts without a phone number appear last.
-
-1. Resetting sort order
-
-   1. Prerequisites: Apply a sort, e.g. `sort o/name r/`.
-
-   1. Test case: `sort o/none`<br>
-      Expected: Contacts returned to their original insertion order. Reset message shown.
-
-1. Invalid sort commands (each tested individually)
-
-   1. Test case: `sort` (missing `o/` prefix)<br>
-      Expected: Error message with command usage shown.
-
-   1. Test case: `sort o/` (empty order value)<br>
-      Expected: Error message with command usage shown.
-
-   1. Test case: `sort o/address` (invalid order value)<br>
-      Expected: Error message listing valid order values: `email`, `name`, `phone`, `none`.
-
-   1. Test case: `sort o/none r/` (reverse flag combined with `none`)<br>
-      Expected: Error message indicating `r/` is incompatible with `none`.
-
-   1. Test case: `sort o/name r/yes` (reverse flag followed by a value)<br>
-      Expected: Error message indicating the `r/` flag must have no value.
-
-   1. Test case: `sort o/name o/email` (duplicate `o/` prefix)<br>
-      Expected: Error message indicating duplicate prefixes are not allowed.
-
 ### Navigating command history
 
 1. Cycling through past commands

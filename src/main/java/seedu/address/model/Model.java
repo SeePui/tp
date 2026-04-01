@@ -64,9 +64,19 @@ public interface Model {
     boolean hasEmailConflict(Person person);
 
     /**
+     * Returns true if another person, excluding {@code target}, has the same email as {@code person}.
+     */
+    boolean hasEmailConflictExcluding(Person target, Person person);
+
+    /**
      * Returns true if a person with the same telegram handle as {@code person} exists in the address book.
      */
     boolean hasTelegramHandleConflict(Person person);
+
+    /**
+     * Returns true if another person, excluding {@code target}, has the same telegram handle as {@code person}.
+     */
+    boolean hasTelegramHandleConflictExcluding(Person target, Person person);
 
     /**
      * Deletes the given person.

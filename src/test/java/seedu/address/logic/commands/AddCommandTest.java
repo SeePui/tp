@@ -251,6 +251,16 @@ public class AddCommandTest {
         }
 
         @Override
+        public boolean hasEmailConflictExcluding(Person target, Person person) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean hasTelegramHandleConflictExcluding(Person target, Person person) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void deletePerson(Person target) {
             throw new AssertionError("This method should not be called.");
         }

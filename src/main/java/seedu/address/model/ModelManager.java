@@ -104,9 +104,21 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public boolean hasEmailConflictExcluding(Person target, Person person) {
+        requireAllNonNull(target, person);
+        return addressBook.hasEmailConflictExcluding(target, person);
+    }
+
+    @Override
     public boolean hasTelegramHandleConflict(Person person) {
         requireNonNull(person);
         return addressBook.hasTelegramHandleConflict(person);
+    }
+
+    @Override
+    public boolean hasTelegramHandleConflictExcluding(Person target, Person person) {
+        requireAllNonNull(target, person);
+        return addressBook.hasTelegramHandleConflictExcluding(target, person);
     }
 
     @Override

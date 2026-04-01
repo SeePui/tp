@@ -606,6 +606,58 @@ testers are expected to do more *exploratory* testing.
    1. Test case: `sort o/name o/email` (duplicate `o/` prefix)<br>
       Expected: Error message indicating duplicate prefixes are not allowed.
 
+### Locating persons by name/email/tag
+1. Searching by single field
+
+   1. Prerequisites: List all persons using the `list` command. At least one person should be in the list.
+
+   1. Test case: `find n/Alex`<br>
+      Expected: Contacts whose names match `Alex` (case-insensitive; supports substring and fuzzy matching) are shown. 
+
+   1. Test case: `find e/nus.edu`<br>
+      Expected: Contacts with email addresses containing `nus.edu` (case-insensitive substring) are shown.
+
+   1. Test case: `find t/friends`<br>
+      Expected: Contacts with the tag `friends` (case-insensitive exact match) are shown.
+
+1. Searching by multiple keywords/fields
+
+   1. Test case: `find n/Alex David`<br>
+      Expected: Contacts whose names match `Alex` **OR** `David` are shown (i.e. matches at least one keyword).
+
+   1. Test case: `find n/Alex e/nus.edu`<br>
+      Expected: Contacts whose names match `Alex` **AND** whose email contains `nus.edu` are shown.
+
+   1. Test case: `find n/Alex e/nus.edu t/friends`<br>
+      Expected: Contacts matching all three criteria (Name AND Email AND Tag) are shown.
+
+1. Fuzzy search for names (slight typo tolerance)
+
+   1. Prerequisites: A contact with name `Alice Tan` exists.
+
+   1. Test case: `find n/alce`<br>
+      Expected: `Alice Tan` is shown in the results.
+
+   1. Test case: `find n/alicia`<br>
+      Expected: `Alice Tan` is shown in the results.
+
+   1. Test case: `find n/Tan`<br>
+      Expected: `Alice Tan` is shown in the results.
+
+1. Invalid search commands
+
+   1. Test case: `find` (no parameters)<br>
+      Expected: Error message indicating invalid command format and showing usage.
+
+   1. Test case: `find n/`<br>
+      Expected: Error message indicating empty value provided for prefix `n/`.
+
+   1. Test case: `find n/!@#`<br>
+      Expected: Error message indicating that the keyword `!@#` contains only special characters and must contain at least one alphanumeric character.
+
+   1. Test case: `find p/91234567` (unsupported prefix for find)<br>
+      Expected: Error message indicating unexpected extra input `p/91234567`.
+
 ### Navigating command history
 
 1. Cycling through past commands
@@ -635,6 +687,11 @@ testers are expected to do more *exploratory* testing.
 
    1. Press **Up** once.<br>
       Expected: The invalid command `badcommand` is shown (all submitted input, valid or not, is recorded).
+
+   1. Press **Down** once.<br>
+      Expected: The command box clears (returns to empty input).
+
+1. _{ more test cases …​ }_
 
 ### Deleting a person
 

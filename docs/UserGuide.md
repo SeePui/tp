@@ -44,7 +44,7 @@ CampusBridge is a **desktop app for managing contacts, optimized for use via a C
 
 --------------------------------------------------------------------------------------------------------------------
 
-## Data Entry Specifications
+## Data entry specifications
 
 ### Tag types
 

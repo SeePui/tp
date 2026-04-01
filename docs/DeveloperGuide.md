@@ -297,7 +297,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `*`      | frequent user              | set custom reminders for prof/TA office hours                            | stay on top of opportunities for academic help                             |
 | `*`      | user desiring full control | customize the GUI theme                                                  | personalize my experience                                                  |
 
-See the full list on [GitHub](https://github.com/AY2526S2-CS2103-F11-2/tp/issues?q=is%3Aissue%20state%3Aopen%20label%3Atype.Story)
+See the full list on [GitHub](https://github.com/AY2526S2-CS2103-F11-2/tp/issues?q=is%3Aissue%20label%3Atype.Story)
 
 ### Use cases
 

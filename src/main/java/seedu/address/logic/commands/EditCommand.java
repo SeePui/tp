@@ -139,7 +139,7 @@ public class EditCommand extends Command {
         TelegramHandle telegramHandle = editPersonDescriptor.getTelegramHandle()
                 .orElse(personToEdit.getTelegramHandle());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, telegramHandle);
+        return new Person(updatedName, updatedPhone, updatedEmail, telegramHandle, personToEdit.getTags());
     }
 
     @Override

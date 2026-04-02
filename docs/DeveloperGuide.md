@@ -1169,6 +1169,73 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `find p/91234567` (unsupported prefix for find)<br>
        Expected: Error message indicating unexpected extra input `p/91234567`.
 
+### Undoing the last action
+
+1. Undoing the most recent undoable command
+
+    1. Prerequisites: List all persons using the `list` command. At least one person exists in the list.
+
+    1. Test case: `add n/John Doe e/johndoe@example.com` followed by `undo`<br>
+       Expected: The previously added contact is removed from the list. Status message indicates that the last add action has been undone.
+
+    1. Test case: `delete i/1` followed by `undo`<br>
+       Expected: The deleted contact is restored to the list. Status message indicates that the last delete action has been undone.
+
+---
+
+2. Undoing multiple commands consecutively
+
+    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
+
+    1. Test case: Execute `add n/A e/a@example.com`, then `add n/B e/b@example.com`, then `undo`, then `undo`<br>
+       Expected: Both added contacts are removed one by one in reverse order. Status message reflects each undo operation.
+
+---
+
+3. Undo when no undoable commands are available
+
+    1. Prerequisites: Start the application fresh, or ensure all previous undoable commands have already been undone.
+
+    1. Test case: `undo`<br>
+       Expected: No changes to the contact list. Error details shown in the status message indicating that there are no actions to undo.
+
+---
+
+4. Undo after non-undoable commands
+
+    1. Prerequisites: List all persons using the `list` command.
+
+    1. Test case: `add n/John Doe e/johndoe@example.com`, then `list`, then `undo`<br>
+       Expected: The previously added contact is removed. The `list` command does not affect undo history.
+
+    1. Test case: `help`, then `undo`<br>
+       Expected: No changes to the contact list. Error details shown in the status message if there are no undoable commands.
+
+---
+
+5. Undo after a mix of commands
+
+    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
+
+    1. Test case: `add n/A e/a@example.com`, `list`, `delete i/1`, then `undo`<br>
+       Expected: The deleted contact is restored. The `list` command is ignored by undo.
+
+---
+
+6. Invalid undo command
+
+    1. Test case: `undo extra`<br>
+       Expected: No changes to the contact list. Error details shown in the status message indicating that the command does not accept parameters.
+
+---
+
+7. Persistence after undo
+
+    1. Prerequisites: List all persons using the `list` command.
+
+    1. Test case: `add n/John Doe e/johndoe@example.com`, then `undo`, then restart the application<br>
+       Expected: The contact list reflects the undone state (i.e., the added contact does not appear).
+
 ### Navigating command history
 
 1. Cycling through past commands

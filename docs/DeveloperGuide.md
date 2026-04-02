@@ -76,7 +76,7 @@ The **API** of this component is specified in [`Ui.java`](https://github.com/se-
 
 The UI consists of a `MainWindow` that is made up of parts e.g.`CommandBox`, `ResultDisplay`, `PersonListPanel`, `StatusBarFooter` etc. All these, including the `MainWindow`, inherit from the abstract `UiPart` class which captures the commonalities between classes that represent parts of the visible GUI.
 
-The `UI` component uses the JavaFx UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the [`MainWindow`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/ui/MainWindow.java) is specified in [`MainWindow.fxml`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/resources/view/MainWindow.fxml)
+The `UI` component uses the JavaFX UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the [`MainWindow`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/ui/MainWindow.java) is specified in [`MainWindow.fxml`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/resources/view/MainWindow.fxml)
 
 The `UI` component,
 
@@ -220,9 +220,11 @@ The parser enforces the following rules:
 
 After tokenization, `AddCommandParser` uses `ParserUtil` to validate and convert each supplied value into the corresponding model type. It then constructs a `Person` object and returns an `AddCommand`.
 
-When `AddCommand` executes, it first checks whether the person already exists in the address book using `model.hasPerson(toAdd)`. If a duplicate is detected, the command fails.
+The sequence diagram below illustrates the interactions within the `Logic` component for a typical successful `add` command.
 
-If the person is unique, the command adds the person to the model and returns a success message. If the added person's email is not an NUS-domain email, the command still succeeds but appends a warning message.
+![Interactions Inside the Logic Component for the `add n/John e/john@gmail.com` Command](images/AddSequenceDiagram.png)
+
+When `AddCommand` executes, it first checks for duplicate conflicts using `model.getDuplicateConflict(toAdd)`. If a duplicate email, duplicate Telegram handle, or both are detected, the command fails. Otherwise, the person is added to the model and a `CommandResult` is returned. If the added person's email is not an NUS-domain email, the success message also includes a warning.
 
 `AddCommand` is undoable. Undoing an `add` removes the previously added person, unless that person no longer exists in the model.
 
@@ -700,10 +702,16 @@ testers are expected to do more *exploratory* testing.
     1. Prerequisites: Add a contact using `add n/Test Person e/testperson@example.com h/test_person`.
 
     1. Test case: `add n/Another Person e/testperson@example.com`<br>
-       Expected: No person is added. Error details shown in the status message indicating that the contact already exists.
+       Expected: No person is added. Error details shown in the status message indicating that a person with this email already exists.
 
     1. Test case: `add n/Another Person e/anotherperson@example.com h/test_person`<br>
-       Expected: No person is added. Error details shown in the status message indicating that the contact already exists.
+       Expected: No person is added. Error details shown in the status message indicating that a person with this Telegram handle already exists.
+
+    1. Test case: `add n/Case Person e/caseperson@example.com h/TEST_PERSON`<br>
+       Expected: No person is added. Error details shown in the status message indicating that a person with this Telegram handle already exists.
+
+    1. Test case: `add n/Another Person e/testperson@example.com h/test_person`<br>
+       Expected: No person is added. Error details shown in the status message indicating that a person with this email and Telegram handle already exists.
 
 5. Invalid add commands
 

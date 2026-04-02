@@ -38,7 +38,7 @@ Given below is a quick overview of main components and how they interact with ea
 
 **Main components of the architecture**
 
-**`Main`** (consisting of classes [`Main`]https://github.com/AY2526S2-CS2103-F11-2/tp/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/AY2526S2-CS2103-F11-2/tp/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
+**`Main`** (consisting of classes [`Main`](https://github.com/AY2526S2-CS2103-F11-2/tp/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/AY2526S2-CS2103-F11-2/tp/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
 * At app launch, it initializes the other components in the correct sequence, and connects them up with each other.
 * At shut down, it shuts down the other components and invokes cleanup methods where necessary.
 
@@ -117,7 +117,7 @@ How the parsing works:
 * All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
 
 ### Model component
-**API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
+**API** : [`Model.java`](https://github.com/AY2526S2-CS2103-F11-2/tp/blob/master/src/main/java/seedu/address/model/Model.java)
 
 <img src="images/ModelClassDiagram.png" width="450" />
 
@@ -307,7 +307,7 @@ It does so by providing a centralized, easy-to-use system to save, search, and m
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-#### Current version:
+#### Current version
 
 | Priority | As a …​                    | I can …​                                                                | So that I can…​                                                                   |
 |----------|----------------------------|-------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
@@ -333,7 +333,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *`    | regular user               | navigate command history                                                | execute or modify past commands without retyping them                             |
 | `* *`    | user                       | export contact data to be in a human-readable format like json          | can edit it easily                                                                |
 
-#### Near-future version:
+#### Near-future version
 
 | Priority | As a …​                          | I can …​                                                           | So that I can…​                                                                 |
 |----------|----------------------------------|--------------------------------------------------------------------|---------------------------------------------------------------------------------|
@@ -361,7 +361,26 @@ See the full list on [GitHub](https://github.com/AY2526S2-CS2103-F11-2/tp/issues
 
 (For all use cases below, the **System** is the `CampusBridge` and the **Actor** is the `user`, unless specified otherwise)
 
-#### Use Case: UC01 - Add a contact
+#### Use Case: UC01 - Getting Help
+**Preconditions: Application is running**
+
+**MSS:**
+1. User requests for help.
+2. CampusBridge displays the relevant section of the user guide.
+
+**Extension:**
+
+* 1a. User provides an unrecognised command name. 
+  * 1a1. CampusBridge shows an error listing all valid commands.
+  Use case ends.
+
+* 1b. User provides more than one word.
+  * 1b1. CampusBridge shows an invalid command format error.
+  Use case ends.
+
+Use case ends.
+
+#### Use Case: UC02 - Add a contact
 
 **Preconditions: Application is running**
 
@@ -389,7 +408,7 @@ Use case ends.
   Use case ends.
 
 * 4a. Contact cannot be added.
-    * 4a1. CampusBridge shows an error message indicating the contact could not be added.
+  * 4a1. CampusBridge shows an error message indicating the contact could not be added.
 
   Use case ends.
 
@@ -399,7 +418,7 @@ Use case ends.
   Use case ends.
 
 
-#### Use Case: UC02 - Edit a contact
+#### Use Case: UC03 - Edit a contact
 
 **Preconditions: Application is running and the user has added a contact.**
 
@@ -420,15 +439,15 @@ Use case ends.
   Use case ends.
 
 * 4b. Input does not follow the specified format.
-    * 4b1. CampusBridge shows an error message indicating the invalid format.
-    * 4b2. CampusBridge requests the user to re-enter input.
-    * 4b3. User enters a new input.
+  * 4b1. CampusBridge shows an error message indicating the invalid format.
+  * 4b2. CampusBridge requests the user to re-enter input.
+  * 4b3. User enters a new input.
 
   Steps 4b1 - 4b3 are repeated until input is valid.
   Use case resumes at step 5.
 
 * 5a. Contact cannot be updated.
-    * 5a1. CampusBridge shows an error message indicating the contact could not be updated.
+  * 5a1. CampusBridge shows an error message indicating the contact could not be updated.
 
   Use case ends.
 
@@ -438,7 +457,7 @@ Use case ends.
   Use case ends.
 
 
-#### Use Case: UC03 - Delete a contact
+#### Use Case: UC04 - Delete a contact
 
 **Preconditions: Application is running and the user has added a contact.**
 
@@ -453,56 +472,129 @@ Use case ends.
 
 **Extensions:**
 * 3a. Target contact identifier does not exist.
-    * 3a1. CampusBridge shows an error message indicating the contact does not exist.
+  * 3a1. CampusBridge shows an error message indicating the contact does not exist.
 
   Use case ends.
 
 * 3b. Input does not follow the specified format.
-    * 3b1. CampusBridge shows an error message indicating the invalid format.
-    * 3b2. CampusBridge requests the user to re-enter input.
-    * 3b3. User enters a new input.
+  * 3b1. CampusBridge shows an error message indicating the invalid format.
+  * 3b2. CampusBridge requests the user to re-enter input.
+  * 3b3. User enters a new input.
 
   Steps 3b1 - 3b3 are repeated until input is valid.
   Use case resumes at step 4.
 
 * 4a. Contact cannot be deleted.
-    * 4a1. CampusBridge shows an error message indicating the contact could not be deleted.
+  * 4a1. CampusBridge shows an error message indicating the contact could not be deleted.
 
   Use case ends.
 
 * 4b. Storage file cannot be written or accessed.
-    * 4b1. CampusBridge shows an error message indicating the contact list could not be saved.
+  * 4b1. CampusBridge shows an error message indicating the contact list could not be saved.
 
   Use case ends.
 
+#### Use Case: UC05 - Add a tag to an existing contact
 
-#### Use Case: UC04 - View all contacts
+**Preconditions: Application is running and the user has added a contact.**
 
+**MSS:**
+1. User requests to tag a contact in the list.
+2. User provides tag details for that contact.
+3. CampusBridge validates the input.
+4. CampusBridge adds the tag and updates the contact list.
+5. CampusBridge shows a success message.
+
+Use case ends.
+
+**Extensions:**
+* 3a. Target contact identifier does not exist.
+  * 3a1. CampusBridge shows an error message indicating the contact does not exist.
+
+  Use case ends.
+
+* 3b. Input does not follow the specified format.
+  * 3b1. CampusBridge shows an error message indicating the invalid format.
+  * 3b2. CampusBridge requests the user to re-enter input.
+  * 3b3. User enters a new input.
+
+  Steps 3b1 - 3b3 are repeated until input is valid.
+  Use case resumes at step 4.
+
+* 3c. Tag already exists for contact.
+  * 3c1. CampusBridge informs user that the contact already has this tag.
+
+  Use case ends.
+
+* 4a. Tag cannot be added.
+  * 4a1. CampusBridge shows an error message indicating the tag could not be added.
+
+  Use case ends.
+
+* 4b. Storage file cannot be written or accessed.
+  * 4b1. CampusBridge shows an error message indicating the contact list could not be saved.
+
+  Use case ends.
+
+#### Use Case: UC06 - Remove a Tag from a Contact
 **Preconditions: Application is running**
 
 **MSS:**
-1. User requests to list contacts.
-2. CampusBridge shows a list of all contacts.
-3. User can view details of each contact in the list.
+1. User requests to remove one or more tags from a contact.
+2. CampusBridge removes the specified tags and displays the updated contact.
 
 Use case ends.
 
 **Extensions:**
 * 1a. Input does not follow the specified format.
-    * 1a1. CampusBridge shows an error message indicating the invalid format.
-    * 1a2. CampusBridge requests the user to re-enter input.
-    * 1a3. User enters a new input.
+  * 1a1. CampusBridge shows an invalid command format error.
+  
+  Use case ends.
 
-  Steps 1a1 - 1a3 are repeated until input is valid.
-  Use case resumes at step 2.
-
-* 2a. No contacts exist in the list.
-  * 2a1. CampusBridge informs the user that the contact list is empty.
+* 1b. Specified contact does not exist.
+  * 1b1. CampusBridge shows an error indicating the contact does not exist.
 
   Use case ends.
 
+* 1c. None of the specified tags exist on the contact.
+  * 1c1. CampusBridge shows an error indicating none of the tags were found.
+  
+  Use case ends.
 
-#### Use Case: UC05 - Search contacts
+* 2a. Some but not all specified tags exist on the contact.
+  * 2a1. CampusBridge removes the existing tags and displays the updated contact.
+  * 2a2. CampusBridge informs the user which tags were not found.
+
+  Use case ends.
+
+### Use Case: UC07 - Clearing a specific tag from a contact
+**Preconditions: Application is running**
+
+**MSS:**
+
+
+#### Use Case: UC08 - Listing All Contacts
+**Preconditions: Application is running**
+
+**MSS:**
+1. User requests to list all contacts.
+2. CampusBridge shows a list of all contacts.
+
+Use case ends.
+
+**Extensions:**
+* 1a. User provides extra arguments.
+  * 1a1. CampusBridge shows an invalid command format error.
+    
+  Use case ends.
+
+
+#### Use Case: UC09 - Sorting contacts
+**Preconditions: Application is running**
+
+**MSS:**
+
+#### Use Case: UC10 - Search contacts
 
 **Preconditions: Application is running**
 
@@ -516,63 +608,20 @@ Use case ends.
 
 **Extensions:**
 * 3a. Input does not follow the specified format.
-    * 3a1. CampusBridge shows an error message indicating the invalid format.
-    * 3a2. CampusBridge requests the user to re-enter input.
-    * 3a3. User enters a new input.
+  * 3a1. CampusBridge shows an error message indicating the invalid format.
+  * 3a2. CampusBridge requests the user to re-enter input.
+  * 3a3. User enters a new input.
 
   Steps 3a1 - 3a3 are repeated until input is valid.
   Use case resumes at step 4.
 
 * 4a. No contacts exist in the list.
-    * 4a1. CampusBridge informs the user that no contacts match the search query.
+  * 4a1. CampusBridge informs the user that no contacts match the search query.
 
   Use case ends.
 
 
-#### Use Case: UC06 - Add a tag to an existing contact
-
-**Preconditions: Application is running**
-
-**MSS:**
-1. User requests to tag a contact in the list.
-2. User provides tag details for that contact.
-3. CampusBridge validates the input.
-4. CampusBridge adds the tag and updates the contact list.
-5. CampusBridge shows a success message.
-
-Use case ends.
-
-**Extensions:**
-* 3a. Target contact identifier does not exist.
-    * 3a1. CampusBridge shows an error message indicating the contact does not exist.
-
-  Use case ends.
-
-* 3b. Input does not follow the specified format.
-    * 3b1. CampusBridge shows an error message indicating the invalid format.
-    * 3b2. CampusBridge requests the user to re-enter input.
-    * 3b3. User enters a new input.
-
-  Steps 3b1 - 3b3 are repeated until input is valid.
-  Use case resumes at step 4.
-
-* 3c. Tag already exists for contact.
-    * 3c1. CampusBridge informs user that the contact already has this tag.
-
-  Use case ends.
-
-* 4a. Tag cannot be added.
-    * 4a1. CampusBridge shows an error message indicating the tag could not be added.
-
-  Use case ends.
-
-* 4b. Storage file cannot be written or accessed.
-    * 4b1. CampusBridge shows an error message indicating the contact list could not be saved.
-
-  Use case ends.
-
-
-#### Use Case: UC07 - Undo previous action
+#### Use Case: UC11 - Undo previous action
 
 **Preconditions: Application is running**
 
@@ -588,20 +637,82 @@ Use case ends.
 
 **Extensions:**
 * 2a. No undoable commands available in undo history.
-    * 2a1. CampusBridge shows an error message indicating that there are no actions to undo.
+  * 2a1. CampusBridge shows an error message indicating that there are no actions to undo.
 
   Use case ends.
 
 * 3a. Command fails to execute its undo operation.
-    * 3a1. CampusBridge shows an error message indicating that the undo operation failed.
+  * 3a1. CampusBridge shows an error message indicating that the undo operation failed.
 
   Use case ends.
 
 * 5a. Storage file cannot be written or accessed.
-    * 5a1. CampusBridge shows an error message indicating the state could not be saved.
+  * 5a1. CampusBridge shows an error message indicating the state could not be saved.
 
   Use case ends.
 
+#### Use Case: UC12 - Navigating Command History
+**Preconditions: Application is running**
+
+**MSS:**
+1. User requests to navigate to an earlier command.
+2. CampusBridge displays the earlier command.
+   Steps 1-2 are repeated until the user is satisfied.
+
+Use case ends.
+
+**Extensions:**
+* 1a. No command history exists.
+  * 1a1. CampusBridge does nothing.
+  
+  Use case ends.
+
+* 2a. User requests to navigate to a more recent command.
+  * 2a1. CampusBridge displays the more recent command.
+  
+  Use case resumes at step 1.
+
+* 2b. No earlier command exists.
+  * 2b1. CampusBridge does nothing.
+
+  Use case resumes at step 1.
+
+* 2c. No more recent command exists.
+  * 2c1. CampusBridge does nothing.
+
+  Use case resumes at step 1.
+
+#### Use Case: UC13 - Clearing all contacts
+**Preconditions: Application is running**
+
+**MSS:**
+1. User requests to clear all contacts.
+2. CampusBridge clears all contacts.
+
+Use case ends.
+
+**Extensions:**
+* 1a. User provides extra arguments.
+  * 1a1. CampusBridge shows an invalid command format error.
+
+  Use case ends.
+
+#### Use Case: UC14 - Exiting
+**Preconditions: Application is running**
+
+**MSS:**
+1. User requests to exit the app.
+2. CampusBridge terminates.
+
+Use case ends.
+
+**Extensions:**
+* 1a. User provides extra arguments.
+  * 1a1. CampusBridge shows an invalid command format error.
+
+  Use case ends.
+
+Use case ends.
 
 ### Non-Functional Requirements
 
@@ -753,21 +864,24 @@ testers are expected to do more *exploratory* testing.
 4. Editing a person with duplicate email or Telegram handle
     1. Prerequisites: Start with the sample data loaded.
 
-    1. Test case: `edit 2 e/` *(use the email of the first contact)*<br>
+    1. Test case: `edit 2 e/alex@example.com` *(use the email of the first contact)*<br>
        Expected: No changes made. Error details shown indicating a person with this email already exists.
 
-    1. Test case: `edit 2 h/` *(use the Telegram handle of the first contact)*<br>
+    1. Test case: `edit 2 h/alex_yeoh` *(use the Telegram handle of the first contact)*<br>
        Expected: No changes made. Error details shown indicating a person with this Telegram handle already exists.
 
 5. Invalid edit commands
+    1. Test case: `edit`<br>
+       Expected: No changes made. Invalid command format error shown.
+
     1. Test case: `edit 1`<br>
-       Expected: No changes made. Error details shown indicating at least one field must be provided.
+       Expected: No changes made. Invalid command format error shown.
 
     1. Test case: `edit 0 n/John Lim`<br>
        Expected: No changes made. Error details shown indicating the index should be a positive integer.
 
     1. Test case: `edit 999 n/John Lim`<br>
-       Expected: No changes made. Error details shown indicating the index is invalid.
+       Expected: No changes made. Error details shown indicating the index is out of range.
 
     1. Test case: `edit 1 n/John Lim n/Jane Lim`<br>
        Expected: No changes made. Error details shown indicating duplicate prefixes.
@@ -794,31 +908,31 @@ testers are expected to do more *exploratory* testing.
 1. Invalid delete commands
 
    1. Test case: `delete`<br>
-       Expected: No person deleted. Error details shown in the status message indicating invalid command format and command usage.
+      Expected: No person deleted. Error details shown in the status message indicating invalid command format and command usage.
 
    1. Test case: `delete i/0`<br>
-       Expected: No person deleted. Error details shown in the status message indicating index must be a positive integer (1, 2, 3...).
+      Expected: No person deleted. Error details shown in the status message indicating index must be a positive integer (1, 2, 3...).
 
    1. Test case: `delete e/invalid-email`<br>
-       Expected: No person deleted. Error details shown in the status message indicating email constraints.
+      Expected: No person deleted. Error details shown in the status message indicating email constraints.
 
    1. Test case: `delete 1` (missing prefix)<br>
        Expected: No person deleted. Error details shown in the status message indicating invalid command format and command usage.
 
    1. Test case: `delete i/1 i/2`(multiple same prefixes)<br>
-       Expected: No person deleted. Error details shown in the status message indicating multiple values specified for the following single-valued field(s): `i/`.
+      Expected: No person deleted. Error details shown in the status message indicating multiple values specified for the following single-valued field(s): `i/`.
 
    1. Test case: `delete e/alicetan@u.nus.edu i/1` (both prefixes)<br>
-       Expected: No person deleted. Error details shown in the status message indicating invalid command format and command usage.
+      Expected: No person deleted. Error details shown in the status message indicating invalid command format and command usage.
 
    1. Test case: `delete i/1 n/alice p/12345678` (multiple invalid prefixes)<br>
-       Expected: No person deleted. Error details shown in the status message invalid command format and unexpected extra input.
+      Expected: No person deleted. Error details shown in the status message invalid command format and unexpected extra input.
 
    1. Test case: `delete i/100` (where 100 is larger than list size)<br>
-       Expected: No person deleted. Error details shown in the status message indicating no person exists at that index and tip to use `list` command.
+      Expected: No person deleted. Error details shown in the status message indicating no person exists at that index and tip to use `list` command.
 
    1. Test case: `delete e/nonexistent@example.com`<br>
-       Expected: No person deleted. Error details shown in the status message indicating no person found with that email and tip to use `list` or `find` commands.
+      Expected: No person deleted. Error details shown in the status message indicating no person found with that email and tip to use `list` or `find` commands.
 
 ### Tagging a person
 
@@ -1103,6 +1217,61 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `find p/91234567` (unsupported prefix for find)<br>
        Expected: Error message indicating unexpected extra input `p/91234567`.
 
+### Undoing the last action
+
+1. Undoing the most recent undoable command
+
+    1. Prerequisites: List all persons using the `list` command. At least one person exists in the list.
+
+    1. Test case: `add n/John Doe e/johndoe@example.com` followed by `undo`<br>
+       Expected: The previously added contact is removed from the list. Status message indicates that the last add action has been undone.
+
+    1. Test case: `delete i/1` followed by `undo`<br>
+       Expected: The deleted contact is restored to the list. Status message indicates that the last delete action has been undone.
+
+2. Undoing multiple commands consecutively
+
+    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
+
+    1. Test case: Execute `add n/A e/a@example.com`, then `add n/B e/b@example.com`, then `undo`, then `undo`<br>
+       Expected: Both added contacts are removed one by one in reverse order. Status message reflects each undo operation.
+
+3. Undo when no undoable commands are available
+
+    1. Prerequisites: Start the application fresh, or ensure all previous undoable commands have already been undone.
+
+    1. Test case: `undo`<br>
+       Expected: No changes to the contact list. Error details shown in the status message indicating that there are no actions to undo.
+
+4. Undo after non-undoable commands
+
+    1. Prerequisites: List all persons using the `list` command.
+
+    1. Test case: `add n/John Doe e/johndoe@example.com`, then `list`, then `undo`<br>
+       Expected: The previously added contact is removed. The `list` command does not affect undo history.
+
+    1. Test case: `help`, then `undo`<br>
+       Expected: No changes to the contact list. Error details shown in the status message if there are no undoable commands.
+
+5. Undo after a mix of commands
+
+    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
+
+    1. Test case: `add n/A e/a@example.com`, `list`, `delete i/1`, then `undo`<br>
+       Expected: The deleted contact is restored. The `list` command is ignored by undo.
+
+6. Invalid undo command
+
+    1. Test case: `undo extra`<br>
+       Expected: No changes to the contact list. Error details shown in the status message indicating that the command does not accept parameters.
+
+7. Persistence after undo
+
+    1. Prerequisites: List all persons using the `list` command.
+
+    1. Test case: `add n/John Doe e/johndoe@example.com`, then `undo`, then restart the application<br>
+       Expected: The contact list reflects the undone state (i.e., the added contact does not appear).
+
 ### Navigating command history
 
 1. Cycling through past commands
@@ -1133,10 +1302,57 @@ testers are expected to do more *exploratory* testing.
     1. Press **Up** once.<br>
        Expected: The invalid command `badcommand` is shown (all submitted input, valid or not, is recorded).
 
+### Using keyboard shortcuts
+
+1. Clearing the input box
+
+    1. Prerequisites: Application is running. Some text is present in the input box.
+
+    1. Test case (Windows/Linux): Press <kbd>Delete</kbd><br>
+       Expected: The input box is cleared.
+
+    1. Test case (macOS): Press <kbd>fn</kbd> + <kbd>Delete</kbd><br>
+       Expected: The input box is cleared.
+
+2. Exiting the application
+
+    1. Prerequisites: Application is running.
+
+    1. Test case (Windows/Linux): Press <kbd>F3</kbd><br>
+       Expected: The application closes.
+
+    1. Test case (macOS): Press <kbd>fn</kbd> + <kbd>F3</kbd><br>
+       Expected: The application closes.
+
+3. Opening help
+
+    1. Prerequisites: Application is running.
+
+    1. Test case (Windows/Linux): Press <kbd>F1</kbd><br>
+       Expected: The User Guide opens in the system default browser.
+
+    1. Test case (macOS): Press <kbd>fn</kbd> + <kbd>F1</kbd><br>
+       Expected: Same as above.
+
+4. Listing all contacts
+
+    1. Prerequisites: Application is running.
+
+    1. Test case (Windows/Linux): Press <kbd>F2</kbd><br>
+       Expected: All contacts are displayed in the list.
+
+    1. Test case (macOS): Press <kbd>fn</kbd> + <kbd>F2</kbd><br>
+       Expected: Same as above.
+
+5. Invalid or unsupported key combinations
+
+    1. Test case: Press unrelated keys (e.g., <kbd>F4</kbd>, <kbd>Ctrl</kbd> + <kbd>F1</kbd>)<br>
+       Expected: No action is triggered. Application remains unchanged.
+
 ### Saving data
 
 1. Dealing with missing/corrupted data files
 
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
+    1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
 
 1. _{ more test cases …​ }_

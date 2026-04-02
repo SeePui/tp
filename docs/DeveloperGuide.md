@@ -38,7 +38,7 @@ Given below is a quick overview of main components and how they interact with ea
 
 **Main components of the architecture**
 
-**`Main`** (consisting of classes [`Main`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
+**`Main`** (consisting of classes [`Main`](https://github.com/AY2526S2-CS2103-F11-2/tp/blob/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/AY2526S2-CS2103-F11-2/tp/blob/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
 * At app launch, it initializes the other components in the correct sequence, and connects them up with each other.
 * At shut down, it shuts down the other components and invokes cleanup methods where necessary.
 
@@ -305,7 +305,7 @@ It does so by providing a centralized, easy-to-use system to save, search, and m
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-#### Current version:
+#### Current version
 
 | Priority | As a …​                    | I can …​                                                                | So that I can…​                                                                   |
 |----------|----------------------------|-------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
@@ -331,7 +331,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *`    | regular user               | navigate command history                                                | execute or modify past commands without retyping them                             |
 | `* *`    | user                       | export contact data to be in a human-readable format like json          | can edit it easily                                                                |
 
-#### Near-future version:
+#### Near-future version
 
 | Priority | As a …​                          | I can …​                                                           | So that I can…​                                                                 |
 |----------|----------------------------------|--------------------------------------------------------------------|---------------------------------------------------------------------------------|

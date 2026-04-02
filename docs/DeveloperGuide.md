@@ -417,6 +417,49 @@ Use case ends.
 
   Use case ends.
 
+#### Use Case: UC04 - Add a tag to an existing contact
+
+**Preconditions: Application is running**
+
+**MSS:**
+1. User requests to tag a contact in the list.
+2. User provides tag details for that contact.
+3. CampusBridge validates the input.
+4. CampusBridge adds the tag and updates the contact list.
+5. CampusBridge shows a success message.
+
+Use case ends.
+
+**Extensions:**
+* 3a. Target contact identifier does not exist.
+    * 3a1. CampusBridge shows an error message indicating the contact does not exist.
+
+  Use case ends.
+
+* 3b. Input does not follow the specified format.
+    * 3b1. CampusBridge shows an error message indicating the invalid format.
+    * 3b2. CampusBridge requests the user to re-enter input.
+    * 3b3. User enters a new input.
+
+  Steps 3b1 - 3b3 are repeated until input is valid.
+  Use case resumes at step 4.
+
+* 3c. Tag already exists for contact.
+    * 3c1. CampusBridge informs user that the contact already has this tag.
+
+  Use case ends.
+
+* 4a. Tag cannot be added.
+    * 4a1. CampusBridge shows an error message indicating the tag could not be added.
+
+  Use case ends.
+
+* 4b. Storage file cannot be written or accessed.
+    * 4b1. CampusBridge shows an error message indicating the contact list could not be saved.
+
+  Use case ends.
+
+### Untag
 
 #### Use Case: UC04 - View all contacts
 
@@ -467,49 +510,6 @@ Use case ends.
 
 * 4a. No contacts exist in the list.
     * 4a1. CampusBridge informs the user that no contacts match the search query.
-
-  Use case ends.
-
-
-#### Use Case: UC06 - Add a tag to an existing contact
-
-**Preconditions: Application is running**
-
-**MSS:**
-1. User requests to tag a contact in the list.
-2. User provides tag details for that contact.
-3. CampusBridge validates the input.
-4. CampusBridge adds the tag and updates the contact list.
-5. CampusBridge shows a success message.
-
-Use case ends.
-
-**Extensions:**
-* 3a. Target contact identifier does not exist.
-    * 3a1. CampusBridge shows an error message indicating the contact does not exist.
-
-  Use case ends.
-
-* 3b. Input does not follow the specified format.
-    * 3b1. CampusBridge shows an error message indicating the invalid format.
-    * 3b2. CampusBridge requests the user to re-enter input.
-    * 3b3. User enters a new input.
-
-  Steps 3b1 - 3b3 are repeated until input is valid.
-  Use case resumes at step 4.
-
-* 3c. Tag already exists for contact.
-    * 3c1. CampusBridge informs user that the contact already has this tag.
-
-  Use case ends.
-
-* 4a. Tag cannot be added.
-    * 4a1. CampusBridge shows an error message indicating the tag could not be added.
-
-  Use case ends.
-
-* 4b. Storage file cannot be written or accessed.
-    * 4b1. CampusBridge shows an error message indicating the contact list could not be saved.
 
   Use case ends.
 

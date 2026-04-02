@@ -87,34 +87,41 @@ The `UI` component,
 
 ### Logic component
 
-**API** : [`Logic.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/logic/Logic.java)
+**API** : [`Logic.java`](https://github.com/AY2526S2-CS2103-F11-2/tp/tree/master/src/main/java/seedu/address/logic/Logic.java)
 
 Here's a (partial) class diagram of the `Logic` component:
 
 <img src="images/LogicClassDiagram.png" width="550"/>
 
-The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API call as an example.
+The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete i/1")` API call as an example.
 
-![Interactions Inside the Logic Component for the `delete 1` Command](images/DeleteSequenceDiagram.png)
+![Interactions Inside the Logic Component for the `delete i/1` Command](images/DeleteSequenceDiagram.png)
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </div>
 
 How the `Logic` component works:
 
-1. When `Logic` is called upon to execute a command, it is passed to an `AddressBookParser` object which in turn creates a parser that matches the command (e.g., `DeleteCommandParser`) and uses it to parse the command.
-1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteCommand`) which is executed by the `LogicManager`.
-1. The command can communicate with the `Model` when it is executed (e.g. to delete a person).<br>
-   Note that although this is shown as a single step in the diagram above (for simplicity), in the code it can take several interactions (between the command object and the `Model`) to achieve.
-1. The result of the command execution is encapsulated as a `CommandResult` object which is returned back from `Logic`.
+1. When `Logic` is called upon to execute a command, `LogicManager` passes the user input to `AddressBookParser`.
+1. `AddressBookParser` identifies the command word and delegates to the corresponding parser (e.g., `DeleteCommandParser`) to construct a `Command` object.
+1. `LogicManager` executes the command against the `Model`.
+1. If the command is undoable (`command.isUndoable()`), `LogicManager` pushes it to an internal undo history stack.
+1. If the command is `undo`, `LogicManager` handles it directly by invoking `undo(model)` on the most recent undoable command in that history stack. More details on the undo feature are provided in the [Current Undo feature](#current-undo-feature) section under Implementation.
+1. After command execution, `LogicManager` persists changes through `Storage`, then returns a `CommandResult` to the caller.
 
 Here are the other classes in `Logic` (omitted from the class diagram above) that are used for parsing a user command:
 
 <img src="images/ParserClasses.png" width="600"/>
 
 How the parsing works:
-* When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
-* All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
+* `AddressBookParser` routes each command to an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name, e.g., `AddCommandParser`) that validates input and creates an `XYZCommand` object.
+* Commands with no parameters (`list`, `clear`, `exit`, `undo`) are validated directly in `AddressBookParser`; any extra arguments are rejected.
+* Most command parsers use `ArgumentTokenizer` and `ParserUtil` helpers to enforce:
+  * required/optional prefixes,
+  * duplicate-prefix checks for single-valued fields,
+  * detection of invalid or unexpected prefixes,
+  * command-specific constraints (e.g., exactly one of `i/` or `e/` for `delete`).
+* All `XYZCommandParser` classes implement the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
 
 ### Model component
 **API** : [`Model.java`](https://github.com/AY2526S2-CS2103-F11-2/tp/blob/master/src/main/java/seedu/address/model/Model.java)
@@ -243,28 +250,37 @@ This identity rule is used by `UniquePersonList` when adding and updating person
 
 #### Current Implementation
 
-Currently, the undo feature is implemented in each undoable commands, and is now handled by LogicManager.
+Currently, the undo feature is implemented using the Command pattern, where each undoable command encapsulates its own undo logic. The overall undo process is managed by `LogicManager`.
 
-Undoable commands, once executed, will be added in to a deque.
+When an undoable command is executed, it is added to an internal stack (`undoHistory : Deque<Command>`) maintained by `LogicManager`.
 
-When an undo command is called, the deque will peek at the first item to be out.
+When the `undo` command is invoked, `LogicManager` retrieves the most recent command from `undoHistory` using `peek()`. The `undo(Model)` method of that command is then executed to revert its effects. If the undo operation is successful, the command is removed from the stack using `pop()`.
 
-If the undo of the command is successfully executed, the deque will pop.
+This design ensures that each command is responsible for reversing its own changes, providing flexibility and adhering to the Command pattern.
 
-Here is the sequence UML diagram:![UndoSequenceDiagram-Logic.png]
-Note: Undo methods in commands now directly calls methods in Model to revert the changes.
+The following sequence diagram illustrates how the undo operation is executed:
 
-More UML diagrams are to be added in a later.
+![UndoSequenceDiagram-Logic](../images/UndoSequenceDiagram-Logic.png)
+
+The following class diagram shows the structure of the undo feature:
+
+![UndoClassDiagram](../images/UndoClassDiagram.png)
+
+The following Activity diagram illustrates the control flow of command execution in the undo feature.
+
+![UndoActivityDiagram.png](../images/UndoActivityDiagram.png)
+
+Note: Undo methods in commands directly interact with the `Model` to revert changes. Hence, we are not having an object diagram here. UI and Storage components are omitted from the diagrams as they are not directly involved in the undo mechanism.
 
 #### Design considerations:
 
 **Aspect: How undo & redo executes:**
 
-* **Alternative 1 (current choice):** Saves the entire address book.
+* **Alternative 1 :** Saves the entire address book.
   * Pros: Easy to implement.
   * Cons: May have performance issues in terms of memory usage.
 
-* **Alternative 2:** Individual command knows how to undo/redo by
+* **Alternative 2 (current choice):** Individual command knows how to undo by
   itself.
   * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
   * Cons: We must ensure that the implementation of each individual command are correct.

@@ -328,7 +328,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *`    | expert user                | have keyboard shortcuts                                                 | operate the system efficiently                                                    |
 | `* *`    | expert user                | quickly copy an email address                                           | paste it into Outlook or Gmail                                                    |
 | `* *`    | expert user                | view colour-coded tags                                                  | quickly identify and prioritize important information.                            |
-| `* *`    | regular user               | navigate command history using keyboard                                 | execute or modify past commands without retyping them                             |
+| `* *`    | regular user               | navigate command history                                                | execute or modify past commands without retyping them                             |
 | `* *`    | user                       | export contact data to be in a human-readable format like json          | can edit it easily                                                                |
 
 #### Near-future version:

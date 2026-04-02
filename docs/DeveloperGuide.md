@@ -751,10 +751,21 @@ testers are expected to do more *exploratory* testing.
 
    1. Resize the window to an optimum size. Move the window to a different location. Close the window.
 
-   1. Re-launch the app by double-clicking the jar file.<br>
-       Expected: The most recent window size and location is retained.
+   1. Re-launch the app by running `java -jar campusbridge.jar` in the terminal.<br>
 
-1. _{ more test cases …​ }_
+      Expected: The most recent window size and location is retained.
+
+1. Shutting down
+
+   1. Test case: `exit`<br>
+      Expected: The application closes.
+
+   1. Alternative: Press <kbd>F3</kbd> (or <kbd>Fn + F3</kbd> on Mac).<br>
+      Expected: Same as above.
+
+   1. Test case: `exit 123`<br>
+      Expected: Application does not close. Error details shown indicating command does not take in any parameter.
+
 
 ### Viewing help
 
@@ -763,8 +774,8 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `help`<br>
        Expected: The User Guide opens in the system default browser. Status message shows `Opened user guide in browser.`
 
-    1. Alternative: Press <kbd>F1</kbd>.<br>
-       Expected: Same as above.
+   1. Alternative: Press <kbd>F1</kbd> (or <kbd>Fn + F1</kbd> on Mac).<br>
+      Expected: Same as above.
 
 1. Opening command-specific help
 

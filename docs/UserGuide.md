@@ -44,32 +44,7 @@ CampusBridge is a **desktop app for managing contacts, optimized for use via a C
 
 --------------------------------------------------------------------------------------------------------------------
 
-## Features
-
-<div markdown="block" class="alert alert-info">
-
-**:information_source: Notes about the command format:**<br>
-
-* Words in `UPPER_CASE` are the parameters to be supplied by the user.<br>
-  e.g. in `add n/NAME`, `NAME` is a parameter which can be used as `add n/John Doe`.
-
-* Items in square brackets are optional.<br>
-  e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
-
-* Items with `…`​ after them can be used multiple times including zero times.<br>
-  e.g. `[t/TAG]…​` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
-
-* Parameters can be in any order.<br>
-  e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
-
-* Extraneous parameters for commands that do not take in parameters (such as `list`, `exit` and `clear`) will be ignored.<br>
-  e.g. if the command specifies `list 123`, it will be interpreted as `list`.
-
-* Prefixes are case-insensitive.<br>
-  e.g. n/NAME and N/NAME are treated the same way.
-
-* If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
-</div>
+## Data entry specifications
 
 ### Tag types
 
@@ -86,8 +61,12 @@ CampusBridge supports three tag types, each displayed in a distinct colour:
 * `tc/COURSE_TAG` — creates a Course tag
 * `tg/GENERAL_TAG` — creates a General tag
 
-**Tag name rules:**
-* Tags are **case-insensitive**. `tr/Friends`, `tr/FRIENDS` and `tr/friends` all refer to the same tag.
+**Tag constraints:**
+* Tags are **case-insensitive** — `tr/Friends`, `tr/FRIENDS` and `tr/friends` all refer to the same tag.
+* Tag names must be **alphanumeric**.
+    * Only letters A-Z, a-z, and number 0-9 are allowed.
+    * Spaces and special characters (e.g `@`, `#`, `-`, `!`, `_`) are not allowed.
+* Each tag name must be unique within its type — you cannot create two Role tags with the same name, but a Role tag and a General tag can share the same name.
 
 ### Email validation
 
@@ -125,6 +104,33 @@ CampusBridge is designed for NUS students and staff. When adding or editing a co
 Non-NUS emails are still accepted, but a warning will be displayed to alert you that the email does not belong to an NUS domain.
 </div>
 
+## Features
+
+<div markdown="block" class="alert alert-info">
+
+**:information_source: Notes about the command format:**<br>
+
+* Words in `UPPER_CASE` are the parameters to be supplied by the user.<br>
+  e.g. in `add n/NAME`, `NAME` is a parameter which can be used as `add n/John Doe`.
+
+* Items in square brackets are optional.<br>
+  e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
+
+* Items with `…`​ after them can be used multiple times including zero times.<br>
+  e.g. `[t/TAG]…​` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
+
+* Parameters can be in any order.<br>
+  e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
+
+* Commands that do not take parameters (such as `list`, `exit` and `clear`) will show an error if extra arguments are provided.<br>
+  e.g. `list 123` will result in an error instead of being interpreted as `list`.
+
+* Prefixes are case-insensitive.<br>
+  e.g. n/NAME and N/NAME are treated the same way.
+
+* If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
+</div>
+
 ### Viewing help : `help`
 
 Opens the user guide in the browser, and optionally directly to the section for a specific command.
@@ -157,6 +163,8 @@ Adds a person to the address book.
 * Email must be unique. You cannot add two persons with the same email address.
 * Telegram handle, if provided, must be unique. You cannot add two persons with the same Telegram handle.
 * Telegram handles are treated case-insensitively for duplicate detection. For example, `handle1` and `HANDLE1` are considered the same handle.
+* Repeated prefixes for single-valued fields are not allowed. For example, `add n/Amy n/Ben e/x@example.com` is invalid.
+* Prefixes meant for other commands, such as `t/`, `tr/`, `tc/`, `tg/`, `i/`, `o/`, and `r/`, are invalid in an `add` command.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 Parameters can be entered in any order, as long as each value is preceded by the correct prefix.

@@ -201,7 +201,43 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
-  ### Current Undo feature
+### Add feature
+
+#### Implementation
+
+The `add` command is implemented using `AddCommandParser` and `AddCommand`.
+
+When the user enters an `add` command, `AddressBookParser` delegates the input to `AddCommandParser`. `AddCommandParser` tokenizes the input using only the prefixes supported by `add`: `n/`, `e/`, `p/`, and `h/`.
+
+The parser enforces the following rules:
+
+* `n/NAME` and `e/EMAIL` are compulsory.
+* `p/PHONE` and `h/TELEGRAM_HANDLE` are optional.
+* Values are trimmed before validation.
+* Repeated single-valued prefixes are rejected.
+* Any non-empty preamble is rejected.
+* Known prefixes belonging to other commands, such as `t/`, `tr/`, `tc/`, `tg/`, `i/`, `o/`, and `r/`, are treated as unexpected extra input in an `add` command.
+
+After tokenization, `AddCommandParser` uses `ParserUtil` to validate and convert each supplied value into the corresponding model type. It then constructs a `Person` object and returns an `AddCommand`.
+
+When `AddCommand` executes, it first checks whether the person already exists in the address book using `model.hasPerson(toAdd)`. If a duplicate is detected, the command fails.
+
+If the person is unique, the command adds the person to the model and returns a success message. If the added person's email is not an NUS-domain email, the command still succeeds but appends a warning message.
+
+`AddCommand` is undoable. Undoing an `add` removes the previously added person, unless that person no longer exists in the model.
+
+#### Duplicate detection
+
+Duplicate detection for `add` is based on `Person#isSamePerson(...)`.
+
+Two persons are considered the same person if they have:
+
+* the same email, or
+* the same non-null Telegram handle.
+
+This identity rule is used by `UniquePersonList` when adding and updating persons. As a result, the `add` command rejects contacts that duplicate either an existing email or an existing Telegram handle.
+
+### Current Undo feature
 
 #### Current Implementation
 
@@ -212,6 +248,9 @@ Undoable commands, once executed, will be added in to a deque.
 When an undo command is called, the deque will peek at the first item to be out.
 
 If the undo of the command is successfully executed, the deque will pop.
+
+Here is the sequence UML diagram:![UndoSequenceDiagram-Logic.png]
+Note: Undo methods in commands now directly calls methods in Model to revert the changes.
 
 More UML diagrams are to be added in a later.
 
@@ -325,8 +364,8 @@ Use case ends.
   Steps 3a1 - 3a3 are repeated until input is valid.
   Use case resumes at step 4.
 
-* 3b. Email already exists in the contact list.
-  * 3b1. CampusBridge shows a failure message indicating that email already exists.
+* 3b. Email or Telegram handle already exists in the contact list.
+  * 3b1. CampusBridge shows a failure message indicating that the contact already exists.
 
   Use case ends.
 
@@ -514,6 +553,37 @@ Use case ends.
   Use case ends.
 
 
+#### Use Case: UC07 - Undo previous action
+
+**Preconditions: Application is running**
+
+**MSS:**
+1. User requests to undo the most recent action.
+2. CampusBridge retrieves the most recent undoable command from the undo history.
+3. CampusBridge invokes the undo operation of that command.
+4. The command reverses its own effects on the application state.
+5. CampusBridge updates the undo history.
+6. CampusBridge shows the updated state and a success message.
+
+Use case ends.
+
+**Extensions:**
+* 2a. No undoable commands available in undo history.
+    * 2a1. CampusBridge shows an error message indicating that there are no actions to undo.
+
+  Use case ends.
+
+* 3a. Command fails to execute its undo operation.
+    * 3a1. CampusBridge shows an error message indicating that the undo operation failed.
+
+  Use case ends.
+
+* 5a. Storage file cannot be written or accessed.
+    * 5a1. CampusBridge shows an error message indicating the state could not be saved.
+
+  Use case ends.
+
+
 ### Non-Functional Requirements
 
 1. Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
@@ -556,190 +626,84 @@ testers are expected to do more *exploratory* testing.
 
 1. _{ more test cases …​ }_
 
-### Sorting contacts
-
-1. Sorting by a single field
-
-   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
-
-   1. Test case: `sort o/name`<br>
-      Expected: Contacts sorted alphabetically by name (ascending). Success message shown.
-
-   1. Test case: `sort o/email`<br>
-      Expected: Contacts sorted by email address (ascending). Success message shown.
-
-   1. Test case: `sort o/phone`<br>
-      Expected: Contacts sorted by phone number (ascending). Contacts without a phone number appear last. Success message shown.
-
-1. Sorting in descending order
-
-   1. Test case: `sort o/name r/`<br>
-      Expected: Contacts sorted alphabetically by name (descending). Success message shown.
-
-   1. Test case: `sort o/phone r/`<br>
-      Expected: Contacts sorted by phone number (descending). Contacts without a phone number appear last.
-
-1. Resetting sort order
-
-   1. Prerequisites: Apply a sort, e.g. `sort o/name r/`.
-
-   1. Test case: `sort o/none`<br>
-      Expected: Contacts returned to their original insertion order. Reset message shown.
-
-1. Invalid sort commands (each tested individually)
-
-   1. Test case: `sort` (missing `o/` prefix)<br>
-      Expected: Error message with command usage shown.
-
-   1. Test case: `sort o/` (empty order value)<br>
-      Expected: Error message with command usage shown.
-
-   1. Test case: `sort o/address` (invalid order value)<br>
-      Expected: Error message listing valid order values: `email`, `name`, `phone`, `none`.
-
-   1. Test case: `sort o/none r/` (reverse flag combined with `none`)<br>
-      Expected: Error message indicating `r/` is incompatible with `none`.
-
-   1. Test case: `sort o/name r/yes` (reverse flag followed by a value)<br>
-      Expected: Error message indicating the `r/` flag must have no value.
-
-   1. Test case: `sort o/name o/email` (duplicate `o/` prefix)<br>
-      Expected: Error message indicating duplicate prefixes are not allowed.
-
-### Locating persons by name/email/tag
-1. Searching by single field
-
-   1. Prerequisites: List all persons using the `list` command. At least one person should be in the list.
-
-   1. Test case: `find n/Alex`<br>
-      Expected: Contacts whose names match `Alex` (case-insensitive; supports substring and fuzzy matching) are shown. 
-
-   1. Test case: `find e/nus.edu`<br>
-      Expected: Contacts with email addresses containing `nus.edu` (case-insensitive substring) are shown.
-
-   1. Test case: `find t/friends`<br>
-      Expected: Contacts with the tag `friends` (case-insensitive exact match) are shown.
-
-1. Searching by multiple keywords/fields
-
-   1. Prerequisites: List all persons using the `list` command. At least two persons should be in the list.
-
-   1. Test case: `find n/Alex David`<br>
-     Expected: Contacts whose names match `Alex` **OR** `David` are shown (i.e. matches at least one keyword).
-
-   1. Test case: `find n/Alex e/nus.edu`<br>
-     Expected: Contacts whose names match `Alex` **AND** whose email contains `nus.edu` are shown.
-
-   1. Test case: `find n/Alex e/nus.edu t/friends`<br>
-     Expected: Contacts matching all three criteria (Name AND Email AND Tag) are shown.
-
-1. Fuzzy search for names (slight typo tolerance)
-
-   1. Prerequisites: A contact with name `Alice Tan` exists.
-
-   1. Test case: `find n/alce`<br>
-      Expected: `Alice Tan` is shown in the results.
-
-   1. Test case: `find n/alicia`<br>
-      Expected: `Alice Tan` is shown in the results.
-
-   1. Test case: `find n/Tan`<br>
-      Expected: `Alice Tan` is shown in the results.
-
-1. Invalid search commands
-
-   1. Test case: `find` (no parameters)<br>
-      Expected: Error message indicating invalid command format and showing usage.
-
-   1. Test case: `find n/`<br>
-      Expected: Error message indicating empty value provided for prefix `n/`.
-
-   1. Test case: `find n/!@#`<br>
-      Expected: Error message indicating that the keyword `!@#` contains only special characters and must contain at least one alphanumeric character.
-
-   1. Test case: `find p/91234567` (unsupported prefix for find)<br>
-      Expected: Error message indicating unexpected extra input `p/91234567`.
-
-### Navigating command history
-
-1. Cycling through past commands
-
-   1. Prerequisites: Enter at least three commands in sequence, e.g. `list`, `sort o/name`, `help`.
-
-   1. Press the **Up arrow** key in the command box.<br>
-      Expected: The command box fills with the most recently entered command (`help`).
-
-   1. Press **Up** again.<br>
-      Expected: The command box shows the previous command (`sort o/name`).
-
-   1. Press **Down**.<br>
-      Expected: The command box shows the next command in history (`help`).
-
-1. Navigating beyond history bounds
-
-   1. Press **Up** repeatedly past the oldest command in history.<br>
-      Expected: The command box stays at the oldest command; it does not wrap around.
-
-   1. Press **Down** past the most recent command.<br>
-      Expected: The command box clears (returns to empty input).
-
-1. History is not affected by invalid commands
-
-   1. Enter a valid command (e.g. `list`), then an invalid command (e.g. `badcommand`).
-
-   1. Press **Up** once.<br>
-      Expected: The invalid command `badcommand` is shown (all submitted input, valid or not, is recorded).
-
-   1. Press **Down** once.<br>
-      Expected: The command box clears (returns to empty input).
-
-1. _{ more test cases …​ }_
-
-### Deleting a person
-
-1. Deleting a person while all persons are being shown
-
-   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
-
-   1. Test case: `delete 1`<br>
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
-
-   1. Test case: `delete 0`<br>
-      Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
-
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
-      Expected: Similar to previous.
-
-1. _{ more test cases …​ }_
-
 ### Viewing help
 
 1. Opening general help
 
-   1. Test case: `help`<br>
-      Expected: The User Guide opens in the system default browser. Status message shows `Opened user guide in browser.`
+    1. Test case: `help`<br>
+       Expected: The User Guide opens in the system default browser. Status message shows `Opened user guide in browser.`
 
-   1. Alternative: Press <kbd>F1</kbd>.<br>
-      Expected: Same as above.
+    1. Alternative: Press <kbd>F1</kbd>.<br>
+       Expected: Same as above.
 
 1. Opening command-specific help
 
-   1. Test case: `help add`<br>
-      Expected: The User Guide opens in the system default browser at the `add` command section. Status message shows `Opening user guide for 'add' command.`
+    1. Test case: `help add`<br>
+       Expected: The User Guide opens in the system default browser at the `add` command section. Status message shows `Opening user guide for 'add' command.`
 
-   1. Other valid command names to try: `help list`, `help edit`, `help delete`, `help find`, `help sort`, `help tag`, `help untag`, `help cleartag`, `help clear`, `help exit`<br>
-      Expected: The User Guide opens at the respective command section. Status message names the command.
+    1. Other valid command names to try: `help list`, `help edit`, `help delete`, `help find`, `help sort`, `help tag`, `help untag`, `help cleartag`, `help clear`, `help exit`<br>
+       Expected: The User Guide opens at the respective command section. Status message names the command.
 
 1. Invalid help arguments
 
-   1. Test case: `help INVALID`<br>
-      Expected: The User Guide does not open. Error details shown in the status message.
+    1. Test case: `help INVALID`<br>
+       Expected: The User Guide does not open. Error details shown in the status message.
 
-   1. Test case: `help ADD` (uppercase)<br>
-      Expected: Same as above. Command names are case-sensitive and must be lowercase.
+    1. Test case: `help ADD` (uppercase)<br>
+       Expected: Same as above. Command names are case-sensitive and must be lowercase.
 
-   1. Test case: `help add extra`<br>
-      Expected: Same as above. Only a single command name is accepted; extra words cause a format error.
+    1. Test case: `help add extra`<br>
+       Expected: Same as above. Only a single command name is accepted; extra words cause a format error.
+
+### Adding a person
+
+1. Adding a person with all fields
+
+    1. Prerequisites: Start with the sample data loaded. Ensure the email and Telegram handle used below do not already exist.
+
+    1. Test case: `add n/John Doe e/johndoe@example.com p/91234567 h/john_doe`<br>
+       Expected: A new contact is added to the list. The success message shows the added person's details.
+
+2. Adding a person with only compulsory fields
+
+    1. Prerequisites: Ensure the email used below does not already exist.
+
+    1. Test case: `add n/Jane Doe e/janedoe@example.com`<br>
+       Expected: A new contact is added without phone number and Telegram handle. The success message shows the added person's details.
+
+3. Adding a person with a non-NUS email
+
+    1. Prerequisites: Ensure the email used below does not already exist.
+
+    1. Test case: `add n/Alex Tan e/alextan@gmail.com`<br>
+       Expected: A new contact is added. A warning is shown indicating that the email is not an NUS domain.
+
+4. Adding a person with duplicate email or Telegram handle
+
+    1. Prerequisites: Add a contact using `add n/Test Person e/testperson@example.com h/test_person`.
+
+    1. Test case: `add n/Another Person e/testperson@example.com`<br>
+       Expected: No person is added. Error details shown in the status message indicating that the contact already exists.
+
+    1. Test case: `add n/Another Person e/anotherperson@example.com h/test_person`<br>
+       Expected: No person is added. Error details shown in the status message indicating that the contact already exists.
+
+5. Invalid add commands
+
+    1. Test case: `add n/John Doe`<br>
+       Expected: No person is added. Error details shown in the status message.
+
+    1. Test case: `add e/johndoe@example.com`<br>
+       Expected: No person is added. Error details shown in the status message.
+
+    1. Test case: `add n/John Doe e/invalid-email`<br>
+       Expected: No person is added. Error details shown in the status message.
+
+    1. Test case: `add n/John Doe n/Jane Doe e/johndoe@example.com`<br>
+       Expected: No person is added. Error details shown in the status message indicating duplicate prefixes.
+
+    1. Test case: `add n/John Doe e/johndoe@example.com tg/friend`<br>
+       Expected: No person is added. Error details shown in the status message indicating unexpected extra input.
 
 ### Sorting persons
 
@@ -787,50 +751,89 @@ testers are expected to do more *exploratory* testing.
    1. Test case: `sort o/name o/email`<br>
       Expected: List is not sorted. Error details shown in the status message indicating duplicate `o/` prefix.
 
+### Locating persons by name/email/tag
+1. Searching by single field
+
+    1. Prerequisites: List all persons using the `list` command. At least one person should be in the list.
+
+    1. Test case: `find n/Alex`<br>
+       Expected: Contacts whose names match `Alex` (case-insensitive; supports substring and fuzzy matching) are shown.
+
+    1. Test case: `find e/nus.edu`<br>
+       Expected: Contacts with email addresses containing `nus.edu` (case-insensitive substring) are shown.
+
+    1. Test case: `find t/friends`<br>
+       Expected: Contacts with the tag `friends` (case-insensitive exact match) are shown.
+
+1. Searching by multiple keywords/fields
+
+    1. Prerequisites: List all persons using the `list` command. At least two persons should be in the list.
+
+    1. Test case: `find n/Alex David`<br>
+       Expected: Contacts whose names match `Alex` **OR** `David` are shown (i.e. matches at least one keyword).
+
+    1. Test case: `find n/Alex e/nus.edu`<br>
+       Expected: Contacts whose names match `Alex` **AND** whose email contains `nus.edu` are shown.
+
+    1. Test case: `find n/Alex e/nus.edu t/friends`<br>
+       Expected: Contacts matching all three criteria (Name AND Email AND Tag) are shown.
+
+1. Fuzzy search for names (slight typo tolerance)
+
+    1. Prerequisites: A contact with name `Alice Tan` exists.
+
+    1. Test case: `find n/alce`<br>
+       Expected: `Alice Tan` is shown in the results.
+
+    1. Test case: `find n/alicia`<br>
+       Expected: `Alice Tan` is shown in the results.
+
+    1. Test case: `find n/Tan`<br>
+       Expected: `Alice Tan` is shown in the results.
+
+1. Invalid search commands
+
+    1. Test case: `find` (no parameters)<br>
+       Expected: Error message indicating invalid command format and showing usage.
+
+    1. Test case: `find n/`<br>
+       Expected: Error message indicating empty value provided for prefix `n/`.
+
+    1. Test case: `find n/!@#`<br>
+       Expected: Error message indicating that the keyword `!@#` contains only special characters and must contain at least one alphanumeric character.
+
+    1. Test case: `find p/91234567` (unsupported prefix for find)<br>
+       Expected: Error message indicating unexpected extra input `p/91234567`.
+
 ### Navigating command history
 
-1. Navigating to previous commands
+1. Cycling through past commands
 
-   1. Prerequisites: Execute at least two commands, e.g. `list` then `help`.
+    1. Prerequisites: Enter at least three commands in sequence, e.g. `list`, `sort o/name`, `help`.
 
-   1. Press the <kbd>↑</kbd> (Up) arrow key while the command box is focused.<br>
-      Expected: The most recently executed command (`help`) appears in the command box.
+    1. Press the **Up arrow** key in the command box.<br>
+       Expected: The command box fills with the most recently entered command (`help`).
 
-   1. Press <kbd>↑</kbd> again.<br>
-      Expected: The earlier command (`list`) appears in the command box.
+    1. Press **Up** again.<br>
+       Expected: The command box shows the previous command (`sort o/name`).
 
-   1. Press <kbd>↑</kbd> when already at the oldest command.<br>
-      Expected: Nothing happens. Navigation stops at the oldest entry.
+    1. Press **Down**.<br>
+       Expected: The command box shows the next command in history (`help`).
 
-1. Navigating forward through history
+1. Navigating beyond history bounds
 
-   1. Prerequisites: Navigate back through history using <kbd>↑</kbd> as above.
+    1. Press **Up** repeatedly past the oldest command in history.<br>
+       Expected: The command box stays at the oldest command; it does not wrap around.
 
-   1. Press the <kbd>↓</kbd> (Down) arrow key.<br>
-      Expected: The next more recent command appears in the command box.
+    1. Press **Down** past the most recent command.<br>
+       Expected: The command box clears (returns to empty input).
 
-   1. Press <kbd>↓</kbd> until past the most recent command.<br>
-      Expected: The command box is cleared (shows an empty input field), ready for a new command.
+1. History is not affected by invalid commands
 
-   1. Press <kbd>↓</kbd> when already at the empty new-command position.<br>
-      Expected: Nothing happens.
+    1. Enter a valid command (e.g. `list`), then an invalid command (e.g. `badcommand`).
 
-1. Empty commands and history
-
-   1. Prerequisites: Clear the command box and press Enter without typing anything.
-
-   1. Press <kbd>↑</kbd>.<br>
-      Expected: The last non-empty command appears. The empty submission was not added to history.
-
-1. Clearing the command box
-
-   1. While the command box contains any text, press the <kbd>Delete</kbd> key.<br>
-      Expected: The command box is cleared immediately. This does not affect command history.
-
-1. History is session-only
-
-   1. Execute several commands, then close and relaunch the app.<br>
-      Expected: Press <kbd>↑</kbd> — no history is available. History is not persisted across sessions.
+    1. Press **Up** once.<br>
+       Expected: The invalid command `badcommand` is shown (all submitted input, valid or not, is recorded).
 
 ### Saving data
 

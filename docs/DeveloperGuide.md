@@ -366,19 +366,16 @@ See the full list on [GitHub](https://github.com/AY2526S2-CS2103-F11-2/tp/issues
 
 **MSS:**
 1. User requests for help.
-2. CampusBridge provides access to the user guide.
+2. CampusBridge displays the relevant section of the user guide.
 
 **Extension:**
-* 1a. User provides a valid command name.
-    1a1. CampusBridge displays the relevant section of the user guide.
+
+* 1a. User provides an unrecognised command name.
+    1a1. CampusBridge shows an error listing all valid commands.
   Use case ends.
 
-* 1b. User provides an unrecognised command name.
-    1b1. CampusBridge shows an error listing all valid commands.
-  Use case ends.
-
-* 1c. User provides more than one word.
-    1c1. CampusBridge shows an invalid command format error.
+* 1b. User provides more than one word.
+    1b1. CampusBridge shows an invalid command format error.
   Use case ends.
 
 Use case ends.

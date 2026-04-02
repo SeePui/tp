@@ -83,6 +83,7 @@ Emails should be of the format `local-part@domain` and adhere to the following c
 * Each domain label must consist of alphanumeric characters, separated only by hyphens, if any
 
 **Examples:**<br/>
+
 | Email | Valid? | Reason |
 |-------|--------|--------|
 | `john.doe@example.com` | ✓ | Correct domain |

@@ -83,22 +83,24 @@ Emails should be of the format `local-part@domain` and adhere to the following c
 * Each domain label must consist of alphanumeric characters, separated only by hyphens, if any
 
 **Examples:**<br/>
-| Email | Valid? |
-|-------|--------|
-| `john.doe@example.com` | (correct domain)
-| `john+test@u.nus.edu` | (correct domain)
-| `.john@example.com` | (starts with special character) |
-| `john@example.c` | (domain label less than 2 characters) |
+
+| Email | Valid? | Reason |
+|-------|--------|--------|
+| `john.doe@example.com` | ✓ | Correct domain |
+| `john+test@u.nus.edu` | ✓ | Correct domain |
+| `.john@example.com` | ✗ | Starts with special character |
+| `john@example.c` | ✗ | Domain label less than 2 characters |
 
 **NUS domain check:**
 
 CampusBridge is designed for NUS students and staff. When adding or editing a contact:
 
-| Email domain | Behavior                                   |
-|--------------|--------------------------------------------|
-| `@u.nus.edu` (student) | No warning                                 |
-| `@nus.edu.sg` (staff) | No warning                                 |
-| Other domains | Warning shown (but contact is still added) |
+| Email domain            | Behavior                                   |
+|-------------------------|--------------------------------------------|
+| `@u.nus.edu` (student)  | No warning                                 |
+| `@nus.edu.sg` (staff)   | No warning                                 |
+| `@*.nus.edu.sg` (staff) | No warning                                 |
+| Other domains           | Warning shown (but contact is still added) |
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Note:**
 Non-NUS emails are still accepted, but a warning will be displayed to alert you that the email does not belong to an NUS domain.
@@ -191,7 +193,7 @@ Edits an existing person in the address book.
 * Telegram handles are treated case-insensitively for duplicate detection. For example, `handle1` and `HANDLE1` are considered the same handle.
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:**
-If the updated email is not an NUS domain (`@u.nus.edu` or `@nus.edu.sg`), a warning message will be shown. The contact will still be updated.
+If the updated email is not an NUS domain (`@u.nus.edu` or `@*.nus.edu.sg` or `@nus.edu.sg`), a warning message will be shown. The contact will still be updated.
 </div>
 
 **Examples:**

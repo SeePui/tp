@@ -87,34 +87,41 @@ The `UI` component,
 
 ### Logic component
 
-**API** : [`Logic.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/logic/Logic.java)
+**API** : [`Logic.java`](https://github.com/AY2526S2-CS2103-F11-2/tp/tree/master/src/main/java/seedu/address/logic/Logic.java)
 
 Here's a (partial) class diagram of the `Logic` component:
 
 <img src="images/LogicClassDiagram.png" width="550"/>
 
-The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API call as an example.
+The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete i/1")` API call as an example.
 
-![Interactions Inside the Logic Component for the `delete 1` Command](images/DeleteSequenceDiagram.png)
+![Interactions Inside the Logic Component for the `delete i/1` Command](images/DeleteSequenceDiagram.png)
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </div>
 
 How the `Logic` component works:
 
-1. When `Logic` is called upon to execute a command, it is passed to an `AddressBookParser` object which in turn creates a parser that matches the command (e.g., `DeleteCommandParser`) and uses it to parse the command.
-1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteCommand`) which is executed by the `LogicManager`.
-1. The command can communicate with the `Model` when it is executed (e.g. to delete a person).<br>
-   Note that although this is shown as a single step in the diagram above (for simplicity), in the code it can take several interactions (between the command object and the `Model`) to achieve.
-1. The result of the command execution is encapsulated as a `CommandResult` object which is returned back from `Logic`.
+1. When `Logic` is called upon to execute a command, `LogicManager` passes the user input to `AddressBookParser`.
+1. `AddressBookParser` identifies the command word and delegates to the corresponding parser (e.g., `DeleteCommandParser`) to construct a `Command` object.
+1. `LogicManager` executes the command against the `Model`.
+1. If the command is undoable (`command.isUndoable()`), `LogicManager` pushes it to an internal undo history stack.
+1. If the command is `undo`, `LogicManager` handles it directly by invoking `undo(model)` on the most recent undoable command in that history stack. More details on the undo feature are provided in the [Current Undo feature](#current-undo-feature) section under Implementation.
+1. After command execution, `LogicManager` persists changes through `Storage`, then returns a `CommandResult` to the caller.
 
 Here are the other classes in `Logic` (omitted from the class diagram above) that are used for parsing a user command:
 
 <img src="images/ParserClasses.png" width="600"/>
 
 How the parsing works:
-* When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
-* All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
+* `AddressBookParser` routes each command to an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name, e.g., `AddCommandParser`) that validates input and creates an `XYZCommand` object.
+* Commands with no parameters (`list`, `clear`, `exit`, `undo`) are validated directly in `AddressBookParser`; any extra arguments are rejected.
+* Most command parsers use `ArgumentTokenizer` and `ParserUtil` helpers to enforce:
+  * required/optional prefixes,
+  * duplicate-prefix checks for single-valued fields,
+  * detection of invalid or unexpected prefixes,
+  * command-specific constraints (e.g., exactly one of `i/` or `e/` for `delete`).
+* All `XYZCommandParser` classes implement the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
 
 ### Model component
 **API** : [`Model.java`](https://github.com/AY2526S2-CS2103-F11-2/tp/blob/master/src/main/java/seedu/address/model/Model.java)
@@ -756,10 +763,21 @@ testers are expected to do more *exploratory* testing.
 
    1. Resize the window to an optimum size. Move the window to a different location. Close the window.
 
-   1. Re-launch the app by double-clicking the jar file.<br>
-       Expected: The most recent window size and location is retained.
+   1. Re-launch the app by running `java -jar campusbridge.jar` in the terminal.<br>
 
-1. _{ more test cases …​ }_
+      Expected: The most recent window size and location is retained.
+
+1. Shutting down
+
+   1. Test case: `exit`<br>
+      Expected: The application closes.
+
+   1. Alternative: Press <kbd>F3</kbd> (or <kbd>Fn + F3</kbd> on Mac).<br>
+      Expected: Same as above.
+
+   1. Test case: `exit 123`<br>
+      Expected: Application does not close. Error details shown indicating command does not take in any parameter.
+
 
 ### Viewing help
 
@@ -768,8 +786,8 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `help`<br>
        Expected: The User Guide opens in the system default browser. Status message shows `Opened user guide in browser.`
 
-    1. Alternative: Press <kbd>F1</kbd>.<br>
-       Expected: Same as above.
+   1. Alternative: Press <kbd>F1</kbd> (or <kbd>Fn + F1</kbd> on Mac).<br>
+      Expected: Same as above.
 
 1. Opening command-specific help
 
@@ -846,6 +864,63 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `add n/John Doe e/johndoe@example.com tg/friend`<br>
        Expected: No person is added. Error details shown in the status message indicating unexpected extra input.
 
+### Editing a person
+
+1. Editing a person with all fields
+    1. Prerequisites: Start with the sample data loaded. Ensure the email and Telegram handle used below do not already exist. At least one person in the list.
+
+    1. Test case: `edit 1 n/John Lim e/johnlim@nus.edu.sg p/81234567 h/john_LIM`<br>
+       Expected: The first contact is updated with the new details. The success message shows the edited person's details.
+
+2. Editing a person with one field
+    1. Prerequisites: Start with the sample data loaded. Ensure the email and Telegram handle used below do not already exist. At least one person in the list.
+
+    1. Test case: `edit 1 n/John Lim`<br>
+       Expected: The first contact's name is updated. All other fields remain unchanged. The success message shows the edited person's details.
+   
+   1. Test case: `edit 1 e/johnlim@u.nus.edu`<br>
+      Expected: The first contact's email is updated. All other fields remain unchanged. The success message shows the edited person's details.
+   
+   1. Test case: `edit 1 p/12345678`<br>
+      Expected: The first contact's phone number is updated. All other fields remain unchanged. The success message shows the edited person's details.
+   
+   1. Test case: `edit 1 h/johnlimm`<br>
+      Expected: The first contact's telegram handle is updated. All other fields remain unchanged. The success message shows the edited person's details.
+
+3. Editing a person with a non-NUS email
+    1. Prerequisites: Start with the sample data loaded. Ensure the email used below do not already exist. At least one person in the list.
+
+    1. Test case: `edit 1 e/john@gmail.com`<br>
+       Expected: The first contact's email is updated. A warning is shown indicating that the email is not an NUS domain.
+
+4. Editing a person with duplicate email or Telegram handle
+    1. Prerequisites: Start with the sample data loaded. The first contact has email `johnlim@u.nus.edu` and Telegram handle `johnlimm`. At least two person in the list.
+
+    1. Test case: `edit 2 e/johnlim@u.nus.edu`<br>
+       Expected: No changes made. Error details shown indicating a person with this email already exists.
+
+    1. Test case: `edit 2 h/johnlimm`<br>
+       Expected: No changes made. Error details shown indicating a person with this Telegram handle already exists.
+   
+5. Invalid edit commands
+    1. Test case: `edit`<br>
+       Expected: No changes made. Invalid command format error shown.
+
+    1. Test case: `edit 1`<br>
+       Expected: No changes made. Invalid command format error shown.
+
+    1. Test case: `edit 0 n/John Lim`<br>
+       Expected: No changes made. Error details shown indicating the index should be a positive integer.
+
+    1. Test case: `edit 999 n/John Lim` (where 999 is larger than list size) <br> 
+       Expected: No changes made. Error details shown in the status message indicating no person exists at that index and tip to use `list` command.
+
+    1. Test case: `edit 1 n/John Lim n/Jane Lim`<br>
+       Expected: No changes made. Error details shown indicating duplicate prefixes.
+
+    1. Test case: `edit 1 n/John Lim tg/friend`<br>
+       Expected: No changes made. Error details shown indicating unexpected extra input.
+   
 ### Deleting a person
 
 1. Deleting a person by index

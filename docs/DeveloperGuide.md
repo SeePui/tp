@@ -260,15 +260,15 @@ This design ensures that each command is responsible for reversing its own chang
 
 The following sequence diagram illustrates how the undo operation is executed:
 
-![UndoSequenceDiagram-Logic](../images/UndoSequenceDiagram-Logic.png)
+![UndoSequenceDiagram-Logic](images/UndoSequenceDiagram-Logic.png)
 
 The following class diagram shows the structure of the undo feature:
 
-![UndoClassDiagram](../images/UndoClassDiagram.png)
+![UndoClassDiagram](images/UndoClassDiagram.png)
 
 The following Activity diagram illustrates the control flow of command execution in the undo feature.
 
-![UndoActivityDiagram.png](../images/UndoActivityDiagram.png)
+![UndoActivityDiagram.png](images/UndoActivityDiagram.png)
 
 Note: Undo methods in commands directly interact with the `Model` to revert changes. Hence, we are not having an object diagram here. UI and Storage components are omitted from the diagrams as they are not directly involved in the undo mechanism.
 

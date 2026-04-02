@@ -537,12 +537,36 @@ Use case ends.
 
   Use case ends.
 
-### Use Case: UC06 - Remove a tag from a contact
-**Preconditions: Application is running and the user has added a contact.**
-
+#### Use Case: UC06 - Remove a Tag from a Contact
+**Preconditions: Application is running**
 
 **MSS:**
-1. 
+1. User requests to remove one or more tags from a contact.
+2. CampusBridge removes the specified tags and displays the updated contact.
+
+Use case ends.
+
+**Extensions:**
+* 1a. Input does not follow the specified format.
+    1a1. CampusBridge shows an invalid command format error.
+  
+  Use case ends.
+
+* 1b. Specified contact does not exist.
+    1b1. CampusBridge shows an error indicating the contact does not exist.
+
+  Use case ends.
+
+* 1c. None of the specified tags exist on the contact.
+    1c1. CampusBridge shows an error indicating none of the tags were found.
+  
+  Use case ends.
+
+* 2a. Some but not all specified tags exist on the contact.
+    2a1. CampusBridge removes the existing tags and displays the updated contact.
+    2a2. CampusBridge informs the user which tags were not found.
+
+  Use case ends.
 
 ### Use Case: UC07 - Clearing a specific tag from a contact
 **Preconditions: Application is running**

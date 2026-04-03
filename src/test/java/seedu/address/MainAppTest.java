@@ -31,22 +31,62 @@ public class MainAppTest {
         assertTrue(storageStub.isUserPrefsSaved());
     }
 
+    @Test
+    public void stop_saveUserPrefsFails_addressBookStillSaved() throws Exception {
+        MainApp mainApp = new MainApp();
+        StorageStub storageStub = new StorageStub(true, false);
+        ModelStub modelStub = new ModelStub();
+
+        mainApp.storage = storageStub;
+        mainApp.model = modelStub;
+
+        mainApp.stop();
+
+        assertTrue(storageStub.isAddressBookSaved());
+    }
+
+    @Test
+    public void stop_saveAddressBookFails_doesNotThrow() throws Exception {
+        MainApp mainApp = new MainApp();
+        StorageStub storageStub = new StorageStub(false, true);
+        ModelStub modelStub = new ModelStub();
+
+        mainApp.storage = storageStub;
+        mainApp.model = modelStub;
+
+        mainApp.stop();
+    }
+
     private static class StorageStub extends StorageManager {
         private boolean addressBookSaved = false;
         private boolean userPrefsSaved = false;
+        private final boolean failUserPrefs;
+        private final boolean failAddressBook;
 
         StorageStub() {
-            super(null, null);
+            this(false, false);
         }
 
-        @Override
-        public void saveAddressBook(ReadOnlyAddressBook addressBook) throws IOException {
-            addressBookSaved = true;
+        StorageStub(boolean failUserPrefs, boolean failAddressBook) {
+            super(null, null);
+            this.failUserPrefs = failUserPrefs;
+            this.failAddressBook = failAddressBook;
         }
 
         @Override
         public void saveUserPrefs(ReadOnlyUserPrefs userPrefs) throws IOException {
+            if (failUserPrefs) {
+                throw new IOException("forced failure");
+            }
             userPrefsSaved = true;
+        }
+
+        @Override
+        public void saveAddressBook(ReadOnlyAddressBook addressBook) throws IOException {
+            if (failAddressBook) {
+                throw new IOException("forced failure");
+            }
+            addressBookSaved = true;
         }
 
         public boolean isAddressBookSaved() {

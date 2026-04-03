@@ -194,7 +194,7 @@ Data is stored in two JSON files:
 **Error handling on startup**
 
 When CampusBridge starts, it attempts to read the address book file and handles three cases:
-* **File not found** — sample data is loaded and the file is created on the next save.
+* **File not found** — sample data is loaded and the file is created when the app exits.
 * **File is malformed or contains invalid data** — an empty address book is used and a warning is logged; the corrupted file is left untouched.
 * **File is valid** — data is loaded normally.
 

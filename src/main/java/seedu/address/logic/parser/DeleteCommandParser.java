@@ -1,11 +1,9 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.Messages.MESSAGE_UNEXPECTED_EXTRA_INPUT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_INDEX;
 
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import seedu.address.commons.core.index.Index;
@@ -25,22 +23,19 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
      * @throws ParseException if the user input does not conform the expected format
      */
     public DeleteCommand parse(String args) throws ParseException {
-        // check for any prefix that's not in the allowed list
-        Optional<String> invalidPrefix =
-                ParserUtil.findInvalidPrefixInput(args, new Prefix[]{PREFIX_INDEX, PREFIX_EMAIL});
-        if (invalidPrefix.isPresent()) {
-            throw new ParseException(String.format(MESSAGE_UNEXPECTED_EXTRA_INPUT, invalidPrefix.get()));
-        }
+        Prefix[] deletePrefixes = new Prefix[]{PREFIX_INDEX, PREFIX_EMAIL};
+        ParserUtil.validateNoInvalidPrefixInputs(args, deletePrefixes);
 
-        ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_INDEX, PREFIX_EMAIL);
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, deletePrefixes);
 
-        if (!isExactlyOnePrefixPresent(argMultimap, PREFIX_INDEX, PREFIX_EMAIL)
+        if (!isExactlyOnePrefixPresent(argMultimap, deletePrefixes)
                 || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_INDEX, PREFIX_EMAIL);
+        argMultimap.verifyNoDuplicatePrefixesFor(deletePrefixes);
+        ParserUtil.validateNoEmptyPrefixValues(argMultimap, deletePrefixes);
+
         try {
             if (argMultimap.getValue(PREFIX_INDEX).isPresent()) {
                 Index index = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_INDEX).get());
@@ -56,6 +51,9 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
 
     /**
      * Returns true if exactly one prefix contains a value in the given {@code ArgumentMultimap}.
+     *
+     * @param argumentMultimap the ArgumentMultimap containing the tokenized arguments
+     * @param prefixes         the prefixes to check for if exactly one present
      */
     private static boolean isExactlyOnePrefixPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
         return Stream.of(prefixes)

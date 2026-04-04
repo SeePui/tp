@@ -217,6 +217,49 @@ public class ParserUtilTest {
         assertEquals(expectedTagSet, actualTagSet);
     }
 
+    // ==================== Tests for parseAllTypeOfTags ====================
+
+    @Test
+    public void parseAllTypeOfTags_noTags_returnsEmptySet() throws Exception {
+        String args = "1";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, AllOWED_PREFIXES);
+
+        Set<Tag> actualTags = ParserUtil.parseAllTypeOfTags(argMultimap);
+
+        assertTrue(actualTags.isEmpty());
+    }
+
+    @Test
+    public void parseAllTypeOfTags_oneTypeOfTags_success() throws Exception {
+        String args = "1 tg/friends tg/groupmates";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_GENERAL_TAG);
+
+        Set<Tag> expectedTags = new HashSet<>(Arrays.asList(
+                new Tag("friends", TagType.GENERAL),
+                new Tag("groupmates", TagType.GENERAL)
+        ));
+
+        Set<Tag> actualTags = ParserUtil.parseAllTypeOfTags(argMultimap);
+
+        assertEquals(expectedTags, actualTags);
+    }
+
+    @Test
+    public void parseAllTypeOfTags_allTagTypesPresent_success() throws Exception {
+        String args = "1 tr/tutor tc/cs2103 tg/friends";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, AllOWED_PREFIXES);
+
+        Set<Tag> expectedTags = new HashSet<>(Arrays.asList(
+                new Tag("tutor", TagType.ROLE),
+                new Tag("cs2103", TagType.COURSE),
+                new Tag("friends", TagType.GENERAL)
+        ));
+
+        Set<Tag> actualTags = ParserUtil.parseAllTypeOfTags(argMultimap);
+
+        assertEquals(expectedTags, actualTags);
+    }
+
     //================== Tests for findUnexpectedExtraInput ==================
 
     @Test
@@ -648,48 +691,5 @@ public class ParserUtilTest {
 
         assertTrue(exception.getMessage().contains(
                 String.format(MESSAGE_PREFIX_SHOULD_NOT_HAVE_VALUE, "tr/tutor")));
-    }
-
-    // ==================== Tests for parseAllTypeOfTags ====================
-
-    @Test
-    public void parseAllTypeOfTags_noTags_returnsEmptySet() throws Exception {
-        String args = "1";
-        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, AllOWED_PREFIXES);
-
-        Set<Tag> actualTags = ParserUtil.parseAllTypeOfTags(argMultimap);
-
-        assertTrue(actualTags.isEmpty());
-    }
-
-    @Test
-    public void parseAllTypeOfTags_oneTypeOfTags_success() throws Exception {
-        String args = "1 tg/friends tg/groupmates";
-        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_GENERAL_TAG);
-
-        Set<Tag> expectedTags = new HashSet<>(Arrays.asList(
-                new Tag("friends", TagType.GENERAL),
-                new Tag("groupmates", TagType.GENERAL)
-        ));
-
-        Set<Tag> actualTags = ParserUtil.parseAllTypeOfTags(argMultimap);
-
-        assertEquals(expectedTags, actualTags);
-    }
-
-    @Test
-    public void parseAllTypeOfTags_allTagTypesPresent_success() throws Exception {
-        String args = "1 tr/tutor tc/cs2103 tg/friends";
-        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, AllOWED_PREFIXES);
-
-        Set<Tag> expectedTags = new HashSet<>(Arrays.asList(
-                new Tag("tutor", TagType.ROLE),
-                new Tag("cs2103", TagType.COURSE),
-                new Tag("friends", TagType.GENERAL)
-        ));
-
-        Set<Tag> actualTags = ParserUtil.parseAllTypeOfTags(argMultimap);
-
-        assertEquals(expectedTags, actualTags);
     }
 }

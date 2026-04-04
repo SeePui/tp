@@ -27,6 +27,9 @@ import seedu.address.model.person.TelegramHandle;
 
 /**
  * Edits the details of an existing person in the address book.
+ * <p>
+ * Identifies the target person by their displayed index, then overwrites the specified fields
+ * with the values provided in an {@link EditPersonDescriptor}. This command is undoable.
  */
 public class EditCommand extends Command {
 
@@ -62,8 +65,10 @@ public class EditCommand extends Command {
     private Person updatedPerson;
 
     /**
-     * @param index of the person in the filtered person list to edit
-     * @param editPersonDescriptor details to edit the person with
+     * Creates an {@code EditCommand} to edit the person at the specified index.
+     *
+     * @param index of the person in the filtered person list to edit.
+     * @param editPersonDescriptor details to edit the person with.
      */
     public EditCommand(Index index, EditPersonDescriptor editPersonDescriptor) {
         requireNonNull(index);
@@ -73,6 +78,14 @@ public class EditCommand extends Command {
         this.editPersonDescriptor = new EditPersonDescriptor(editPersonDescriptor);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Replaces the target person's fields with those specified in the {@link EditPersonDescriptor},
+     * provided the edit does not introduce duplicate emails or telegram handles.
+     *
+     * @throws CommandException if the index is out of range or the edit would create a duplicate.
+     */
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
@@ -112,6 +125,15 @@ public class EditCommand extends Command {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Restores the person that was edited back to their original state before
+     * {@link #execute(Model)} was called.
+     *
+     * @throws CommandException if the command has not been executed yet, or if restoring
+     *         the original person would create a duplicate.
+     */
     @Override
     public CommandResult undo(Model model) throws CommandException {
         requireNonNull(model);
@@ -134,6 +156,11 @@ public class EditCommand extends Command {
     /**
      * Creates and returns a {@code Person} with the details of {@code personToEdit}
      * edited with {@code editPersonDescriptor}.
+     * Fields not present in the descriptor retain their original values.
+     *
+     * @param personToEdit the person whose details are to be used as defaults.
+     * @param editPersonDescriptor the descriptor containing the new field values.
+     * @return a new {@code Person} with the updated details.
      */
     private static Person createEditedPerson(Person personToEdit, EditPersonDescriptor editPersonDescriptor) {
         assert personToEdit != null;
@@ -173,18 +200,22 @@ public class EditCommand extends Command {
     }
 
     /**
-     * Stores the details to edit the person with. Each non-empty field value will replace the
-     * corresponding field value of the person.
+     * Stores the details to edit the person with.
+     * Each non-empty field value will replace the corresponding field value of the person.
+     * Fields left as {@code null} indicate that the corresponding value should not be changed.
      */
     public static class EditPersonDescriptor {
         private Name name;
         private Phone phone;
         private Email email;
         private TelegramHandle telegramHandle;
+
         public EditPersonDescriptor() {}
 
         /**
-         * Copy constructor.
+         * Creates a copy of the given {@code EditPersonDescriptor}.
+         *
+         * @param toCopy the descriptor to copy.
          */
         public EditPersonDescriptor(EditPersonDescriptor toCopy) {
             setName(toCopy.name);

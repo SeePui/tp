@@ -94,23 +94,18 @@ public class EditCommand extends Command {
         Person personToEdit = lastShownList.get(index.getZeroBased());
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
 
-        DuplicateConflict duplicateConflict = model.getDuplicateConflictExcluding(personToEdit, editedPerson);
-
-        String duplicateMessage = Messages.getDuplicateConflictMessage(duplicateConflict);
-        if (duplicateMessage != null) {
-            throw new CommandException(duplicateMessage);
-        }
+        throwIfDuplicate(model, personToEdit, editedPerson);
 
         model.setPerson(personToEdit, editedPerson);
         originalPerson = personToEdit;
         updatedPerson = editedPerson;
-
         logger.info("Edited person: " + personToEdit.getName() + " -> " + editedPerson.getName());
 
         String resultMessage = String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
         if (editPersonDescriptor.getEmail().isPresent() && !editedPerson.getEmail().isNusDomain()) {
             resultMessage += "\n" + Messages.MESSAGE_NON_NUS_EMAIL;
         }
+
         return new CommandResult(resultMessage);
     }
 
@@ -135,12 +130,7 @@ public class EditCommand extends Command {
             throw new CommandException(MESSAGE_UNDO_FAILURE);
         }
 
-        DuplicateConflict duplicateConflict = model.getDuplicateConflictExcluding(updatedPerson, originalPerson);
-
-        String duplicateMessage = Messages.getDuplicateConflictMessage(duplicateConflict);
-        if (duplicateMessage != null) {
-            throw new CommandException(duplicateMessage);
-        }
+        throwIfDuplicate(model, updatedPerson, originalPerson);
 
         model.setPerson(updatedPerson, originalPerson);
 
@@ -167,6 +157,23 @@ public class EditCommand extends Command {
                 .orElse(personToEdit.getTelegramHandle());
 
         return new Person(updatedName, updatedPhone, updatedEmail, updatedTelegramHandle, personToEdit.getTags());
+    }
+
+    /**
+     * Throws a {@link CommandException} if setting {@code target} in the model (while excluding
+     * {@code excluded}) would create a duplicate email or telegram handle.
+     *
+     * @param model the model to check against.
+     * @param excluded the person to exclude from the duplicate check.
+     * @param target the person to check for duplicates.
+     * @throws CommandException if a duplicate conflict is found.
+     */
+    private static void throwIfDuplicate(Model model, Person excluded, Person target) throws CommandException {
+        DuplicateConflict conflict = model.getDuplicateConflictExcluding(excluded, target);
+        String message = Messages.getDuplicateConflictMessage(conflict);
+        if (message != null) {
+            throw new CommandException(message);
+        }
     }
 
     @Override

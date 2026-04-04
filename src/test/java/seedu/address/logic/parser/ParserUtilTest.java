@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_PREFIX_WITH_NO_INPUT;
 import static seedu.address.logic.Messages.MESSAGE_PREAMBLE_NOT_EMPTY;
 import static seedu.address.logic.Messages.MESSAGE_PREFIX_SHOULD_NOT_HAVE_VALUE;
@@ -694,7 +695,7 @@ public class ParserUtilTest {
                 String.format(MESSAGE_PREFIX_SHOULD_NOT_HAVE_VALUE, "tr/tutor")));
     }
 
-    //================== validateEmptyPreamble ==================
+    //================== Tests for validateEmptyPreamble ==================
     /*
      Valid equivalence partitions for argMultimap:
     - Empty preamble
@@ -716,6 +717,7 @@ public class ParserUtilTest {
 
     @Test
     public void validateEmptyPreamble_preambleAllWhitespaces_noExceptionThrown() {
+        // Boundary case
         String args = " \t \t \n \t \t n/alice";
 
         assertDoesNotThrow(() -> {
@@ -732,5 +734,35 @@ public class ParserUtilTest {
         assertThrows(ParseException.class,
                 String.format(MESSAGE_PREAMBLE_NOT_EMPTY, "bob", "Usage message"),
                 () -> ParserUtil.validateEmptyPreamble(argMultimap, "Usage message"));
+    }
+
+    //================== Tests for validateKeywordContainsAlphanumeric ==================
+
+    /*
+    Valid equivalence partitions for token:
+    - token contains only alphanumeric characters
+    - token contains only special characters
+    - token contains only alphanumeric characters and special characters (boundary)
+     */
+
+    @Test
+    public void validateKeywordContainsAlphanumeric_alphanumericCharactersOnly_noExceptionThrown() {
+        assertDoesNotThrow(() -> {
+            ParserUtil.validateKeywordContainsAlphanumeric(PREFIX_NAME, "Alice123");
+        });
+    }
+
+    @Test
+    public void validateKeywordContainsAlphanumeric_specialCharactersOnly_throwsParseException() {
+        assertThrows(ParseException.class,
+                String.format(MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS, PREFIX_NAME.getPrefix(), "!!!"),
+                () -> ParserUtil.validateKeywordContainsAlphanumeric(PREFIX_NAME, "!!!"));
+    }
+
+    @Test
+    public void validateKeywordContainsAlphanumeric_alphanumericAndSpecialCharacters_noExceptionThrown() {
+        assertDoesNotThrow(() -> {
+            ParserUtil.validateKeywordContainsAlphanumeric(PREFIX_NAME, "#Alice123!!!");
+        });
     }
 }

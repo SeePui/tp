@@ -81,14 +81,8 @@ public class FindCommandParser implements Parser<FindCommand> {
                     continue;
                 }
 
-                // Check if token contains only punctuation (no alphanumeric characters)
-                if (!token.matches(".*[a-zA-Z0-9].*")) {
-                    throw new ParseException(String.format(
-                            MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS,
-                            prefix.getPrefix(),
-                            token));
-                }
-
+                // Check if token contains only special characters (no alphanumeric characters)
+                ParserUtil.validateKeywordContainsAlphanumeric(prefix, token);
                 validKeywords.add(token);
             }
         }

@@ -163,10 +163,10 @@ public class EditCommand extends Command {
         Name updatedName = editPersonDescriptor.getName().orElse(personToEdit.getName());
         Phone updatedPhone = editPersonDescriptor.getPhone().orElse(personToEdit.getPhone());
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.getEmail());
-        TelegramHandle telegramHandle = editPersonDescriptor.getTelegramHandle()
+        TelegramHandle updatedTelegramHandle = editPersonDescriptor.getTelegramHandle()
                 .orElse(personToEdit.getTelegramHandle());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, telegramHandle, personToEdit.getTags());
+        return new Person(updatedName, updatedPhone, updatedEmail, updatedTelegramHandle, personToEdit.getTags());
     }
 
     @Override

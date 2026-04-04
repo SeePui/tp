@@ -85,15 +85,7 @@ public class EditCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         logger.fine("Executing edit command for index: " + index.getOneBased());
-        List<Person> lastShownList = model.getFilteredPersonList();
-
-        if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(
-                    String.format(Messages.MESSAGE_PERSON_NOT_FOUND_DISPLAYED_INDEX, index.getOneBased()));
-        }
-
-        Person personToEdit = lastShownList.get(index.getZeroBased());
-        assert personToEdit != null : "Person from filtered list should not be null";
+        Person personToEdit = getPersonToEdit(model);
 
         Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
         assert editedPerson != null : "Edited person should not be null";
@@ -111,6 +103,27 @@ public class EditCommand extends Command {
         }
 
         return new CommandResult(resultMessage);
+    }
+
+    /**
+     * Returns the person at the stored index from the model's filtered person list.
+     *
+     * @param model the model to retrieve the person from.
+     * @return the person at the specified index.
+     * @throws CommandException if the index is out of range.
+     */
+    private Person getPersonToEdit(Model model) throws CommandException {
+        List<Person> lastShownList = model.getFilteredPersonList();
+        assert lastShownList != null : "Filtered person list should not be null";
+
+        if (index.getZeroBased() >= lastShownList.size()) {
+            throw new CommandException(
+                    String.format(Messages.MESSAGE_PERSON_NOT_FOUND_DISPLAYED_INDEX, index.getOneBased()));
+        }
+
+        Person personToEdit = lastShownList.get(index.getZeroBased());
+        assert personToEdit != null : "Person from filtered list should not be null";
+        return personToEdit;
     }
 
     @Override
@@ -134,9 +147,12 @@ public class EditCommand extends Command {
             throw new CommandException(MESSAGE_UNDO_FAILURE);
         }
 
+        if (!model.hasPerson(updatedPerson)) {
+            throw new CommandException("Person to undo no longer exists in the address book.");
+        }
+
         throwIfDuplicate(model, updatedPerson, originalPerson);
 
-        assert model.hasPerson(updatedPerson) : "Updated person should exist in model before undo";
         model.setPerson(updatedPerson, originalPerson);
         logger.info("Undid edit: " + updatedPerson.getName() + " -> " + originalPerson.getName());
 

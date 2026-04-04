@@ -159,8 +159,6 @@ public class StringUtil {
                     char prevQ = q.charAt(i - 2);
                     char prevC = c.charAt(j - 2);
 
-                    // if the current 2 letters are flipped
-                    // we can do 1 transposition instead of 2 edits
                     if (chQ == prevC && prevQ == chC) {
                         dp[i][j] = Math.min(
                                 dp[i][j],

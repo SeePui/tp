@@ -1,13 +1,13 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS;
 import static seedu.address.logic.parser.CliSyntax.FIND_COMMAND_PREFIXES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import seedu.address.logic.commands.FindCommand;
@@ -33,7 +33,6 @@ public class FindCommandParser implements Parser<FindCommand> {
         ParserUtil.validateNoInvalidPrefixInputs(leadingSpacedArgs, FIND_COMMAND_PREFIXES);
 
         ArgumentMultimap argumentMultimap = ArgumentTokenizer.tokenize(leadingSpacedArgs, FIND_COMMAND_PREFIXES);
-
         // Check that preamble is empty and that no prefixes have empty values
         ParserUtil.validateEmptyPreamble(argumentMultimap, FindCommand.MESSAGE_USAGE);
         ParserUtil.validateNoEmptyPrefixValues(argumentMultimap, FIND_COMMAND_PREFIXES);
@@ -44,10 +43,7 @@ public class FindCommandParser implements Parser<FindCommand> {
         List<String> tags = parseKeywords(argumentMultimap, PREFIX_TAG);
 
         // throw exception if no keywords are specified for all 3 fields.
-        if (nameKeywords.isEmpty() && emailKeywords.isEmpty() && tags.isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
-        }
+        requireAtLeastOneKeyword(nameKeywords, emailKeywords, tags);
 
         return new FindCommand(new NameEmailTagPredicate(nameKeywords, emailKeywords, tags));
     }
@@ -89,5 +85,20 @@ public class FindCommandParser implements Parser<FindCommand> {
 
         // Return an unmodifiable copy of the valid keywords list
         return List.copyOf(validKeywords);
+    }
+
+    /**
+     * Ensures that at least one search field has keywords.
+     *
+     * @throws ParseException if all keyword lists are empty.
+     */
+    @SafeVarargs
+    private void requireAtLeastOneKeyword(List<String>... keywordLists) throws ParseException {
+        boolean allEmpty = Arrays.stream(keywordLists)
+                .allMatch(List::isEmpty);
+
+        if (allEmpty) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        }
     }
 }

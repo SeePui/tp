@@ -730,10 +730,10 @@ public class ParserUtilTest {
     public void validateEmptyPreamble_nonEmptyPreamble_throwsParseException() {
         String args = " bob n/alice";
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_NAME);
+        String errorMessage = String.format(MESSAGE_PREAMBLE_NOT_EMPTY, "bob", "Usage message");
 
         assertThrows(ParseException.class,
-                String.format(MESSAGE_PREAMBLE_NOT_EMPTY, "bob", "Usage message"),
-                () -> ParserUtil.validateEmptyPreamble(argMultimap, "Usage message"));
+                errorMessage, () -> ParserUtil.validateEmptyPreamble(argMultimap, "Usage message"));
     }
 
     //================== Tests for validateKeywordContainsAlphanumeric ==================
@@ -754,9 +754,11 @@ public class ParserUtilTest {
 
     @Test
     public void validateKeywordContainsAlphanumeric_specialCharactersOnly_throwsParseException() {
+        String errorMessage = String.format(MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS,
+                PREFIX_NAME.getPrefix(), "!!!");
+
         assertThrows(ParseException.class,
-                String.format(MESSAGE_INVALID_KEYWORD_WITH_ONLY_SPECIAL_CHARACTERS, PREFIX_NAME.getPrefix(), "!!!"),
-                () -> ParserUtil.validateKeywordContainsAlphanumeric(PREFIX_NAME, "!!!"));
+                errorMessage, () -> ParserUtil.validateKeywordContainsAlphanumeric(PREFIX_NAME, "!!!"));
     }
 
     @Test

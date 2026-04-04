@@ -28,7 +28,6 @@ public class FindCommandParser implements Parser<FindCommand> {
         // ArgumentTokenizer recognizes prefixes only when preceded by whitespace.
         // Add a leading space so first prefix at start of argument string is recognized.
         String leadingSpacedArgs = args.startsWith(" ") ? args : " " + args;
-        assert leadingSpacedArgs.startsWith(" ") : "Input should start with a space for prefix recognition";
 
         // Check for any disallowed prefixes
         ParserUtil.validateNoInvalidPrefixInputs(leadingSpacedArgs, FIND_COMMAND_PREFIXES);

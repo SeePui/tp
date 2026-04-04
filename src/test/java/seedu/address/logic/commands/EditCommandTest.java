@@ -43,6 +43,7 @@ public class EditCommandTest {
 
     @Test
     public void execute_allFieldsSpecifiedUnfilteredList_success() {
+        // EP: all four fields (name, phone, email, telegram) provided
         Person editedPerson = new PersonBuilder()
                 .withGeneralTags("friends")
                 .withRoleTags("student")
@@ -62,6 +63,7 @@ public class EditCommandTest {
 
     @Test
     public void execute_someFieldsSpecifiedUnfilteredList_success() {
+        // EP: subset of fields (name and phone only)
         Index indexLastPerson = Index.fromOneBased(model.getFilteredPersonList().size());
         Person lastPerson = model.getFilteredPersonList().get(indexLastPerson.getZeroBased());
 
@@ -82,6 +84,7 @@ public class EditCommandTest {
 
     @Test
     public void execute_noFieldSpecifiedUnfilteredList_success() {
+        // EP: no fields provided — person remains unchanged
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, new EditPersonDescriptor());
         Person editedPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
 
@@ -186,6 +189,7 @@ public class EditCommandTest {
 
     @Test
     public void execute_duplicateTelegramHandleDifferentCaseUnfilteredList_failure() {
+        // EP: case-insensitive duplicate detection for telegram handle
         Person firstPersonWithTelegram = new PersonBuilder(model.getFilteredPersonList()
                 .get(INDEX_FIRST_PERSON.getZeroBased()))
                 .withTelegramHandle("test1")
@@ -229,6 +233,7 @@ public class EditCommandTest {
 
     @Test
     public void execute_invalidPersonIndexUnfilteredList_failure() {
+        // BVA: index = list size + 1 (one beyond the last valid index)
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
         int index = outOfBoundIndex.getOneBased();
 
@@ -241,6 +246,7 @@ public class EditCommandTest {
 
     @Test
     public void execute_invalidPersonIndexFilteredList_failure() {
+        // BVA: index valid in full list but out of range in filtered list
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
         Index outOfBoundIndex = INDEX_SECOND_PERSON;
         int index = outOfBoundIndex.getOneBased();

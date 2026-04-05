@@ -37,6 +37,10 @@ public class NameContainsKeywordsPredicateTest {
 
         // different predicate -> returns false
         assertFalse(firstPredicate.equals(secondPredicate));
+
+        // empty and whitespace keywords -> returns true
+        List<String> thirdPredicateKeywordList = Arrays.asList("first", " ", "second", "");
+        assertTrue(secondPredicate.equals(new NameContainsKeywordsPredicate(thirdPredicateKeywordList)));
     }
 
     @Test
@@ -61,13 +65,18 @@ public class NameContainsKeywordsPredicateTest {
         predicate = new NameContainsKeywordsPredicate(List.of("Alice", "B"));
         assertTrue(predicate.test(new PersonBuilder().withName("Alice Bob").build()));
 
+        // Substring match once keyword is normalized and split
+        predicate = new NameContainsKeywordsPredicate(Collections.singletonList("Alice-Bob"));
+        assertTrue(predicate.test(new PersonBuilder().withName("Alice Johnson").build()));
+
         // Mixed-case keywords
         predicate = new NameContainsKeywordsPredicate(Arrays.asList("aLIce", "bOB"));
         assertTrue(predicate.test(new PersonBuilder().withName("Alice Bob").build()));
 
-        // Test fuzzy match success (within threshold)
-        predicate = new NameContainsKeywordsPredicate(List.of("Olivero")); // 1 edit away from Oliviero
-        assertTrue(predicate.test(new PersonBuilder().withName("Oliviero").build()));
+        // Test fuzzy match success
+        // 1 transposition away from Alice (within threshold of 1)
+        predicate = new NameContainsKeywordsPredicate(List.of("Aliec"));
+        assertTrue(predicate.test(new PersonBuilder().withName("Alice").build()));
     }
 
     @Test

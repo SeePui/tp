@@ -59,32 +59,32 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
                         .split("\\s+"));
 
         return normalizedKeywords.stream()
-                .anyMatch(keyword -> matchesAnyToken(nameTokens, keyword));
+                .anyMatch(keyword -> keywordMatchesAnyToken(keyword, nameTokens));
     }
 
-    private boolean matchesAnyToken(List<String> nameTokens, String keyword) {
+    private boolean keywordMatchesAnyToken(String keyword, List<String> nameTokens) {
         return nameTokens.stream()
-                .anyMatch(token -> token.contains(keyword)
-                        || isFuzzyMatch(token, keyword));
+                .anyMatch(nameToken -> nameToken.contains(keyword)
+                        || isFuzzyMatch(keyword, nameToken));
     }
 
     /**
-     * Checks whether the given {@code token} approximately matches the {@code keyword}
+     * Checks whether the given {@code keyword} approximately matches the {@code nameToken}
      * using the Damerau-Levenshtein algorithm.
      *
-     * @param token the string to test
-     * @param keyword the target keyword
+     * @param keyword the target keyword to search
+     * @param nameToken the string to test against the keyword
      * @return {@code true} if {@code token} matches {@code keyword} within the allowed edit distance
      */
-    private boolean isFuzzyMatch(String token, String keyword) {
+    private boolean isFuzzyMatch(String keyword, String nameToken) {
         int threshold = computeThreshold(keyword);
 
         // Optimisation to avoid expensive distance calculation if lengths differ too much
-        if (Math.abs(token.length() - keyword.length()) > threshold) {
+        if (Math.abs(nameToken.length() - keyword.length()) > threshold) {
             return false;
         }
 
-        return StringUtil.isWithinEditDistance(keyword, token, threshold);
+        return StringUtil.isWithinEditDistance(keyword, nameToken, threshold);
     }
 
     /**

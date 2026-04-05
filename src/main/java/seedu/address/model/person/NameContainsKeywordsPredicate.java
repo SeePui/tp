@@ -84,7 +84,7 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
             return false;
         }
 
-        return StringUtil.matchesFuzzy(token, keyword, threshold);
+        return StringUtil.matchesFuzzy(keyword, token, threshold);
     }
 
     /**

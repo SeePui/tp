@@ -49,13 +49,12 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
     // Ratio of keyword length to determine allowed edits in fuzzy matching (e.g., 20% of the keyword length)
     private static final double EDIT_DISTANCE_RATIO = 0.2;
 
-    private final List<String> keywords;
+    private final List<String> normalizedKeywords;
 
     /**
      * Constructs a {@code NameContainsKeywordsPredicate} using a list of name keywords.
      *
-     * <p>The predicate stores a defensive copy of the keywords list to prevent external modification.
-     * Keywords will be normalized during matching (see {@link #test(Person)}).</p>
+     * <p> Keywords will be normalized to lowercase and any special characters are removed.</p>
      *
      * @param keywords The list of name keywords to match against (cannot be null or contain null elements)
      * @throws NullPointerException if {@code keywords} is null or contains null elements
@@ -63,7 +62,9 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
     public NameContainsKeywordsPredicate(List<String> keywords) {
         requireAllNonNull(keywords);
 
-        this.keywords = List.copyOf(keywords);
+        this.normalizedKeywords = keywords.stream()
+                .map(StringUtil::normalize)
+                .toList();
     }
 
     @Override
@@ -72,8 +73,7 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
         String[] nameTokens = StringUtil.normalize(person.getName().fullName)
                 .split("\\s+");
 
-        return keywords.stream()
-                .map(StringUtil::normalize)
+        return normalizedKeywords.stream()
                 .anyMatch(keyword -> matchesAnyToken(nameTokens, keyword));
     }
 
@@ -117,11 +117,13 @@ public class NameContainsKeywordsPredicate implements Predicate<Person> {
             return false;
         }
 
-        return keywords.equals(otherNameContainsKeywordsPredicate.keywords);
+        return normalizedKeywords.equals(otherNameContainsKeywordsPredicate.normalizedKeywords);
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).add("keywords", keywords).toString();
+        return new ToStringBuilder(this)
+                .add("keywords", normalizedKeywords)
+                .toString();
     }
 }

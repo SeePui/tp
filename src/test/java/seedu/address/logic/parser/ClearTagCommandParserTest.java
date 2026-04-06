@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_INDEX;
 import static seedu.address.logic.Messages.MESSAGE_PREFIX_SHOULD_NOT_HAVE_VALUE;
 import static seedu.address.logic.Messages.MESSAGE_UNEXPECTED_EXTRA_INPUT;
 import static seedu.address.logic.Messages.getErrorMessageForDuplicatePrefixes;
@@ -57,28 +58,28 @@ public class ClearTagCommandParserTest {
     @Test
     public void parse_invalidIndexWithoutPrefix_failure() {
         assertParseFailure(parser, "0",
-                ParserUtil.MESSAGE_INVALID_INDEX);
+                MESSAGE_INVALID_INDEX);
 
         assertParseFailure(parser, "abc",
-                ParserUtil.MESSAGE_INVALID_INDEX);
+                MESSAGE_INVALID_INDEX);
     }
 
     @Test
     public void parse_invalidIndexWithPrefix_failure() {
         assertParseFailure(parser,
                 "0 tr/",
-                ParserUtil.MESSAGE_INVALID_INDEX);
+                MESSAGE_INVALID_INDEX);
 
         assertParseFailure(parser,
                 "-5 tr/",
-                ParserUtil.MESSAGE_INVALID_INDEX);
+                MESSAGE_INVALID_INDEX);
     }
 
     @Test
     public void parse_invalidIndexNonNumeric_failure() {
         assertParseFailure(parser,
                 "abc tg/",
-                ParserUtil.MESSAGE_INVALID_INDEX);
+                MESSAGE_INVALID_INDEX);
     }
 
     // ================== FAILURE CASES - PREFIX VALIDATION ==================

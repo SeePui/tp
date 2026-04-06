@@ -21,6 +21,7 @@ public class Messages {
     public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d persons listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
                 "Multiple values specified for the following single-valued field(s): ";
+    public static final String MESSAGE_INVALID_INDEX = "Index must be a positive integer (1, 2, 3...).";
     public static final String MESSAGE_INVALID_SORT_ORDER =
                 "Invalid order value. Supported values: %1$s";
     public static final String MESSAGE_SORT_RESET = "Sort order reset to default.";
@@ -40,14 +41,12 @@ public class Messages {
             "Invalid command format! \nUnexpected extra input detected: '%s'.";
     public static final String MESSAGE_PREAMBLE_NOT_EMPTY =
             "Unexpected text before the first prefix: '%s'.\nRemove it or attach it to a valid prefix.\n%s";
-
     public static final String MESSAGE_DUPLICATE_EMAIL =
             "A person with this email already exists in the address book";
     public static final String MESSAGE_DUPLICATE_TELEGRAM_HANDLE =
             "A person with this Telegram handle already exists in the address book";
     public static final String MESSAGE_DUPLICATE_EMAIL_AND_TELEGRAM_HANDLE =
             "A person with this email and Telegram handle already exists in the address book";
-
     public static final String MESSAGE_DUPLICATE_EMAIL_IN_STORAGE =
             "Persons list contains duplicate email(s).";
     public static final String MESSAGE_DUPLICATE_TELEGRAM_HANDLE_IN_STORAGE =

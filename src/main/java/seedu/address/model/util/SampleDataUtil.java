@@ -6,37 +6,44 @@ import java.util.stream.Collectors;
 
 import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
-import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.TelegramHandle;
 import seedu.address.model.tag.Tag;
+import seedu.address.model.tag.TagType;
 
 /**
  * Contains utility methods for populating {@code AddressBook} with sample data.
  */
 public class SampleDataUtil {
     public static Person[] getSamplePersons() {
-        return new Person[] {
-            new Person(new Name("Alex Yeoh"), new Phone("87438807"), new Email("alexyeoh@example.com"),
-                new Address("Blk 30 Geylang Street 29, #06-40"),
-                getTagSet("friends")),
-            new Person(new Name("Bernice Yu"), new Phone("99272758"), new Email("berniceyu@example.com"),
-                new Address("Blk 30 Lorong 3 Serangoon Gardens, #07-18"),
-                getTagSet("colleagues", "friends")),
-            new Person(new Name("Charlotte Oliveiro"), new Phone("93210283"), new Email("charlotte@example.com"),
-                new Address("Blk 11 Ang Mo Kio Street 74, #11-04"),
-                getTagSet("neighbours")),
-            new Person(new Name("David Li"), new Phone("91031282"), new Email("lidavid@example.com"),
-                new Address("Blk 436 Serangoon Gardens Street 26, #16-43"),
-                getTagSet("family")),
-            new Person(new Name("Irfan Ibrahim"), new Phone("92492021"), new Email("irfan@example.com"),
-                new Address("Blk 47 Tampines Street 20, #17-35"),
-                getTagSet("classmates")),
-            new Person(new Name("Roy Balakrishnan"), new Phone("92624417"), new Email("royb@example.com"),
-                new Address("Blk 45 Aljunied Street 85, #11-31"),
-                getTagSet("colleagues"))
+        return new Person[]{
+            new Person(new Name("Tan Wei Ming"), new Phone("65162345"),
+                new Email("tanwm@comp.nus.edu.sg"),
+                new TelegramHandle("tanwm_nus"),
+                combineTags(getRoleTagSet("Professor"), getCourseTagSet("CS2103T"))),
+            new Person(new Name("Lim Beng Huat"), new Phone("91234567"),
+                new Email("limbenghuat@u.nus.edu"),
+                new TelegramHandle("limbenghuat"),
+                combineTags(getRoleTagSet("TeachingAssistant"), getCourseTagSet("CS2103T"))),
+            new Person(new Name("Alice Tan"), new Phone("87654321"),
+                new Email("alicetan@u.nus.edu"),
+                new TelegramHandle("alicetan_sg"),
+                combineTags(getCourseTagSet("CS2103T", "CS2101"), getGeneralTagSet("ProjectMate"))),
+            new Person(new Name("Bob Chen"), new Phone("92345678"),
+                new Email("bobchen@u.nus.edu"),
+                new TelegramHandle("bobchen_nus"),
+                combineTags(getCourseTagSet("CS2040S"), getGeneralTagSet("StudyGroup"))),
+            new Person(new Name("Priya Suresh"), new Phone("83456789"),
+                new Email("priyasuresh@u.nus.edu"),
+                new TelegramHandle("priyasuresh"),
+                combineTags(getRoleTagSet("TeachingAssistant"), getCourseTagSet("CS2101"))),
+            new Person(new Name("David Lim"), new Phone("65161234"),
+                new Email("davidlim@comp.nus.edu.sg"),
+                new TelegramHandle("davidlim_nus"),
+                combineTags(getRoleTagSet("Professor"), getCourseTagSet("CS1101S"))),
         };
     }
 
@@ -49,12 +56,39 @@ public class SampleDataUtil {
     }
 
     /**
-     * Returns a tag set containing the list of strings given.
+     * Combines multiple tag sets into one set.
      */
-    public static Set<Tag> getTagSet(String... strings) {
-        return Arrays.stream(strings)
-                .map(Tag::new)
+    @SafeVarargs
+    private static Set<Tag> combineTags(Set<Tag>... tagSets) {
+        return Arrays.stream(tagSets)
+                .flatMap(Set::stream)
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Returns a set of general tags.
+     */
+    public static Set<Tag> getGeneralTagSet(String... strings) {
+        return Arrays.stream(strings)
+                .map(s -> new Tag(s, TagType.GENERAL))
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns a set of role tags.
+     */
+    public static Set<Tag> getRoleTagSet(String... strings) {
+        return Arrays.stream(strings)
+                .map(s -> new Tag(s, TagType.ROLE))
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns a set of course tags.
+     */
+    public static Set<Tag> getCourseTagSet(String... strings) {
+        return Arrays.stream(strings)
+                .map(s -> new Tag(s, TagType.COURSE))
+                .collect(Collectors.toSet());
+    }
 }

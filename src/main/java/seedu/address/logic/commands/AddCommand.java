@@ -1,16 +1,16 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TELEGRAM_HANDLE;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.person.DuplicateConflict;
 import seedu.address.model.person.Person;
 
 /**
@@ -20,24 +20,26 @@ public class AddCommand extends Command {
 
     public static final String COMMAND_WORD = "add";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a person to the address book. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD
+            + ": Adds a person to the address book. \n"
             + "Parameters: "
             + PREFIX_NAME + "NAME "
-            + PREFIX_PHONE + "PHONE "
             + PREFIX_EMAIL + "EMAIL "
-            + PREFIX_ADDRESS + "ADDRESS "
-            + "[" + PREFIX_TAG + "TAG]...\n"
+            + "[" + PREFIX_PHONE + "PHONE] "
+            + "[" + PREFIX_TELEGRAM_HANDLE + "TELEGRAM_HANDLE].\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_NAME + "John Doe "
-            + PREFIX_PHONE + "98765432 "
             + PREFIX_EMAIL + "johnd@example.com "
-            + PREFIX_ADDRESS + "311, Clementi Ave 2, #02-25 "
-            + PREFIX_TAG + "friends "
-            + PREFIX_TAG + "owesMoney";
+            + PREFIX_PHONE + "98765432 "
+            + PREFIX_TELEGRAM_HANDLE + "johndoe123";
 
     public static final String MESSAGE_SUCCESS = "New person added: %1$s";
-    public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book";
-
+    public static final String MESSAGE_DUPLICATE_EMAIL = Messages.MESSAGE_DUPLICATE_EMAIL;
+    public static final String MESSAGE_DUPLICATE_TELEGRAM_HANDLE = Messages.MESSAGE_DUPLICATE_TELEGRAM_HANDLE;
+    public static final String MESSAGE_DUPLICATE_EMAIL_AND_TELEGRAM_HANDLE =
+            Messages.MESSAGE_DUPLICATE_EMAIL_AND_TELEGRAM_HANDLE;
+    public static final String MESSAGE_UNDO_SUCCESS = "Undo add person: %1$s";
+    public static final String MESSAGE_UNDO_FAILURE = "Cannot undo add because the person no longer exists.";
     private final Person toAdd;
 
     /**
@@ -52,12 +54,46 @@ public class AddCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        if (model.hasPerson(toAdd)) {
-            throw new CommandException(MESSAGE_DUPLICATE_PERSON);
+        DuplicateConflict duplicateConflict = model.getDuplicateConflict(toAdd);
+
+        String duplicateMessage = Messages.getDuplicateConflictMessage(duplicateConflict);
+        if (duplicateMessage != null) {
+            throw new CommandException(duplicateMessage);
         }
 
         model.addPerson(toAdd);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
+
+        String resultMessage = String.format(MESSAGE_SUCCESS, Messages.format(toAdd));
+        if (!toAdd.getEmail().isNusDomain()) {
+            resultMessage += "\n" + Messages.MESSAGE_NON_NUS_EMAIL;
+        }
+        return new CommandResult(resultMessage);
+    }
+
+    /**
+     * @return {@code true} since an add operation can be undone by removing the added person.
+     */
+    @Override
+    public boolean isUndoable() {
+        return true;
+    }
+
+    /**
+     * The undo operation removes the person that was previously added to the model.
+     *
+     * @param model The model containing the current state of the address book.
+     * @return A {@code CommandResult} indicating the result of the undo operation.
+     * @throws CommandException If the person to be removed no longer exists in the model,
+     *                          and thus the undo operation cannot be completed.
+     */
+    @Override
+    public CommandResult undo(Model model) throws CommandException {
+        requireNonNull(model);
+        if (!model.hasPerson(toAdd)) {
+            throw new CommandException(MESSAGE_UNDO_FAILURE);
+        }
+        model.deletePerson(toAdd);
+        return createUndoPersonResult(MESSAGE_UNDO_SUCCESS, toAdd);
     }
 
     @Override

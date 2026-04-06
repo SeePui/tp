@@ -46,12 +46,14 @@ public class ArgumentTokenizer {
      */
     private static List<PrefixPosition> findPrefixPositions(String argsString, Prefix prefix) {
         List<PrefixPosition> positions = new ArrayList<>();
+        String argsStringLower = argsString.toLowerCase();
+        String prefixLower = prefix.getPrefix().toLowerCase();
 
-        int prefixPosition = findPrefixPosition(argsString, prefix.getPrefix(), 0);
+        int prefixPosition = findPrefixPosition(argsStringLower, prefixLower, 0);
         while (prefixPosition != -1) {
             PrefixPosition extendedPrefix = new PrefixPosition(prefix, prefixPosition);
             positions.add(extendedPrefix);
-            prefixPosition = findPrefixPosition(argsString, prefix.getPrefix(), prefixPosition);
+            prefixPosition = findPrefixPosition(argsStringLower, prefixLower, prefixPosition);
         }
 
         return positions;
@@ -63,7 +65,7 @@ public class ArgumentTokenizer {
      * is valid if there is a whitespace before {@code prefix}. Returns -1 if no
      * such occurrence can be found.
      *
-     * E.g if {@code argsString} = "e/hip/900", {@code prefix} = "p/" and
+     * E.g. if {@code argsString} = "e/hip/900", {@code prefix} = "p/" and
      * {@code fromIndex} = 0, this method returns -1 as there are no valid
      * occurrences of "p/" with whitespace before it. However, if
      * {@code argsString} = "e/hi p/900", {@code prefix} = "p/" and

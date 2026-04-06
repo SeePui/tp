@@ -1,11 +1,14 @@
 package seedu.address.ui;
 
+import java.awt.Desktop;
+import java.net.URI;
 import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
@@ -14,6 +17,9 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.Logic;
 import seedu.address.logic.commands.CommandResult;
+import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
 
@@ -33,7 +39,6 @@ public class MainWindow extends UiPart<Stage> {
     // Independent Ui parts residing in this Ui container
     private PersonListPanel personListPanel;
     private ResultDisplay resultDisplay;
-    private HelpWindow helpWindow;
 
     @FXML
     private StackPane commandBoxPlaceholder;
@@ -64,8 +69,6 @@ public class MainWindow extends UiPart<Stage> {
         setWindowDefaultSize(logic.getGuiSettings());
 
         setAccelerators();
-
-        helpWindow = new HelpWindow();
     }
 
     public Stage getPrimaryStage() {
@@ -74,6 +77,33 @@ public class MainWindow extends UiPart<Stage> {
 
     private void setAccelerators() {
         setAccelerator(helpMenuItem, KeyCombination.valueOf("F1"));
+        setGlobalShortcuts();
+    }
+
+    /**
+     * Sets global keyboard shortcuts for frequently used commands.
+     */
+    private void setGlobalShortcuts() {
+        getRoot().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.F2) {
+                executeShortcutCommand(ListCommand.COMMAND_WORD);
+                event.consume();
+            } else if (event.getCode() == KeyCode.F3) {
+                executeShortcutCommand(ExitCommand.COMMAND_WORD);
+                event.consume();
+            }
+        });
+    }
+
+    /**
+     * Executes a command triggered from a keyboard shortcut.
+     */
+    private void executeShortcutCommand(String commandText) {
+        try {
+            executeCommand(commandText);
+        } catch (CommandException | ParseException e) {
+            logger.info("Shortcut command failed: " + commandText);
+        }
     }
 
     /**
@@ -94,8 +124,8 @@ public class MainWindow extends UiPart<Stage> {
          * not work when the focus is in them because the key event is consumed by
          * the TextInputControl(s).
          *
-         * For now, we add following event filter to capture such key events and open
-         * help window purposely so to support accelerators even when focus is
+         * For now, we add the following event filter to capture such key events and open
+         * the user guide so as to support accelerators even when focus is
          * in CommandBox or ResultDisplay.
          */
         getRoot().addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -110,11 +140,11 @@ public class MainWindow extends UiPart<Stage> {
      * Fills up all the placeholders of this window.
      */
     void fillInnerParts() {
-        personListPanel = new PersonListPanel(logic.getFilteredPersonList());
-        personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
-
         resultDisplay = new ResultDisplay();
         resultDisplayPlaceholder.getChildren().add(resultDisplay.getRoot());
+
+        personListPanel = new PersonListPanel(logic.getFilteredPersonList());
+        personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
 
         StatusBarFooter statusBarFooter = new StatusBarFooter(logic.getAddressBookFilePath());
         statusbarPlaceholder.getChildren().add(statusBarFooter.getRoot());
@@ -136,14 +166,21 @@ public class MainWindow extends UiPart<Stage> {
     }
 
     /**
-     * Opens the help window or focuses on it if it's already opened.
+     * Opens the user guide in the system default browser.
      */
     @FXML
     public void handleHelp() {
-        if (!helpWindow.isShowing()) {
-            helpWindow.show();
-        } else {
-            helpWindow.focus();
+        handleHelpUrl(HelpCommand.USERGUIDE_URL);
+    }
+
+    /**
+     * Opens the given URL in the system default browser.
+     */
+    private void handleHelpUrl(String url) {
+        try {
+            Desktop.getDesktop().browse(new URI(url));
+        } catch (Exception e) {
+            logger.warning("Failed to open URL in browser: " + e.getMessage());
         }
     }
 
@@ -159,7 +196,6 @@ public class MainWindow extends UiPart<Stage> {
         GuiSettings guiSettings = new GuiSettings(primaryStage.getWidth(), primaryStage.getHeight(),
                 (int) primaryStage.getX(), (int) primaryStage.getY());
         logic.setGuiSettings(guiSettings);
-        helpWindow.hide();
         primaryStage.hide();
     }
 
@@ -179,7 +215,7 @@ public class MainWindow extends UiPart<Stage> {
             resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
 
             if (commandResult.isShowHelp()) {
-                handleHelp();
+                handleHelpUrl(commandResult.getHelpUrl());
             }
 
             if (commandResult.isExit()) {

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.person.DuplicateConflict;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.UniquePersonList;
 
@@ -68,11 +69,36 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
+     * Returns the duplicate conflict type for {@code person}.
+     */
+    public DuplicateConflict getDuplicateConflict(Person person) {
+        requireNonNull(person);
+        return persons.getDuplicateConflict(person);
+    }
+
+    /**
+     * Returns the duplicate conflict type for {@code person}, excluding {@code target}.
+     */
+    public DuplicateConflict getDuplicateConflictExcluding(Person target, Person person) {
+        requireNonNull(target);
+        requireNonNull(person);
+        return persons.getDuplicateConflictExcluding(target, person);
+    }
+
+    /**
      * Adds a person to the address book.
      * The person must not already exist in the address book.
      */
     public void addPerson(Person p) {
         persons.add(p);
+    }
+
+    /**
+     * Adds a person to the address book at the specified index.
+     * The person must not already exist in the address book.
+     */
+    public void addPerson(int index, Person p) {
+        persons.add(index, p);
     }
 
     /**

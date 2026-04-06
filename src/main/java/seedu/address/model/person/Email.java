@@ -3,6 +3,8 @@ package seedu.address.model.person;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
+import java.util.Locale;
+
 /**
  * Represents a Person's email in the address book.
  * Guarantees: immutable; is valid as declared in {@link #isValidEmail(String)}
@@ -30,7 +32,9 @@ public class Email {
     private static final String DOMAIN_LAST_PART_REGEX = "(" + DOMAIN_PART_REGEX + "){2,}$"; // At least two chars
     private static final String DOMAIN_REGEX = "(" + DOMAIN_PART_REGEX + "\\.)*" + DOMAIN_LAST_PART_REGEX;
     public static final String VALIDATION_REGEX = LOCAL_PART_REGEX + "@" + DOMAIN_REGEX;
-
+    private static final String NUS_PERIOD_STAFF_DOMAIN = "@nus.edu.sg";
+    private static final String NUS_STUDENT_DOMAIN = "@u.nus.edu";
+    private static final String NUS_STAFF_DOMAIN = ".nus.edu.sg";
     public final String value;
 
     /**
@@ -41,7 +45,20 @@ public class Email {
     public Email(String email) {
         requireNonNull(email);
         checkArgument(isValidEmail(email), MESSAGE_CONSTRAINTS);
-        value = email;
+        value = email.toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Returns true if this email contains the specified keyword,
+     * ignoring case differences.
+     *
+     * @param keyword The keyword to search for within the email.
+     * @return true if the email contains the keyword (case-insensitive),
+     *         false otherwise.
+     */
+    public boolean containsIgnoreCase(String keyword) {
+        return this.value.toLowerCase()
+                .contains(keyword.toLowerCase());
     }
 
     /**
@@ -74,6 +91,11 @@ public class Email {
     @Override
     public int hashCode() {
         return value.hashCode();
+    }
+
+    public boolean isNusDomain() {
+        return value.endsWith(NUS_STUDENT_DOMAIN) || value.endsWith(NUS_STAFF_DOMAIN)
+                || value.endsWith(NUS_PERIOD_STAFF_DOMAIN);
     }
 
 }

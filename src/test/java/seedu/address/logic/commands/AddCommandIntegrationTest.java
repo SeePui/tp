@@ -34,15 +34,73 @@ public class AddCommandIntegrationTest {
         expectedModel.addPerson(validPerson);
 
         assertCommandSuccess(new AddCommand(validPerson), model,
-                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
+                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson))
+                        + "\n" + Messages.MESSAGE_NON_NUS_EMAIL,
                 expectedModel);
     }
 
     @Test
-    public void execute_duplicatePerson_throwsCommandException() {
+    public void execute_duplicateEmail_throwsCommandException() {
         Person personInList = model.getAddressBook().getPersonList().get(0);
         assertCommandFailure(new AddCommand(personInList), model,
-                AddCommand.MESSAGE_DUPLICATE_PERSON);
+                AddCommand.MESSAGE_DUPLICATE_EMAIL);
     }
 
+    @Test
+    public void execute_duplicateTelegramHandle_throwsCommandException() {
+        Person existingPerson = new PersonBuilder()
+                .withName("Telegram Existing")
+                .withEmail("telegramexisting@example.com")
+                .withTelegramHandle("alice123")
+                .build();
+        model.addPerson(existingPerson);
+
+        Person personWithSameTelegramHandle = new PersonBuilder()
+                .withName("Telegram Duplicate")
+                .withEmail("different@example.com")
+                .withTelegramHandle("alice123")
+                .build();
+
+        assertCommandFailure(new AddCommand(personWithSameTelegramHandle), model,
+                AddCommand.MESSAGE_DUPLICATE_TELEGRAM_HANDLE);
+    }
+
+    @Test
+    public void execute_duplicateTelegramHandleDifferentCase_throwsCommandException() {
+        Person existingPerson = new PersonBuilder()
+                .withName("Telegram Existing")
+                .withEmail("telegramexisting@example.com")
+                .withTelegramHandle("test1")
+                .build();
+        model.addPerson(existingPerson);
+
+        Person personWithSameTelegramHandle = new PersonBuilder()
+                .withName("Telegram Duplicate")
+                .withEmail("different@example.com")
+                .withTelegramHandle("TEST1")
+                .build();
+
+        assertCommandFailure(new AddCommand(personWithSameTelegramHandle), model,
+                AddCommand.MESSAGE_DUPLICATE_TELEGRAM_HANDLE);
+    }
+
+
+    @Test
+    public void execute_duplicateEmailAndTelegramHandle_throwsCommandException() {
+        Person existingPerson = new PersonBuilder()
+                .withName("Telegram Existing")
+                .withEmail("duplicate@example.com")
+                .withTelegramHandle("alice123")
+                .build();
+        model.addPerson(existingPerson);
+
+        Person duplicatePerson = new PersonBuilder()
+                .withName("Telegram Duplicate")
+                .withEmail("duplicate@example.com")
+                .withTelegramHandle("alice123")
+                .build();
+
+        assertCommandFailure(new AddCommand(duplicatePerson), model,
+                AddCommand.MESSAGE_DUPLICATE_EMAIL_AND_TELEGRAM_HANDLE);
+    }
 }

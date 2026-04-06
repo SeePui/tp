@@ -1,35 +1,35 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TELEGRAM_HANDLE;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.CollectionUtil;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.Address;
+import seedu.address.model.person.DuplicateConflict;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
-import seedu.address.model.tag.Tag;
+import seedu.address.model.person.TelegramHandle;
 
 /**
  * Edits the details of an existing person in the address book.
+ * <p>
+ * Identifies the target person by their displayed index, then overwrites the specified fields
+ * with the values provided in an {@link EditPersonDescriptor}. This command is undoable.
  */
 public class EditCommand extends Command {
 
@@ -40,24 +40,30 @@ public class EditCommand extends Command {
             + "Existing values will be overwritten by the input values.\n"
             + "Parameters: INDEX (must be a positive integer) "
             + "[" + PREFIX_NAME + "NAME] "
-            + "[" + PREFIX_PHONE + "PHONE] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
-            + "[" + PREFIX_ADDRESS + "ADDRESS] "
-            + "[" + PREFIX_TAG + "TAG]...\n"
+            + "[" + PREFIX_PHONE + "PHONE] "
+            + "[" + PREFIX_TELEGRAM_HANDLE + "TELEGRAM_HANDLE].\n"
             + "Example: " + COMMAND_WORD + " 1 "
+            + PREFIX_NAME + "john doe "
+            + PREFIX_EMAIL + "johndoe@example.com "
             + PREFIX_PHONE + "91234567 "
-            + PREFIX_EMAIL + "johndoe@example.com";
+            + PREFIX_TELEGRAM_HANDLE + "johndoe123";
 
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
-    public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
-    public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
+    public static final String MESSAGE_UNDO_FAILURE = "Cannot undo edit before command execution.";
+    public static final String MESSAGE_UNDO_SUCCESS = "Undo edit person: %1$s";
 
+    private static final Logger logger = LogsCenter.getLogger(EditCommand.class);
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
+    private Person originalPerson;
+    private Person updatedPerson;
 
     /**
-     * @param index of the person in the filtered person list to edit
-     * @param editPersonDescriptor details to edit the person with
+     * Creates an {@code EditCommand} to edit the person at the specified index.
+     *
+     * @param index of the person in the filtered person list to edit.
+     * @param editPersonDescriptor details to edit the person with.
      */
     public EditCommand(Index index, EditPersonDescriptor editPersonDescriptor) {
         requireNonNull(index);
@@ -67,41 +73,135 @@ public class EditCommand extends Command {
         this.editPersonDescriptor = new EditPersonDescriptor(editPersonDescriptor);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Replaces the target person's fields with those specified in the {@link EditPersonDescriptor},
+     * provided the edit does not introduce duplicate emails or telegram handles.
+     *
+     * @throws CommandException if the index is out of range or the edit would create a duplicate.
+     */
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        logger.fine("Executing edit command for index: " + index.getOneBased());
+        Person personToEdit = getPersonToEdit(model);
+
+        Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
+        assert editedPerson != null : "Edited person should not be null";
+
+        throwIfDuplicate(model, personToEdit, editedPerson);
+
+        model.setPerson(personToEdit, editedPerson);
+        originalPerson = personToEdit;
+        updatedPerson = editedPerson;
+        logger.info("Edited person: " + personToEdit.getName() + " -> " + editedPerson.getName());
+
+        String resultMessage = String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
+        if (editPersonDescriptor.getEmail().isPresent() && !editedPerson.getEmail().isNusDomain()) {
+            resultMessage += "\n" + Messages.MESSAGE_NON_NUS_EMAIL;
+        }
+
+        return new CommandResult(resultMessage);
+    }
+
+    /**
+     * Returns the person at the stored index from the model's filtered person list.
+     *
+     * @param model the model to retrieve the person from.
+     * @return the person at the specified index.
+     * @throws CommandException if the index is out of range.
+     */
+    private Person getPersonToEdit(Model model) throws CommandException {
         List<Person> lastShownList = model.getFilteredPersonList();
+        assert lastShownList != null : "Filtered person list should not be null";
 
         if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+            throw new CommandException(
+                    String.format(Messages.MESSAGE_PERSON_NOT_FOUND_DISPLAYED_INDEX, index.getOneBased()));
         }
 
         Person personToEdit = lastShownList.get(index.getZeroBased());
-        Person editedPerson = createEditedPerson(personToEdit, editPersonDescriptor);
+        assert personToEdit != null : "Person from filtered list should not be null";
+        return personToEdit;
+    }
 
-        if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
-            throw new CommandException(MESSAGE_DUPLICATE_PERSON);
+    /**
+     * @return {@code true} since editing a person can be undone by restoring
+     *      the person's original details.
+     */
+    @Override
+    public boolean isUndoable() {
+        return true;
+    }
+
+    /**
+     * Restores the person to their original state before the edit.
+     *
+     * @param model The model containing the current state of the address book.
+     * @return A {@code CommandResult} indicating the result of the undo operation.
+     * @throws CommandException If the edit operation was not previously executed,
+     *                          or if restoring the original person would create a duplicate.
+     */
+    @Override
+    public CommandResult undo(Model model) throws CommandException {
+        if (originalPerson == null || updatedPerson == null) {
+            throw new CommandException(MESSAGE_UNDO_FAILURE);
         }
 
-        model.setPerson(personToEdit, editedPerson);
-        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-        return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
+        throwIfDuplicate(model, updatedPerson, originalPerson);
+        return undoPersonChange(model, originalPerson, updatedPerson,
+                MESSAGE_UNDO_FAILURE, logger,
+                this::getUndoLogMessage,
+                this::getUndoResult);
     }
 
     /**
      * Creates and returns a {@code Person} with the details of {@code personToEdit}
      * edited with {@code editPersonDescriptor}.
+     * Fields not present in the descriptor retain their original values.
+     *
+     * @param personToEdit the person whose details are to be used as defaults.
+     * @param editPersonDescriptor the descriptor containing the new field values.
+     * @return a new {@code Person} with the updated details.
      */
     private static Person createEditedPerson(Person personToEdit, EditPersonDescriptor editPersonDescriptor) {
         assert personToEdit != null;
+        assert editPersonDescriptor != null;
 
         Name updatedName = editPersonDescriptor.getName().orElse(personToEdit.getName());
         Phone updatedPhone = editPersonDescriptor.getPhone().orElse(personToEdit.getPhone());
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.getEmail());
-        Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
-        Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
+        TelegramHandle updatedTelegramHandle = editPersonDescriptor.getTelegramHandle()
+                .orElse(personToEdit.getTelegramHandle());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
+        return new Person(updatedName, updatedPhone, updatedEmail, updatedTelegramHandle, personToEdit.getTags());
+    }
+
+    /**
+     * Throws a {@link CommandException} if setting {@code target} in the model (while excluding
+     * {@code excluded}) would create a duplicate email or telegram handle.
+     *
+     * @param model the model to check against.
+     * @param excluded the person to exclude from the duplicate check.
+     * @param target the person to check for duplicates.
+     * @throws CommandException if a duplicate conflict is found.
+     */
+    private void throwIfDuplicate(Model model, Person excluded, Person target) throws CommandException {
+        DuplicateConflict conflict = model.getDuplicateConflictExcluding(excluded, target);
+        String message = Messages.getDuplicateConflictMessage(conflict);
+        if (message != null) {
+            logger.warning("Duplicate conflict detected for: " + target.getName() + " - " + message);
+            throw new CommandException(message);
+        }
+    }
+
+    private String getUndoLogMessage() {
+        return "Undid " + COMMAND_WORD + ": " + updatedPerson.getName() + " -> " + originalPerson.getName();
+    }
+
+    private CommandResult getUndoResult() {
+        return createUndoPersonResult(MESSAGE_UNDO_SUCCESS, originalPerson);
     }
 
     @Override
@@ -129,35 +229,35 @@ public class EditCommand extends Command {
     }
 
     /**
-     * Stores the details to edit the person with. Each non-empty field value will replace the
-     * corresponding field value of the person.
+     * Stores the details to edit the person with.
+     * Each non-empty field value will replace the corresponding field value of the person.
+     * Fields left as {@code null} indicate that the corresponding value should not be changed.
      */
     public static class EditPersonDescriptor {
         private Name name;
         private Phone phone;
         private Email email;
-        private Address address;
-        private Set<Tag> tags;
+        private TelegramHandle telegramHandle;
 
         public EditPersonDescriptor() {}
 
         /**
-         * Copy constructor.
-         * A defensive copy of {@code tags} is used internally.
+         * Creates a copy of the given {@code EditPersonDescriptor}.
+         *
+         * @param toCopy the descriptor to copy.
          */
         public EditPersonDescriptor(EditPersonDescriptor toCopy) {
             setName(toCopy.name);
             setPhone(toCopy.phone);
             setEmail(toCopy.email);
-            setAddress(toCopy.address);
-            setTags(toCopy.tags);
+            setTelegramHandle(toCopy.telegramHandle);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email, address, tags);
+            return CollectionUtil.isAnyNonNull(name, phone, email, telegramHandle);
         }
 
         public void setName(Name name) {
@@ -184,29 +284,12 @@ public class EditCommand extends Command {
             return Optional.ofNullable(email);
         }
 
-        public void setAddress(Address address) {
-            this.address = address;
+        public void setTelegramHandle(TelegramHandle telegramHandle) {
+            this.telegramHandle = telegramHandle;
         }
 
-        public Optional<Address> getAddress() {
-            return Optional.ofNullable(address);
-        }
-
-        /**
-         * Sets {@code tags} to this object's {@code tags}.
-         * A defensive copy of {@code tags} is used internally.
-         */
-        public void setTags(Set<Tag> tags) {
-            this.tags = (tags != null) ? new HashSet<>(tags) : null;
-        }
-
-        /**
-         * Returns an unmodifiable tag set, which throws {@code UnsupportedOperationException}
-         * if modification is attempted.
-         * Returns {@code Optional#empty()} if {@code tags} is null.
-         */
-        public Optional<Set<Tag>> getTags() {
-            return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
+        public Optional<TelegramHandle> getTelegramHandle() {
+            return Optional.ofNullable(telegramHandle);
         }
 
         @Override
@@ -224,8 +307,7 @@ public class EditCommand extends Command {
             return Objects.equals(name, otherEditPersonDescriptor.name)
                     && Objects.equals(phone, otherEditPersonDescriptor.phone)
                     && Objects.equals(email, otherEditPersonDescriptor.email)
-                    && Objects.equals(address, otherEditPersonDescriptor.address)
-                    && Objects.equals(tags, otherEditPersonDescriptor.tags);
+                    && Objects.equals(telegramHandle, otherEditPersonDescriptor.telegramHandle);
         }
 
         @Override
@@ -234,8 +316,7 @@ public class EditCommand extends Command {
                     .add("name", name)
                     .add("phone", phone)
                     .add("email", email)
-                    .add("address", address)
-                    .add("tags", tags)
+                    .add("telegramHandle", telegramHandle)
                     .toString();
         }
     }

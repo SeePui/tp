@@ -1,10 +1,12 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.person.DuplicateConflict;
 import seedu.address.model.person.Person;
 
 /**
@@ -58,6 +60,16 @@ public interface Model {
     boolean hasPerson(Person person);
 
     /**
+     * Returns the duplicate conflict type for {@code person}.
+     */
+    DuplicateConflict getDuplicateConflict(Person person);
+
+    /**
+     * Returns the duplicate conflict type for {@code person}, excluding {@code target}.
+     */
+    DuplicateConflict getDuplicateConflictExcluding(Person target, Person person);
+
+    /**
      * Deletes the given person.
      * The person must exist in the address book.
      */
@@ -68,6 +80,12 @@ public interface Model {
      * {@code person} must not already exist in the address book.
      */
     void addPerson(Person person);
+
+    /**
+     * Adds the given person at the specified index.
+     * {@code person} must not already exist in the address book.
+     */
+    void addPerson(int index, Person person);
 
     /**
      * Replaces the given person {@code target} with {@code editedPerson}.
@@ -84,4 +102,10 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
+
+    /**
+     * Updates the comparator of the sorted person list to sort by the given {@code comparator}.
+     * Pass {@code null} to restore insertion order.
+     */
+    void updateSortedPersonList(Comparator<Person> comparator);
 }

@@ -3,17 +3,21 @@ package seedu.address.model.person;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_ROLE_TAG_TEAMMATE;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.tag.Tag;
+import seedu.address.model.tag.TagType;
 import seedu.address.testutil.PersonBuilder;
 
 public class PersonTest {
@@ -25,6 +29,50 @@ public class PersonTest {
     }
 
     @Test
+    public void hasSameEmail() {
+        assertTrue(ALICE.hasSameEmail(ALICE));
+        assertFalse(ALICE.hasSameEmail(null));
+
+        Person editedAlice = new PersonBuilder(ALICE)
+                .withName(VALID_NAME_BOB)
+                .withPhone(VALID_PHONE_BOB)
+                .withRoleTags(VALID_ROLE_TAG_TEAMMATE)
+                .build();
+        assertTrue(ALICE.hasSameEmail(editedAlice));
+
+        Person differentEmail = new PersonBuilder(ALICE)
+                .withEmail(VALID_EMAIL_BOB)
+                .build();
+        assertFalse(ALICE.hasSameEmail(differentEmail));
+    }
+
+    @Test
+    public void hasSameTelegramHandle() {
+        Person aliceWithTelegram = new PersonBuilder(ALICE).withTelegramHandle("alice123").build();
+
+        assertTrue(aliceWithTelegram.hasSameTelegramHandle(aliceWithTelegram));
+        assertFalse(aliceWithTelegram.hasSameTelegramHandle(null));
+        assertFalse(ALICE.hasSameTelegramHandle(aliceWithTelegram));
+
+        Person sameTelegramDifferentEmail = new PersonBuilder(aliceWithTelegram)
+                .withEmail(VALID_EMAIL_BOB)
+                .build();
+        assertTrue(aliceWithTelegram.hasSameTelegramHandle(sameTelegramDifferentEmail));
+
+        Person sameTelegramDifferentCase = new PersonBuilder(aliceWithTelegram)
+                .withEmail("other@example.com")
+                .withTelegramHandle("ALICE123")
+                .build();
+        assertTrue(aliceWithTelegram.hasSameTelegramHandle(sameTelegramDifferentCase));
+
+        Person differentTelegram = new PersonBuilder(aliceWithTelegram)
+                .withEmail("other@example.com")
+                .withTelegramHandle("bob123")
+                .build();
+        assertFalse(aliceWithTelegram.hasSameTelegramHandle(differentTelegram));
+    }
+
+    @Test
     public void isSamePerson() {
         // same object -> returns true
         assertTrue(ALICE.isSamePerson(ALICE));
@@ -32,23 +80,39 @@ public class PersonTest {
         // null -> returns false
         assertFalse(ALICE.isSamePerson(null));
 
-        // same name, all other attributes different -> returns true
-        Person editedAlice = new PersonBuilder(ALICE).withPhone(VALID_PHONE_BOB).withEmail(VALID_EMAIL_BOB)
-                .withAddress(VALID_ADDRESS_BOB).withTags(VALID_TAG_HUSBAND).build();
+        // same email, all other attributes different -> returns true
+        Person editedAlice = new PersonBuilder(ALICE)
+                .withName(VALID_NAME_BOB)
+                .withPhone(VALID_PHONE_BOB)
+                .withRoleTags(VALID_ROLE_TAG_TEAMMATE)
+                .build();
         assertTrue(ALICE.isSamePerson(editedAlice));
 
-        // different name, all other attributes same -> returns false
-        editedAlice = new PersonBuilder(ALICE).withName(VALID_NAME_BOB).build();
+        // same telegram handle, different email -> returns true
+        Person aliceWithTelegram = new PersonBuilder(ALICE).withTelegramHandle("alice123").build();
+        Person editedTelegramAlice = new PersonBuilder(aliceWithTelegram)
+                .withEmail(VALID_EMAIL_BOB)
+                .build();
+        assertTrue(aliceWithTelegram.isSamePerson(editedTelegramAlice));
+
+        // different email and different telegram handle -> returns false
+        Person differentAlice = new PersonBuilder(ALICE)
+                .withEmail(VALID_EMAIL_BOB)
+                .withTelegramHandle("alice123")
+                .build();
+        assertFalse(ALICE.isSamePerson(differentAlice));
+
+        // different email, telegram handle missing on one side -> returns false
+        Person noTelegram = new PersonBuilder(ALICE).build();
+        Person withTelegram = new PersonBuilder(ALICE)
+                .withEmail(VALID_EMAIL_BOB)
+                .withTelegramHandle("alice123")
+                .build();
+        assertFalse(noTelegram.isSamePerson(withTelegram));
+
+        // different email, all other attributes same -> returns false
+        editedAlice = new PersonBuilder(ALICE).withEmail(VALID_EMAIL_BOB).build();
         assertFalse(ALICE.isSamePerson(editedAlice));
-
-        // name differs in case, all other attributes same -> returns false
-        Person editedBob = new PersonBuilder(BOB).withName(VALID_NAME_BOB.toLowerCase()).build();
-        assertFalse(BOB.isSamePerson(editedBob));
-
-        // name has trailing spaces, all other attributes same -> returns false
-        String nameWithTrailingSpaces = VALID_NAME_BOB + " ";
-        editedBob = new PersonBuilder(BOB).withName(nameWithTrailingSpaces).build();
-        assertFalse(BOB.isSamePerson(editedBob));
     }
 
     @Test
@@ -81,19 +145,141 @@ public class PersonTest {
         editedAlice = new PersonBuilder(ALICE).withEmail(VALID_EMAIL_BOB).build();
         assertFalse(ALICE.equals(editedAlice));
 
-        // different address -> returns false
-        editedAlice = new PersonBuilder(ALICE).withAddress(VALID_ADDRESS_BOB).build();
-        assertFalse(ALICE.equals(editedAlice));
-
         // different tags -> returns false
-        editedAlice = new PersonBuilder(ALICE).withTags(VALID_TAG_HUSBAND).build();
+        editedAlice = new PersonBuilder(ALICE).withRoleTags(VALID_ROLE_TAG_TEAMMATE).build();
         assertFalse(ALICE.equals(editedAlice));
+    }
+
+    @Test
+    public void equals_differentTelegramHandle_false() {
+        Person editedAlice = new PersonBuilder(ALICE).withTelegramHandle("alice123").build();
+        assertFalse(ALICE.equals(editedAlice));
+    }
+
+    @Test
+    public void hashCode_sameValuesSameHashCode() {
+        Person aliceCopy = new PersonBuilder(ALICE).build();
+        assertEquals(ALICE.hashCode(), aliceCopy.hashCode());
     }
 
     @Test
     public void toStringMethod() {
         String expected = Person.class.getCanonicalName() + "{name=" + ALICE.getName() + ", phone=" + ALICE.getPhone()
-                + ", email=" + ALICE.getEmail() + ", address=" + ALICE.getAddress() + ", tags=" + ALICE.getTags() + "}";
+                + ", email=" + ALICE.getEmail()
+                + ", telegramHandle=" + ALICE.getTelegramHandle() + ", tags=" + ALICE.getTags() + "}";
         assertEquals(expected, ALICE.toString());
+    }
+
+    @Test
+    public void toStringMethod_withTelegramHandle() {
+        Person person = new PersonBuilder(ALICE).withTelegramHandle("alice123").build();
+        String expected = Person.class.getCanonicalName() + "{name=" + person.getName() + ", phone=" + person.getPhone()
+                + ", email=" + person.getEmail()
+                + ", telegramHandle=" + person.getTelegramHandle() + ", tags=" + person.getTags() + "}";
+        assertEquals(expected, person.toString());
+    }
+
+    @Test
+    public void constructor_withoutTelegramHandle_success() {
+        Person person = new Person(
+                ALICE.getName(),
+                ALICE.getPhone(),
+                ALICE.getEmail(),
+                ALICE.getTags()
+        );
+
+        assertEquals(ALICE.getName(), person.getName());
+        assertEquals(ALICE.getPhone(), person.getPhone());
+        assertEquals(ALICE.getEmail(), person.getEmail());
+        assertEquals(ALICE.getTags(), person.getTags());
+
+        // telegram should be null
+        assertEquals(null, person.getTelegramHandle());
+    }
+
+    @Test
+    public void constructor_withoutTags_success() {
+        Person person = new Person(
+                ALICE.getName(),
+                ALICE.getPhone(),
+                ALICE.getEmail(),
+                ALICE.getTelegramHandle()
+        );
+
+        assertEquals(ALICE.getName(), person.getName());
+        assertEquals(ALICE.getPhone(), person.getPhone());
+        assertEquals(ALICE.getEmail(), person.getEmail());
+        assertEquals(ALICE.getTelegramHandle(), person.getTelegramHandle());
+
+        // tags should be empty
+        assertTrue(person.getTags().isEmpty());
+    }
+
+    @Test
+    public void constructor_defensiveCopy_tagsNotAffected() {
+        Set<Tag> originalTags = new HashSet<>(ALICE.getTags());
+
+        Person person = new Person(
+                ALICE.getName(),
+                ALICE.getPhone(),
+                ALICE.getEmail(),
+                ALICE.getTelegramHandle(),
+                originalTags
+        );
+
+        // mutate original set
+        originalTags.clear();
+
+        // person should NOT be affected
+        assertFalse(person.getTags().isEmpty());
+    }
+
+    @Test
+    public void withTags_validTags_success() {
+        Set<Tag> newTags = Set.of(new Tag("tutor", TagType.ROLE));
+
+        Person updated = ALICE.withTags(newTags);
+
+        // tags updated
+        assertEquals(newTags, updated.getTags());
+
+        // other fields unchanged
+        assertEquals(ALICE.getName(), updated.getName());
+        assertEquals(ALICE.getPhone(), updated.getPhone());
+        assertEquals(ALICE.getEmail(), updated.getEmail());
+        assertEquals(ALICE.getTelegramHandle(), updated.getTelegramHandle());
+    }
+
+    @Test
+    public void withTags_nullTags_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ALICE.withTags(null));
+    }
+
+    @Test
+    public void withTags_defensiveCopy_tagsNotAffected() {
+        Set<Tag> tags = new HashSet<>();
+        tags.add(new Tag("friend", TagType.GENERAL));
+
+        Person updated = ALICE.withTags(tags);
+
+        // mutate original set
+        tags.clear();
+
+        // person should NOT be affected
+        assertFalse(updated.getTags().isEmpty());
+    }
+
+    @Test
+    public void isSamePerson_sameTelegramHandleDifferentCase_returnsTrue() {
+        Person first = new PersonBuilder(ALICE)
+                .withEmail("first@example.com")
+                .withTelegramHandle("test1")
+                .build();
+        Person second = new PersonBuilder(ALICE)
+                .withEmail("second@example.com")
+                .withTelegramHandle("TEST1")
+                .build();
+
+        assertTrue(first.isSamePerson(second));
     }
 }

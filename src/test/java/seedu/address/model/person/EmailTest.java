@@ -1,5 +1,6 @@
 package seedu.address.model.person;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -84,5 +85,74 @@ public class EmailTest {
 
         // different values -> returns false
         assertFalse(email.equals(new Email("other.valid@email")));
+    }
+
+    @Test
+    public void constructor_uppercaseEmail_storesLowercase() {
+        Email email = new Email("Alice.Bob@Example.COM");
+        assertEquals("alice.bob@example.com", email.toString());
+    }
+
+    @Test
+    public void equals_caseDifference_returnsTrue() {
+        Email first = new Email("Alice@Example.com");
+        Email second = new Email("alice@example.com");
+
+        assertTrue(first.equals(second));
+        assertEquals(first.hashCode(), second.hashCode());
+    }
+
+    @Test
+    public void containsIgnoreCase_substringsWithDifferentCases_returnsTrue() {
+        Email email = new Email("Alice@u.nus.edu");
+
+        // name part
+        assertTrue(email.containsIgnoreCase("Alice"));
+        assertTrue(email.containsIgnoreCase("alice"));
+
+        // domain part
+        assertTrue(email.containsIgnoreCase("nus"));
+        assertTrue(email.containsIgnoreCase("NuS"));
+    }
+
+    @Test
+    public void containsIgnoreCase_invalidSubstring_returnsFalse() {
+        Email email = new Email("Alice@u.nus.edu");
+
+        // name part
+        assertFalse(email.containsIgnoreCase("Alicia"));
+
+        // domain part
+        assertFalse(email.containsIgnoreCase("gmail"));
+        assertFalse(email.containsIgnoreCase("@domain.comm"));
+    }
+
+    @Test
+    public void isNusDomain_nusStudentEmail_returnsTrue() {
+        assertTrue(new Email("alice@u.nus.edu").isNusDomain());
+        assertTrue(new Email("e1234567@u.nus.edu").isNusDomain());
+    }
+
+    @Test
+    public void isNusDomain_nusStaffEmail_returnsTrue() {
+        assertTrue(new Email("prof@nus.edu.sg").isNusDomain());
+    }
+
+    @Test
+    public void isNusDomain_nusSubdomainEmail_returnsTrue() {
+        assertTrue(new Email("tanwm2@comp.nus.edu.sg").isNusDomain());
+        assertTrue(new Email("john@soc.nus.edu.sg").isNusDomain());
+    }
+
+    @Test
+    public void isNusDomain_nonNusEmail_returnsFalse() {
+        assertFalse(new Email("alice@gmail.com").isNusDomain());
+        assertFalse(new Email("bob@example.com").isNusDomain());
+    }
+
+    @Test
+    public void isNusDomain_fakeNusEmail_returnsFalse() {
+        assertFalse(new Email("scam@fakenus.edu.sg").isNusDomain());
+        assertFalse(new Email("fake@notnus.edu.sg").isNusDomain());
     }
 }

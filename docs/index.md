@@ -6,8 +6,6 @@ title: CampusBridge
 [![CI Status](https://github.com/se-edu/addressbook-level3/workflows/Java%20CI/badge.svg)](https://github.com/AY2526S2-CS2103-F11-2/tp/actions)
 [![codecov](https://codecov.io/github/AY2526S2-CS2103-F11-2/tp/graph/badge.svg?token=EWW9WYZODP)](https://codecov.io/github/AY2526S2-CS2103-F11-2/tp)
 
-# CampusBridge
-
 ![Ui](images/Ui.png)
 
 **CampusBridge** helps NUS students organise and access contact information for professors, teaching assistants, and peers across different modules and faculties. It provides a centralised, easy-to-use system to save, search, and manage academic contacts efficiently.
@@ -19,7 +17,7 @@ title: CampusBridge
 ## Getting Started
 
 1. Ensure you have Java `17` or above installed.
-2. Download the latest `CampusBridge.jar` from [here](link).
+2. Download the latest `CampusBridge.jar` from [here](https://github.com/AY2526S2-CS2103-F11-2/tp/releases).
 3. Run `java -jar CampusBridge.jar` in your terminal.
 
 For full setup instructions, see the **[User Guide](https://ay2526s2-cs2103-f11-2.github.io/tp/UserGuide.html)**.
@@ -61,4 +59,4 @@ See the **[CampusBridge Product Website](https://ay2526s2-cs2103-f11-2.github.io
 ## Acknowledgements
 
 - Libraries used: JavaFX, Jackson, JUnit5
-- This project is based on the [AddressBook-Level3](https://se-education.org) project by the SE-EDU initiative.
+- This project is based on the [AddressBook-Level3](https://se-education.org/addressbook-level3/) project created by the [SE-EDU initiative](https://se-education.org).

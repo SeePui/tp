@@ -414,9 +414,11 @@ Finds persons whose names, emails, or tags match the given keywords.
   * The fuzzy matching threshold is calculated based on keyword length, allowing ~1 edit for short keywords and scaling up for longer keywords.
   * Special characters in name keywords are converted into spaces. For example, `Robert-Smith` becomes `Robert Smith`, so the search treats it as the keywords `Robert` and `Smith`.
 * **Email keywords** use exact substring matching.
-  e.g. `gmail` will match `john@gmail.com` and `alice.gmail@example.com`.
+    * e.g. `gmail` will match `john@gmail.com` and `alice.gmail@example.com`.
+    * Special characters in email keywords are matched as entered. For example, `john.doe` will not match `doe@gmail.com`.
 * **Tags** use exact matching.
-  e.g. `cs2103` will match tag `cs2103` but not `cs210`.
+    * e.g. `cs2103` will match tag `cs2103` but not `cs210`.
+    * Special characters in tag keywords are matched as entered. For example, in `cs2103-t`, the `-` is treated as part of the tag and is not ignored.
 * Multiple keywords within the same field are combined using **OR**.
   e.g. `n/Alex David` will match `Alex Yeoh` or `David Li`.
 * Different fields are combined using **AND**.

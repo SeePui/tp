@@ -412,7 +412,7 @@ Finds persons whose names, emails, or tags match the given keywords.
   * Exact match: `Jo` will match `John` and `Alice Johnson`.
   * Fuzzy match: `jon` will also match `John` (handles typos like missing or swapped letters).
   * The fuzzy matching threshold is calculated based on keyword length, allowing ~1 edit for short keywords and scaling up for longer keywords.
-  * Special characters in name keywords are converted into spaces. For example, `Robert-Smith` is treated as `Robert Smith`, so it can match names such as `Robert` or `Smith`.
+  * Special characters in name keywords are converted into spaces. For example, `Robert-Smith` becomes `Robert Smith`, so the search treats it as the keywords `Robert` and `Smith`.
 * **Email keywords** use exact substring matching.
   e.g. `gmail` will match `john@gmail.com` and `alice.gmail@example.com`.
 * **Tags** use exact matching.

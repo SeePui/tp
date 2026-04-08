@@ -160,8 +160,8 @@ Adds a person to the address book.
 **Format:** `add n/NAME e/EMAIL [p/PHONE_NUMBER] [h/TELEGRAM_HANDLE]`
 
 * `n/NAME` and `e/EMAIL` are required.
-* `p/PHONE_NUMBER` and `h/TELEGRAM_HANDLE` are optional.
 * Prefixes are case-insensitive (n/ and N/ are treated the same).
+* `p/PHONE_NUMBER` and `h/TELEGRAM_HANDLE` are optional.
 * If no phone number is provided, the contact will be created without one.
 * If no Telegram handle is provided, the contact will be created without one.
 * Phone numbers, if provided, must contain only digits and be at least 3 digits long.

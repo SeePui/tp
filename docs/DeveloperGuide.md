@@ -1345,7 +1345,7 @@ testers are expected to do more *exploratory* testing.
 
     1. Prerequisites: Application is running. Some text is present in the input box.
 
-    1. Test case (Windows/Linux): Press `Delete` or `fn + Delete`<br>
+    1. Test case (Windows/Linux): Press `Delete`<br>
        Expected: The input box is cleared.
 
     1. Test case (macOS): Press `fn + Delete`<br>

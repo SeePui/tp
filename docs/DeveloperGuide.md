@@ -255,11 +255,11 @@ Two persons are considered the same person if they have:
 
 This identity rule is used by `UniquePersonList` when adding and updating persons. As a result, the `add` command rejects contacts that duplicate either an existing email or an existing Telegram handle.
 
-### Current Undo feature
+### Undo feature
 
-#### Current Implementation
+#### Implementation
 
-Currently, the undo feature is implemented using the Command pattern, where each undoable command encapsulates its own undo logic. The overall undo process is managed by `LogicManager`.
+The undo feature is implemented using the Command pattern, where each undoable command encapsulates its own undo logic. The overall undo process is managed by `LogicManager`.
 
 When an undoable command is executed, it is added to an internal stack (`undoHistory : Deque<Command>`) maintained by `LogicManager`.
 

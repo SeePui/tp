@@ -128,4 +128,10 @@ public class SortCommandParserTest {
         assertParseFailure(parser, " o/name r/ r/",
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_REVERSE));
     }
+
+    @Test
+    public void parse_nonEmptyPreamble_throwsParseException() {
+        assertParseFailure(parser, " hello o/name",
+                String.format(Messages.MESSAGE_PREAMBLE_NOT_EMPTY, "hello", SortCommand.MESSAGE_USAGE));
+    }
 }

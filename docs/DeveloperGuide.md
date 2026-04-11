@@ -271,7 +271,7 @@ The following sequence diagram illustrates how the undo operation is executed:
 
 ![UndoSequenceDiagram-Logic](images/UndoSequenceDiagram-Logic.png)
 
-The following class diagram shows the structure of the undo feature:
+The following class diagram shows the simplified structure of the undo feature:
 
 ![UndoClassDiagram](images/UndoClassDiagram.png)
 

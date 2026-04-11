@@ -1143,7 +1143,7 @@ testers are expected to do more *exploratory* testing.
       Expected: No tag cleared. Error details shown in the status message indicating invalid command format and unexpected extra input.
 
    1. Test case: `cleartag 1 tr/ tr/` (multiple same prefixes)<br>
-      Expected: No tag cleared. Error details shown in the status message indicating multiple values specified for the following single-valued field(s): `i/`.
+      Expected: No tag cleared. Error details shown in the status message indicating multiple values specified for the following single-valued field(s): `tr/`.
 
    1. Test case: `cleartag 1 tr/ tg/` (multiple prefixes)<br>
       Expected: No tag cleared. Error details shown in the status message indicating invalid command format and command usage.

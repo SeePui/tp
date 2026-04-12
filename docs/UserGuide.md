@@ -3,8 +3,7 @@ layout: page
 title: User Guide
 ---
 
-CampusBridge is a desktop app designed for **NUS students** who need to organise contact information for professors, teaching assistants, and groupmates across multiple modules and faculties. Instead of searching through Canvas, Telegram, and email for scattered contact details, CampusBridge provides a **centralised system to save, search, and manage all academic contacts in one place**. Optimized for use via a Command Line Interface (CLI) while still offering the benefits of a Graphical User Interface (GUI), fast typists can get contact management tasks done quicker than with traditional GUI apps.
-
+CampusBridge is a desktop app for **NUS students** to organise and manage academic and campus-related contacts such as professors, teaching assistants, groupmates, and club members. It provides a **centralised place to store and search contact details that are otherwise scattered across platforms like Canvas, Telegram, and email.** Optimised for use via a Command Line Interface (CLI) while still offering the benefits of a Graphical User Interface (GUI), fast typists can get contact management tasks done quicker than with traditional GUI apps.
 
 * Table of Contents
 {:toc}
@@ -546,6 +545,10 @@ You can repeatedly use `undo` to step backwards through your previous changes.
   ```
   When no more commands to undo, an error message will be shown indicating that there are no actions to undo.
 
+### Clearing all entries : `clear`
+
+Clears all entries from the address book.
+
 **Format:** `clear`
 
 ### Exiting the program : `exit`
@@ -566,10 +569,6 @@ Previously entered commands can be recalled using the keyboard.
 **Examples:**
 * After running `add n/John Doe e/john@example.com`, press **Up** to recall it and modify it.
 * After running several commands, press **Up** repeatedly to scroll back through them.
-
-### Clearing all entries : `clear`
-
-Clears all entries from the address book.
 
 ### Saving the data
 

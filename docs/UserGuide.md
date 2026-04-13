@@ -165,7 +165,7 @@ Alternatively, press `F1` or `fn + F1` to open the user guide.
 * If `COMMAND` is not a recognised command name, an error is shown listing all valid commands.
 * If more than one word is provided (e.g. `help add clear`), an invalid command format error is shown.
 
-**Supported commands:** `help`, `add`, `edit`, `delete`, `untag`, `cleartag`, `list`, `sort`, `find`, `clear`, `exit`
+Supported commands: `help`, `add`, `edit`, `delete`, `tag`, `untag`, `cleartag`, `list`, `sort`, `find`, `undo`, `clear`, `exit`
 
 **Examples:**
 * `help` — shows available commands in the result box and opens the user guide in the browser.

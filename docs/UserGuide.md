@@ -169,11 +169,11 @@ Supported commands: `help`, `add`, `edit`, `delete`, `tag`, `untag`, `cleartag`,
 
 **Examples:**
 * `help` — shows available commands in the result box and opens the user guide in the browser.
-* `help add` — shows the usage message for `add` in the result box and opens the user guide at the **Adding a person** section.
+* `help add` — shows the usage message for `add` in the result box and opens the user guide at the [**Adding a person**](#adding-a-person--add) section.
 
 ![result for 'help add'](images/helpadd.png)
 
-* `help sort` — shows the usage message for `sort` in the result box and opens the user guide at the **Sorting persons** section.
+* `help sort` — shows the usage message for `sort` in the result box and opens the user guide at the [**Sorting persons**](#sorting-persons--sort) section.
 
 ### Adding a person : `add`
 

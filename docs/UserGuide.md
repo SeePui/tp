@@ -40,7 +40,7 @@ CampusBridge is a desktop app for **NUS students** to organise and manage academ
 
    * `exit` : Exits the app.
 
-1. Refer to the [Features](#features) below for details of each command.
+1. Refer to the [Features](#features) below for additional details.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -88,6 +88,7 @@ Emails should be of the format `local-part@domain` and adhere to the following c
 * Must end with a domain label at least 2 characters long
 * Each domain label must start and end with alphanumeric characters
 * Each domain label must consist of alphanumeric characters, separated only by hyphens, if any
+* Special characters must be separated by alphanumeric characters (e.g. `a.+b` is invalid)
 
 **Examples:**<br/>
 
@@ -551,6 +552,8 @@ You can repeatedly use `undo` to step backwards through your previous changes.
 Clears all entries from the address book.
 
 **Format:** `clear`
+
+![ClearCommandSuccessResultImage](images/clearcommand.png)
 
 ### Exiting the program : `exit`
 

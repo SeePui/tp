@@ -96,6 +96,11 @@ public class Email {
         return value.hashCode();
     }
 
+    /**
+     * Returns true if this email belongs to an NUS-affiliated domain.
+     * Recognised domains include NUS student and staff domains, as well as
+     * Duke-NUS and Yale-NUS affiliated domains.
+     */
     public boolean isNusDomain() {
         return Arrays.stream(NUS_DOMAINS).anyMatch(value::endsWith);
     }

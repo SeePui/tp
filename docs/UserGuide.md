@@ -172,7 +172,7 @@ Alternatively, press `F1` or `fn + F1` to open the user guide.
 * `help add` — shows the usage message for `add` in the result box and opens the user guide at the **Adding a person** section.
 * `help sort` — shows the usage message for `sort` in the result box and opens the user guide at the **Sorting persons** section.
 
-![result for 'help edit'](images/helpedit.png)
+![result for 'help add'](images/helpadd.png)
 
 ### Adding a person : `add`
 
@@ -230,6 +230,7 @@ Edits an existing person in the address book.
 * Updated names may contain only letters, numbers, spaces, and these symbols: `(` `)` `.` `-` `,` `'`. <br>
   Other special characters are not supported. In particular, `/` is not accepted because it may be interpreted as command syntax. If needed, replace it with a supported symbol instead, e.g. `D/O` as `D-O`.
 
+![result for 'edit 1 n/James e/JamesLee@nus.edu.sg p/82901234 h/jamesLEE'](images/editaperson.png)
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:**
 If the updated email is not an [NUS domain](#email-validation), a warning message will be shown. The contact will still be updated.
@@ -419,6 +420,10 @@ Sorts the list of persons by the specified field.
 * **`phone`** — sorts persons lexicographically by phone number. Persons without a phone number appear last.
   e.g. `sort o/phone` produces `81234567`, `91234567`, then persons with no phone
 * **`none`** — resets the list to its default (insertion) order.
+
+![result for 'sort o/email'](images/sortemail.png)
+
+![result for 'sort o/name r/'](images/sortreverse.png)
 
 **Examples:**
 * `sort o/name`<br/>

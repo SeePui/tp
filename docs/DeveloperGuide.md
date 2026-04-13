@@ -202,7 +202,7 @@ Data is stored in two JSON files:
 
 When CampusBridge starts, it attempts to read the address book file and handles three cases:
 * **File not found** — sample data is loaded and the file is created on the next save or exit.
-* **File is malformed or contains invalid data** — an empty address book is used and a warning is logged; the corrupted file is left untouched.
+* **File is malformed or contains invalid data** — an empty address book is used and a warning is logged.
 * **File is valid** — data is loaded normally.
 
 ### Common classes

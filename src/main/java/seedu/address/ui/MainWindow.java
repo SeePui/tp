@@ -172,6 +172,7 @@ public class MainWindow extends UiPart<Stage> {
      */
     @FXML
     public void handleHelp() {
+        resultDisplay.setFeedbackToUser(HelpCommand.SHOWING_HELP_MESSAGE);
         boolean opened = handleHelpUrl(HelpCommand.USERGUIDE_URL);
         if (!opened) {
             resultDisplay.setFeedbackToUser(HelpCommand.OFFLINE_FALLBACK_GENERAL);

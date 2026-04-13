@@ -928,13 +928,13 @@ testers are expected to do more *exploratory* testing.
        Expected: The first contact's email is updated. A warning is shown indicating that the email is not an NUS domain.
 
 4. Editing a person with duplicate email or Telegram handle
-    1. Prerequisites: Start with the sample data loaded. The first contact has email `johnlim@u.nus.edu` and Telegram handle `johnlimm`. At least two person in the list.
+    1. Prerequisites: Start with the sample data loaded. The first contact in the displayed list is `Tan Wei Ming`, with email `tanwm@comp.nus.edu.sg` and Telegram handle `tanwm_nus`. At least two persons are in the list.
 
-    1. Test case: `edit 2 e/johnlim@u.nus.edu`<br>
-       Expected: No changes made. Error details shown indicating a person with this email already exists.
+    1. Test case: `edit 2 e/tanwm@comp.nus.edu.sg`<br>
+        Expected: No changes made. Error details shown indicating a person with this email already exists.
 
-    1. Test case: `edit 2 h/johnlimm`<br>
-       Expected: No changes made. Error details shown indicating a person with this Telegram handle already exists.
+    1. Test case: `edit 2 h/tanwm_nus`<br>
+        Expected: No changes made. Error details shown indicating a person with this Telegram handle already exists.
 
 5. Clearing optional fields
     1. Prerequisites: At least one person in the list with a phone number and Telegram handle.

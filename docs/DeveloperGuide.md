@@ -227,7 +227,7 @@ The parser enforces the following rules:
 
 **Field requirements**
 * `n/NAME` and `e/EMAIL` are compulsory.
-* Email is compulsory because the product assumes campus-related contacts are typically reachable by email, and email serves as the primary stable identifier for duplicate detection.
+* Email is compulsory because the product assumes academic contacts are typically reachable by email, and email serves as the primary stable identifier for duplicate detection.
 * `p/PHONE` and `h/TELEGRAM_HANDLE` are optional.
 
 **Input handling**
@@ -327,7 +327,7 @@ NUS undergraduate students who
 * Prefer using CLI over GUI.
 
 **Value proposition**:
-CampusBridge helps NUS undergraduate students to organize and access contact information for their academic peers across different modules and faculties.
+CampusBridge helps NUS undergraduate students to organize and access contact information for their academic contacts such as professors, teaching assistants, and groupmates.
 
 It does so by providing a centralized, easy-to-use system to save, search, and manage academic contacts efficiently.
 
@@ -337,28 +337,28 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 #### Current version
 
-| Priority | As a …​                    | I can …​                                                                 | So that I can…​                                                                   |
-|----------|----------------------------|--------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
-| `* * *`  | user                       | add a contact                                                            | store and organize important academic contact information in one place            |
-| `* * *`  | user                       | view all my contacts                                                     | quickly see everyone in one place                                                 |
-| `* * *`  | user                       | delete a contact                                                         | keep my contact list accurate and organized                                       |
-| `* * *`  | user                       | edit a specific contact                                                  | quickly correct mistakes in their contact information                             |
-| `* * *`  | user                       | exit the application                                                     | safely close CampusBridge when I am done using it                                 |
-| `* * *`  | user                       | have my contacts saved automatically                                     | prevent losing my data when the application closes                                |
-| `* * *`  | user                       | validate my input                                                        | minimize incorrect information                                                    |
-| `* * *`  | new user                   | see clear error messages                                                 | understand what went wrong and correct my input without feeling confused          |
-| `* * *`  | regular user               | search contacts by name, email and tags                                  | quickly find someone                                                              |
-| `* * *`  | new user                   | view help details                                                        | see specific examples and parameter requirements for that command                 |
-| `* *`    | regular user               | sort contacts by name, email, or phone in ascending or descending order  | browse them more easily                                                           |
-| `* *`    | new user                   | view preloaded sample modules and contacts                               | understand the app’s layout and value without adding real data                    |
-| `* *`    | user                       | add new tags to an existing contact                                      | keep their information updated as the semester evolves                            |
-| `* *`    | user                       | delete specific tags from a contact without deleting the entire contact  | keep my contact information accurate                                              |
-| `* *`    | user                       | clear all tags from a contact                                            | reset the contact’s categorization without manually deleting every individual tag |
-| `* *`    | expert user                | undo my last action                                                      | instantly revert an accidental deletion without stress                            |
-| `* *`    | expert user                | have keyboard shortcuts                                                  | operate the system efficiently                                                    |
-| `* *`    | expert user                | copy any contact field                                                   | efficiently transfer information to other applications without manual typing      |
-| `* *`    | expert user                | view colour-coded tags                                                   | quickly identify and prioritize important information.                            |
-| `* *`    | regular user               | navigate command history                                                 | execute or modify past commands without retyping them                             |
+| Priority | As a …​                    | I can …​                                                                | So that I can…​                                                                   |
+|----------|----------------------------|-------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| `* * *`  | user                       | add a contact                                                           | store and organize important academic contact information in one place            |
+| `* * *`  | user                       | view all my contacts                                                    | quickly see everyone in one place                                                 |
+| `* * *`  | user                       | delete a contact                                                        | keep my contact list accurate and organized                                       |
+| `* * *`  | user                       | edit a specific contact                                                 | quickly correct mistakes in their contact information                             |
+| `* * *`  | user                       | exit the application                                                    | safely close CampusBridge when I am done using it                                 |
+| `* * *`  | user                       | have my contacts saved automatically                                    | prevent losing my data when the application closes                                |
+| `* * *`  | user                       | validate my input                                                       | minimize incorrect information                                                    |
+| `* * *`  | new user                   | see clear error messages                                                | understand what went wrong and correct my input without feeling confused          |
+| `* * *`  | regular user               | search contacts by name, email and tags                                 | quickly find someone                                                              |
+| `* * *`  | new user                   | view help details                                                       | see specific examples and parameter requirements for that command                 |
+| `* *`    | regular user               | sort contacts by name, email, or phone in ascending or descending order | browse them more easily                                                           |
+| `* *`    | new user                   | view preloaded sample modules and contacts                              | understand the app’s layout and value without adding real data                    |
+| `* *`    | user                       | add new tags to an existing contact                                     | keep their information updated as the semester evolves                            |
+| `* *`    | user                       | delete specific tags from a contact without deleting the entire contact | keep my contact information accurate                                              |
+| `* *`    | user                       | clear all tags of a specific type from a contact                        | reset the contact’s categorization without manually deleting every individual tag |
+| `* *`    | expert user                | undo my last action                                                     | instantly revert an accidental deletion without stress                            |
+| `* *`    | expert user                | have keyboard shortcuts                                                 | operate the system efficiently                                                    |
+| `* *`    | expert user                | copy any contact field                                                  | efficiently transfer information to other applications without manual typing      |
+| `* *`    | expert user                | view colour-coded tags                                                  | quickly identify and prioritize important information.                            |
+| `* *`    | regular user               | navigate command history                                                | execute or modify past commands without retyping them                             |
 
 #### Near-future version
 
@@ -695,7 +695,7 @@ Use case ends.
   Use case resumes at step 1.
 
 * 2c. No more recent command exists.
-  * 2c1. CampusBridge does nothing.
+  * 2c1. CampusBridge clears the command box (returns to empty input).
 
   Use case resumes at step 1.
 
@@ -1124,7 +1124,7 @@ testers are expected to do more *exploratory* testing.
 
 ### Clearing all tags of a specific type
 
-1. Clearing all tags from a person
+1. Clearing all tags of a specific type from a person
 
    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list. Ensure both first and second person have existing general and role tags.
 
@@ -1134,7 +1134,7 @@ testers are expected to do more *exploratory* testing.
    1. Test case: `cleartag 2 tr/`<br>
       Expected: All the role tags are cleared from the 2nd person in the list. Status message shows the details of the role tags cleared.
 
-1. Clearing all tags from a person where no tags of specified type exist
+1. Clearing all tags of a specific type from a person where no tags of specified type exist
 
    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list. Ensure both first and second person has no existing tags.
 

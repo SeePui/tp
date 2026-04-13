@@ -3,7 +3,7 @@ layout: page
 title: User Guide
 ---
 
-CampusBridge is a desktop app for **NUS students** to organise and manage academic and campus-related contacts such as professors, teaching assistants, groupmates, and club members. It provides a **centralised place to store and search contact details that are otherwise scattered across platforms like Canvas, Telegram, and email.** Optimised for use via a Command Line Interface (CLI) while still offering the benefits of a Graphical User Interface (GUI), fast typists can get contact management tasks done quicker than with traditional GUI apps.
+CampusBridge is a desktop app for **NUS students** to organise and manage academic contacts such as professors, teaching assistants, and groupmates. It provides a **centralised place to store and search contact details that are otherwise scattered across platforms like Canvas, Telegram, and email.** Optimised for use via a Command Line Interface (CLI) while still offering the benefits of a Graphical User Interface (GUI), fast typists can get contact management tasks done quicker than with traditional GUI apps.
 
 * Table of Contents
 {:toc}
@@ -183,7 +183,7 @@ Adds a person to the address book.
 
 **Fields:**
 * `n/NAME` and `e/EMAIL` are required.
-* Email is required because CampusBridge uses it as the primary stable identifier for campus-related contacts.
+* Email is required because CampusBridge uses it as the primary stable identifier for academic contacts.
 * `p/PHONE_NUMBER` and `h/TELEGRAM_HANDLE` are optional.
 * If no phone number is provided, the contact will be created without one.
 * If no Telegram handle is provided, the contact will be created without one.
@@ -254,7 +254,6 @@ Edits an existing person in the address book.
 * Telegram handle, if provided, must be unique. You cannot add two persons with the same Telegram handle.
 * Emails are treated case-insensitively for duplicate detection. For example, `John@Example.com` and `john@example.com` are considered the same email.
 * Telegram handles are treated case-insensitively for duplicate detection. For example, `handle1` and `HANDLE1` are considered the same handle.
-* If the email is not an NUS domain, the contact is still added, but a warning message is shown.
 
 ![result for 'edit 1 n/James e/JamesLee@nus.edu.sg p/82901234 h/jamesLEE'](images/editaperson.png)
 
@@ -497,7 +496,6 @@ Finds persons whose names, emails, or tags match the given keywords.
     * Special characters in email keywords are matched as entered. For example, `john.doe` will not match `johndoe@gmail.com`.
 * **Tags** require exact keyword matches (no partial matching), but are still case-insensitive.
     * e.g. `cs2103` will match tag `cs2103` and `CS2103` but not `cs210`.
-    * Special characters in tag keywords are matched as entered. For example, in `cs2103-t`, the `-` is treated as part of the tag and is not ignored.
 * Multiple keywords within the same field are combined using **OR**.
   e.g. `n/Alex David` will match `Alex Yeoh` or `David Li`.
 * Different fields are combined using **AND**.
@@ -647,7 +645,7 @@ CampusBridge data are saved in the hard disk automatically after any valid comma
 CampusBridge data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
-If your changes to the data file makes its format invalid, CampusBridge will discard all data and start with an empty data file at the next run. Hence, it is recommended to take a backup of the file before editing it.<br>
+If your changes to the data file makes its format invalid, CampusBridge will start with an empty contact list for that run. The invalid data file is not automatically overwritten, so back up or fix it before restarting.<br>
 Furthermore, certain edits can cause CampusBridge to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </div>
 
@@ -659,7 +657,7 @@ Furthermore, certain edits can cause CampusBridge to behave in unexpected ways (
 **A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous CampusBridge home folder.
 
 **Q**: What happens to my data when I upgrade from v1.3 to v1.4 (or a later version)?<br>
-**A**: CampusBridge v1.4 and later uses an updated storage format that may not be compatible with older versions. If your existing data cannot be read, the app will start with an empty data file. Back up your `data/addressbook.json` before upgrading.
+**A**: CampusBridge v1.4 and later uses an updated storage format that may not be compatible with older versions. If your existing data cannot be read, the app will start with an empty contact list. Back up your `data/addressbook.json` before upgrading.
 
 --------------------------------------------------------------------------------------------------------------------
 

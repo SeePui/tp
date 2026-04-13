@@ -53,7 +53,7 @@ The bulk of the app's work is done by the following four components:
 
 **How the architecture components interact with each other**
 
-The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete i/1`.
+The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
 
 <img src="images/ArchitectureSequenceDiagram.png" width="574" />
 
@@ -93,9 +93,9 @@ Here's a (partial) class diagram of the `Logic` component:
 
 <img src="images/LogicClassDiagram.png" width="550"/>
 
-The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete i/1")` API call as an example.
+The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API call as an example.
 
-![Interactions Inside the Logic Component for the `delete i/1` Command](images/DeleteSequenceDiagram.png)
+![Interactions Inside the Logic Component for the `delete 1` Command](images/DeleteSequenceDiagram.png)
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </div>
@@ -120,7 +120,7 @@ How the parsing works:
   * required/optional prefixes,
   * duplicate-prefix checks for single-valued fields,
   * detection of invalid or unexpected prefixes,
-  * command-specific constraints (e.g., exactly one of `i/` or `e/` for `delete`).
+  * command-specific constraints (e.g., exactly one of `tr/` or `tc/` or `tg/` for `cleartag`).
 * All `XYZCommandParser` classes implement the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
 
 ### Model component
@@ -230,7 +230,7 @@ The parser enforces the following rules:
 * Values are trimmed before validation.
 * Repeated single-valued prefixes are rejected.
 * Any non-empty preamble is rejected.
-* Any unexpected slash-prefixed token is rejected as extra input. This includes prefixes from other commands such as `t/`, `tr/`, `tc/`, `tg/`, `i/`, `o/`, and `r/`, as well as unknown prefixes such as `x/`.
+* Any unexpected slash-prefixed token is rejected as extra input. This includes prefixes from other commands such as `t/`, `tr/`, `tc/`, `tg/`, `o/`, and `r/`, as well as unknown prefixes such as `x/`.
 * `Name` validation allows only letters, numbers, spaces, and these symbols: `(` `)` `.` `-` `,` `'`.
 * Other special characters are intentionally rejected. In particular, `/` is not supported because `/` is used by the CLI prefix-based syntax and may create parsing ambiguity. If a real-world name uses `/`, users should enter a supported substitute such as `-` instead (e.g. `D/O` as `D-O`).
 
@@ -387,7 +387,7 @@ See the full list on [GitHub](https://github.com/AY2526S2-CS2103-F11-2/tp/issues
 
 **MSS:**
 1. User requests for help.
-2. CampusBridge displays the relevant section of the user guide.
+2. CampusBridge displays usage information in the result box and opens the relevant section of the user guide in the browser.
 
 Use case ends.
 
@@ -802,21 +802,27 @@ testers are expected to do more *exploratory* testing.
 1. Opening general help
 
     1. Test case: `help`<br>
-       Expected: The User Guide opens in the system default browser. Status message shows `Opened user guide in browser.`
+       Expected: A summary of available commands is shown in the result box. The User Guide opens in the system default browser.
 
    1. Alternative: Press `F1` (or `Fn + F1` on Mac).<br>
       Expected: Same as above.
 
+   1. Test case: `help` with no internet connection<br>
+      Expected: A summary of available commands is still shown in the result box. The browser may open to an error page.
+
 1. Opening command-specific help
 
     1. Test case: `help add`<br>
-       Expected: The User Guide opens in the system default browser at the `add` command section. Status message shows `Opening user guide for 'add' command.`
+       Expected: The usage message for the `add` command is shown in the result box. The User Guide opens in the system default browser at the `add` command section.
 
    1. Test case: `help ADD`<br>
-      Expected: The User Guide opens in the system default browser at the `add` command section. Status message shows `Opening user guide for 'add' command.`
+      Expected: Same as `help add` (case-insensitive).
+
+   1. Test case: `help add` with no internet connection<br>
+      Expected: The usage message for the `add` command is still shown in the result box.
 
    1. Other valid command names to try: `help list`, `help edit`, `help delete`, `help find`, `help sort`, `help tag`, `help untag`, `help cleartag`, `help clear`, `help exit`<br>
-      Expected: The User Guide opens at the respective command section. Status message names the command.
+      Expected: The usage message for the respective command is shown in the result box. The User Guide opens at the respective command section.
 
 1. Invalid help arguments
 
@@ -945,44 +951,19 @@ testers are expected to do more *exploratory* testing.
 
    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
 
-   1. Test case: `delete i/1`<br>
+   1. Test case: `delete 1`<br>
       Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message.
-
-1. Deleting a person by email
-
-   1. Prerequisites: List all persons using the `list` command. Ensure a person with email `alicetan@u.nus.edu` exists in the list.
-
-   1. Test case: `delete e/alicetan@u.nus.edu`<br>
-      Expected: Person with the specified email is deleted from the list. Details of the deleted contact shown in the status message.
 
 1. Invalid delete commands
 
-   1. Test case: `delete`<br>
-      Expected: No person deleted. Error details shown in the status message indicating invalid command format and command usage.
+  1. Test case: `delete`<br>
+     Expected: No person deleted. Error details shown in the status message indicating invalid command format and command usage.
 
-   1. Test case: `delete i/0`<br>
-      Expected: No person deleted. Error details shown in the status message indicating index must be a positive integer (1, 2, 3...).
+  1. Test case: `delete abc`<br>
+     Expected: No person deleted. Error details shown in the status message indicating invalid command format and command usage.
 
-   1. Test case: `delete e/invalid-email`<br>
-      Expected: No person deleted. Error details shown in the status message indicating email constraints.
-
-   1. Test case: `delete 1` (missing prefix)<br>
-       Expected: No person deleted. Error details shown in the status message indicating invalid command format and command usage.
-
-   1. Test case: `delete i/1 i/2`(multiple same prefixes)<br>
-      Expected: No person deleted. Error details shown in the status message indicating multiple values specified for the following single-valued field(s): `i/`.
-
-   1. Test case: `delete e/alicetan@u.nus.edu i/1` (both prefixes)<br>
-      Expected: No person deleted. Error details shown in the status message indicating invalid command format and command usage.
-
-   1. Test case: `delete i/1 n/alice p/12345678` (multiple invalid prefixes)<br>
-      Expected: No person deleted. Error details shown in the status message invalid command format and unexpected extra input.
-
-   1. Test case: `delete i/100` (where 100 is larger than list size)<br>
-      Expected: No person deleted. Error details shown in the status message indicating no person exists at that index and tip to use `list` command.
-
-   1. Test case: `delete e/nonexistent@example.com`<br>
-      Expected: No person deleted. Error details shown in the status message indicating no person found with that email and tip to use `list` or `find` commands.
+  1. Test case: `delete 100` (where 100 is larger than list size)<br>
+     Expected: No person deleted. Error details shown in the status message indicating no person exists at that index and tip to use `list` command.
 
 ### Tagging a person
 
@@ -1276,8 +1257,8 @@ testers are expected to do more *exploratory* testing.
     1. Test case: `add n/John Doe e/johndoe@example.com` followed by `undo`<br>
        Expected: The previously added contact is removed from the list. Status message indicates that the last add action has been undone.
 
-    1. Test case: `delete i/1` followed by `undo`<br>
-       Expected: The deleted contact is restored. The current filtered view remains unchanged. Status message indicates that the last delete action has been undone and may mention that the restored contact is hidden by the current filter.
+    1. Test case: `delete 1` followed by `undo`<br>
+       Expected: The deleted contact is restored. The current filtered view remains unchanged. Status message indicates that the last delete action has been undone.
 
 2. Undoing multiple commands consecutively
 
@@ -1307,7 +1288,7 @@ testers are expected to do more *exploratory* testing.
 
     1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
 
-    1. Test case: `add n/A e/a@example.com`, `list`, `delete i/1`, then `undo`<br>
+    1. Test case: `add n/A e/a@example.com`, `list`, `delete 1`, then `undo`<br>
        Expected: The deleted contact is restored. The `list` command is ignored by undo, and the current filtered view remains unchanged.
 
     1. Test case: `find n/alex`, `clear`, then `undo`<br>

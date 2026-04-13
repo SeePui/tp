@@ -251,6 +251,8 @@ Deletes the specified person from the address book.
   delete 2
   ```
   Deletes the 2nd person in the address book.
+  ![result for 'delete 2'](images/deleteSuccessResult.png)
+
 * ```
   find n/Betsy
   delete 1
@@ -555,7 +557,7 @@ Clears all entries from the address book.
 
 **Format:** `clear`
 
-![ClearCommandSuccessResultImage](images/clearcommand.png)
+![result for 'clear'](images/clearcommand.png)
 
 * `clear` keeps the current filtered view unchanged.
 
@@ -636,8 +638,8 @@ Action | Format, Examples
 **List** | `list`
 **Sort** | `sort o/ORDER [r/]`<br> e.g., `sort o/name`, `sort o/email r/`, `sort o/none`
 **Tag** | `tag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…​`<br> e.g., `tag 1 tg/friends tc/cs2103`
-**Untag** | `untag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…​`<br> e.g., `untag 3 tr/tutor tc/cs2103`
 **Undo** | `undo`
+**Untag** | `untag INDEX [tr/ROLE_TAG]…​ [tc/COURSE_TAG]…​ [tg/GENERAL_TAG]…​`<br> e.g., `untag 3 tr/tutor tc/cs2103`
 
 ## Keyboard shortcuts summary
 

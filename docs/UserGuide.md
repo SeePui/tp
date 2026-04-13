@@ -438,7 +438,9 @@ Finds persons whose names, emails, or tags match the given keywords.
   * Exact match: `Jo` will match `John` and `Alice Johnson`.
   * Fuzzy match: `jon` will also match `John` (handles typos like missing or swapped letters).
   * The fuzzy matching threshold is calculated based on keyword length, allowing ~1 edit for short keywords and scaling up for longer keywords.
-  * If special characters exist in name keywords, only case-insensitive substring matching is used. For example, `Robert-Smith` matches `Robert-Smith` but not `Robert Smith`.
+  * If a special character appears in at least one of the name keywords, case-insensitive substring matching is used for all keywords. For example:
+    * `find n/Robert-Smith` matches `Robert-Smith` but not `Robert Smith`.
+    * `find n/Robert-Jones aliec` will use substring matching for both `Robert-Jones` and `aliec`, so no fuzzy matching is performed for `aliec`.
 * **Email keywords** use exact substring matching.
     * e.g. `gmail` will match `john@gmail.com` and `alice.gmail@example.com`.
     * Special characters in email keywords are matched as entered. For example, `john.doe` will not match `johndoe@gmail.com`.

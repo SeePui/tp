@@ -102,7 +102,7 @@ Emails should be of the format `local-part@domain` and adhere to the following c
 
 **NUS domain check:**
 
-CampusBridge is designed for NUS students and staff. When adding or editing a contact:
+CampusBridge is designed for NUS undergraduate students. When adding or editing a contact:
 
 | Email domain         | Behavior                                   |
 |----------------------|--------------------------------------------|
@@ -480,7 +480,7 @@ Finds persons whose names, emails, or tags match the given keywords.
 * The search is case-insensitive for all fields. e.g. `alex` will match `Alex`.
 * The order of keywords does not matter. e.g. `Yeoh Alex` will match `Alex Yeoh`.
 * Keywords consisting **only of special characters** are not allowed (e.g., `.`, `#`, `!@#`). If you provide such a keyword, an error message will be shown.
-* Keywords containing special characters are allowed (e.g., `"Dr."`, `"J."`, `"J-A"`, `"@#$%"`).
+* Keywords containing special characters are allowed (e.g., `"Dr."`, `"J."`, `"J-A"`).
 * Slashes (`/`) are not allowed in keywords. For example, `find n/alex s/o` will be rejected as it is interpreted as command syntax rather than part of the keyword.
 
 **Matching behavior:**

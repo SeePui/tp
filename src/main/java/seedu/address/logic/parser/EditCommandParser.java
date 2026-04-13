@@ -17,9 +17,10 @@ import seedu.address.logic.parser.exceptions.ParseException;
 /**
  * Parses input arguments and creates a new {@link EditCommand} object.
  * <p>
- * Expected input format: {@code INDEX n/NAME p/PHONE e/EMAIL t/TELEGRAM_HANDLE},
+ * Expected input format: {@code INDEX n/NAME p/PHONE e/EMAIL h/TELEGRAM_HANDLE},
  * where {@code INDEX} is a positive integer and at least one field must be provided.
  * Duplicate prefixes are not allowed.
+ * Empty values for {@code p/} and {@code h/} indicate that the field should be cleared.
  */
 public class EditCommandParser implements Parser<EditCommand> {
 
@@ -51,10 +52,8 @@ public class EditCommandParser implements Parser<EditCommand> {
 
         ParserUtil.validateNoEmptyPrefixValues(argMultimap, PREFIX_NAME, PREFIX_EMAIL);
 
-        String preamble = argMultimap.getPreamble().trim();
-        if (preamble.isEmpty() || preamble.contains(" ")) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
-        }
+        //@@author calijacked
+        ParserUtil.validatePreambleAsIndex(argMultimap, EditCommand.MESSAGE_USAGE);
 
         Index index = ParserUtil.parseIndex(argMultimap.getPreamble().trim());
 

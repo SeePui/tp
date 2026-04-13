@@ -222,7 +222,7 @@ Edits an existing person in the address book.
   Other special characters are not supported. In particular, `/` is not accepted because it may be interpreted as command syntax. If needed, replace it with a supported symbol instead, e.g. `D/O` as `D-O`.
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:**
-If the updated email is not an [NUS domain](#email-validation) (`@u.nus.edu` or `@*.nus.edu.sg` or `@nus.edu.sg`), a warning message will be shown. The contact will still be updated.
+If the updated email is not an [NUS domain](#email-validation), a warning message will be shown. The contact will still be updated.
 </div>
 
 **Examples:**

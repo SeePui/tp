@@ -196,4 +196,15 @@ public class EditCommandParserTest {
         expectedCommand = new EditCommand(targetIndex, descriptor);
         assertParseSuccess(parser, userInput, expectedCommand);
     }
+    @Test
+    public void parse_phoneWithSpaces_success() {
+            Index targetIndex = INDEX_FIRST_PERSON;
+            String userInput = targetIndex.getOneBased() + " p/9312 1534";
+
+            EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                    .withPhone("9312 1534")
+                    .build();
+            EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
 }

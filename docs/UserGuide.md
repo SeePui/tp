@@ -182,7 +182,7 @@ Adds a person to the address book.
 * `p/PHONE_NUMBER` and `h/TELEGRAM_HANDLE` are optional.
 * If no phone number is provided, the contact will be created without one.
 * If no Telegram handle is provided, the contact will be created without one.
-* Phone numbers, if provided, must contain only digits and be at least 3 digits long.
+* Phone numbers, if provided, may contain digits and spaces, and must contain at least 3 digits in total.
 * Email must be unique. You cannot add two persons with the same email address.
 * Telegram handle, if provided, must be unique. You cannot add two persons with the same Telegram handle.
 * Telegram handles are treated case-insensitively for duplicate detection. For example, `handle1` and `HANDLE1` are considered the same handle.
@@ -200,7 +200,7 @@ Parameters can be entered in any order, as long as each value is preceded by the
 
 **Examples:**
 * `add n/John Doe e/johnd@example.com`
-* `add n/Betsy Crowe e/betsycrowe@example.com p/1234567`
+* `add n/Betsy Crowe e/betsycrowe@example.com p/1234 5678`
 * `add n/Alex Lim e/alexlim@example.com h/alex_lim123`
 * `add e/berniceyu@example.com n/Bernice Yu p/98765432 h/bernice_yu`
 
@@ -219,7 +219,7 @@ Edits an existing person in the address book.
 * Prefixes are case-insensitive (n/ and N/ are treated the same).
 * To remove an optional field, use the prefix with no value: `p/` clears the phone number, `h/` clears the Telegram handle.
 * Repeated prefixes for single-valued fields are not allowed. For example, `edit 1 n/Amy n/Ben e/x@example.com` is invalid.
-* Phone numbers provided must contain only digits and be at least 3 digits long.
+* Phone numbers provided may contain digits and spaces, and must contain at least 3 digits in total.
 * Requirements for an email provided is specified [here](#email-validation).
 * The updated email and Telegram handle, if provided, must remain unique.
 * Telegram handles provided are treated case-insensitively for duplicate detection. For example, `handle1` and `HANDLE1` are considered the same handle.
@@ -232,8 +232,8 @@ If the updated email is not an [NUS domain](#email-validation), a warning messag
 </div>
 
 **Examples:**
-*  `edit 1 p/91234567 e/johndoe@u.nus.edu`<br/>
-Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@u.nus.edu` respectively.
+*  `edit 1 p/9123 4567 e/johndoe@u.nus.edu`<br/>
+Edits the phone number and email address of the 1st person to be `9123 4567` and `johndoe@u.nus.edu` respectively.
 *  `edit 2 n/Betsy Crower h/betsyy`<br/>
 Edits the name of the 2nd person to be `Betsy Crower` and the telegram handle to be `betsyy`.
 * `edit 1 p/`<br/>
@@ -434,18 +434,20 @@ Finds persons whose names, emails, or tags match the given keywords.
 * The search is case-insensitive for all fields. e.g. `alex` will match `Alex`.
 * The order of keywords does not matter. e.g. `Yeoh Alex` will match `Alex Yeoh`.
 * Keywords consisting **only of special characters** are not allowed (e.g., `.`, `#`, `!@#`). If you provide such a keyword, an error message will be shown.
-* Keywords containing a mix of alphanumeric and special characters are allowed (e.g., `"Dr."`, `"J."`, `"A-12"`).
-* Avoid including slash-prefixed fragments inside keywords (for example, `find n/alex s/o`). Such input is interpreted as command syntax rather than part of the keyword, so the command will be rejected with an error message.
+* Keywords containing special characters are allowed (e.g., `"Dr."`, `"J."`, `"J-A"`, `"@#$%"`).
+* Slashes (`/`) are not allowed in keywords. For example, `find n/alex s/o` will be rejected as it is interpreted as command syntax rather than part of the keyword.
 
 **Matching behavior:**
 * **Name keywords** use both exact substring matching and fuzzy matching (typo-tolerant):
   * Exact match: `Jo` will match `John` and `Alice Johnson`.
   * Fuzzy match: `jon` will also match `John` (handles typos like missing or swapped letters).
   * The fuzzy matching threshold is calculated based on keyword length, allowing ~1 edit for short keywords and scaling up for longer keywords.
-  * Special characters in name keywords are converted into spaces. For example, `Robert-Smith` becomes `Robert Smith`, so the search treats it as the keywords `Robert` and `Smith`.
+  * If a special character appears in at least one of the name keywords, case-insensitive substring matching is used for all keywords. For example:
+    * `find n/Robert-Smith` matches `Robert-Smith` but not `Robert Smith`.
+    * `find n/Robert-Jones aliec` will use substring matching for both `Robert-Jones` and `aliec`, so no fuzzy matching is performed for `aliec`.
 * **Email keywords** use exact substring matching.
     * e.g. `gmail` will match `john@gmail.com` and `alice.gmail@example.com`.
-    * Special characters in email keywords are matched as entered. For example, `john.doe` will not match `doe@gmail.com`.
+    * Special characters in email keywords are matched as entered. For example, `john.doe` will not match `johndoe@gmail.com`.
 * **Tags** require exact keyword matches (no partial matching), but are still case-insensitive.
     * e.g. `cs2103` will match tag `cs2103` and `CS2103` but not `cs210`.
     * Special characters in tag keywords are matched as entered. For example, in `cs2103-t`, the `-` is treated as part of the tag and is not ignored.
@@ -501,6 +503,8 @@ Reverts the most recent **undoable command** executed.
 * Undoes the last executed command that supports undo.
 * Multiple undo operations can be performed consecutively, up to the number of undoable commands previously executed.
 * If there are no commands to undo, an error message will be shown.
+* `undo` keeps the current filtered view unchanged.
+* When undoing `delete`, `edit`, `clear`, `tag`, `untag`, or `cleartag`, the restored contact(s) may still be hidden if they do not match the current filter. CampusBridge will show a reminder in the status message, and the full list can be viewed using `list`.
 
 **Undoable commands:**
 ```
@@ -525,10 +529,16 @@ You can repeatedly use `undo` to step backwards through your previous changes.
   ```
   Reverts the addition of John Doe.
 * ```
-  delete 2
+  delete 1
   undo
   ```
   Restores the previously deleted person.
+  ![Initial list before `delete 1`](images/Undo-Initial-List.png)
+  Initial list before `delete 1`.
+  ![List after `delete 1`](images/Undo-Deletion.png)
+  List after `delete 1`.
+  ![List after `undo`](images/Undo-Undo.png)
+  List after `undo`, with the deleted person restored.
 * ```
   edit 1 n/Alex Tan
   undo
@@ -538,7 +548,7 @@ You can repeatedly use `undo` to step backwards through your previous changes.
   clear
   undo
   ```
-  Restores all previously deleted contacts.
+  Restores all previously deleted contacts while keeping the current filter unchanged.
 * ```
   undo
   ```
@@ -551,6 +561,8 @@ Clears all entries from the address book.
 **Format:** `clear`
 
 ![ClearCommandSuccessResultImage](images/clearcommand.png)
+
+* `clear` keeps the current filtered view unchanged.
 
 ### Exiting the program : `exit`
 

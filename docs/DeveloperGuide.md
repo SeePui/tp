@@ -741,7 +741,7 @@ Use case ends.
 3. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
 4. Changes should be implemented incrementally, i.e. in a way that allows the app to be usable after each increment, even if some features are not yet implemented.
 5. All logics and storage should be implemented locally, to ensure testability and usability in secure environments without internet access.
-6. The distributed JAR file should not be bloated, preferably less than 10MB, to ensure that it can be easily downloaded and stored on devices with limited storage.
+6. The distributed JAR file should not be bloated, preferably less than 15MB, to ensure that it can be easily downloaded and stored on devices with limited storage.
 
 ### Glossary
 
